@@ -234,38 +234,38 @@ class ProteinResNetModel(ProteinResNetAbstractModel):
         return outputs  # sequence_output, pooled_output, (hidden_states)
 
 
-@registry.register_task_model('masked_language_modeling', 'resnet')
-class ProteinResNetForMaskedLM(ProteinResNetAbstractModel):
+# @registry.register_task_model('masked_language_modeling', 'resnet')
+# class ProteinResNetForMaskedLM(ProteinResNetAbstractModel):
 
-    def __init__(self, config):
-        super().__init__(config)
+#     def __init__(self, config):
+#         super().__init__(config)
 
-        self.resnet = ProteinResNetModel(config)
-        self.mlm = MLMHead(
-            config.hidden_size, config.vocab_size, config.hidden_act, config.layer_norm_eps,
-            ignore_index=-1)
+#         self.resnet = ProteinResNetModel(config)
+#         self.mlm = MLMHead(
+#             config.hidden_size, config.vocab_size, config.hidden_act, config.layer_norm_eps,
+#             ignore_index=-1)
 
-        self.init_weights()
-        self.tie_weights()
+#         self.init_weights()
+#         self.tie_weights()
 
-    def tie_weights(self):
-        """ Make sure we are sharing the input and output embeddings.
-            Export to TorchScript can't handle parameter sharing so we are cloning them instead.
-        """
-        self._tie_or_clone_weights(self.mlm.decoder,
-                                   self.resnet.embeddings.word_embeddings)
+#     def tie_weights(self):
+#         """ Make sure we are sharing the input and output embeddings.
+#             Export to TorchScript can't handle parameter sharing so we are cloning them instead.
+#         """
+#         self._tie_or_clone_weights(self.mlm.decoder,
+#                                    self.resnet.embeddings.word_embeddings)
 
-    def forward(self,
-                input_ids,
-                input_mask=None,
-                targets=None):
+#     def forward(self,
+#                 input_ids,
+#                 input_mask=None,
+#                 targets=None):
 
-        outputs = self.resnet(input_ids, input_mask=input_mask)
+#         outputs = self.resnet(input_ids, input_mask=input_mask)
 
-        sequence_output, pooled_output = outputs[:2]
-        outputs = self.mlm(sequence_output, targets) + outputs[2:]
-        # (loss), prediction_scores, (hidden_states), (attentions)
-        return outputs
+#         sequence_output, pooled_output = outputs[:2]
+#         outputs = self.mlm(sequence_output, targets) + outputs[2:]
+#         # (loss), prediction_scores, (hidden_states), (attentions)
+#         return outputs
 
 
 @registry.register_task_model('fluorescence', 'resnet')
