@@ -1,0 +1,30 @@
+{
+  "block": "bottleneck",
+  "base_model": "resnet",
+  "finetuning_task": None,
+  "groups": 1,
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 64,
+  "initial_hidden_dimension": 64,
+  "initializer_range": 0.02,
+  "layer_norm_eps": 1e-12,
+  "layers": [
+    3,
+    4,
+    23,
+    3
+  ],
+  "hidden_act": "relu",
+  "max_position_embeddings": 8096,
+  "num_labels": 2,
+  "output_attentions": False,
+  "output_hidden_states": False,
+  "output_size": 2048,
+  "pruned_heads": {},
+  "replace_stride_with_dilation": False,
+  "torchscript": False,
+  "type_vocab_size": 1,
+  "vocab_size": 8000,
+  "width_per_group": 64,
+  "zero_init_residual": False
+}

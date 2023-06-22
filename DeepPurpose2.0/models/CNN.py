@@ -194,7 +194,7 @@ class ProteinResNetAbstractModel(ProteinModel):
             # nn.init.constant_(module.bn2.weight, 0)
 
 
-@registry.register_task_model('embed', 'resnet')
+# @registry.register_task_model('embed', 'resnet')
 class ProteinResNetModel(ProteinResNetAbstractModel):
 
     def __init__(self, config):
@@ -268,8 +268,8 @@ class ProteinResNetModel(ProteinResNetAbstractModel):
 #         return outputs
 
 
-@registry.register_task_model('fluorescence', 'resnet')
-@registry.register_task_model('stability', 'resnet')
+# @registry.register_task_model('fluorescence', 'resnet')
+# @registry.register_task_model('stability', 'resnet')
 class ProteinResNetForValuePrediction(ProteinResNetAbstractModel):
 
     def __init__(self, config):
@@ -290,7 +290,7 @@ class ProteinResNetForValuePrediction(ProteinResNetAbstractModel):
         return outputs
 
 
-@registry.register_task_model('remote_homology', 'resnet')
+# @registry.register_task_model('remote_homology', 'resnet')
 class ProteinResNetForSequenceClassification(ProteinResNetAbstractModel):
 
     def __init__(self, config):
@@ -311,7 +311,7 @@ class ProteinResNetForSequenceClassification(ProteinResNetAbstractModel):
         return outputs
 
 
-@registry.register_task_model('secondary_structure', 'resnet')
+# @registry.register_task_model('secondary_structure', 'resnet')
 class ProteinResNetForSequenceToSequenceClassification(ProteinResNetAbstractModel):
 
     def __init__(self, config):
@@ -333,7 +333,7 @@ class ProteinResNetForSequenceToSequenceClassification(ProteinResNetAbstractMode
         return outputs
 
 
-@registry.register_task_model('contact_prediction', 'resnet')
+# @registry.register_task_model('contact_prediction', 'resnet')
 class ProteinResNetForContactPrediction(ProteinResNetAbstractModel):
 
     def __init__(self, config):
@@ -352,3 +352,4 @@ class ProteinResNetForContactPrediction(ProteinResNetAbstractModel):
         outputs = self.predict(sequence_output, protein_length, targets) + outputs[2:]
         # (loss), prediction_scores, (hidden_states), (attentions)
         return outputs
+    
