@@ -2,6 +2,23 @@
 
 
 
+### 1. Protein Function (Property) Prediction
+
+
+Done: 
+1. Dataset Built for: Fluorescence Dataset 
+
+test on the pre-processing on the dataset
 ```python
-python test.py
+python dataset.py
+```
+
+
+TODO: 
+1. test on Fluorescence Dataset 
+
+
+
+```python
+xxx
 ```

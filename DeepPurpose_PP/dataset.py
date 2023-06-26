@@ -122,7 +122,21 @@ def collate_fn(batch):
             'protein_idx': protein_idx}
 
 if __name__ == "__main__":
-    fluo = FluorescenceDataset('/home/jiaxie/Desktop/DeepPurposePlusPlus/DeepPurpose_PP/data', 'train')
-    train_batch = collate_fn(fluo[0])
-    print(train_batch)
+    import os
+    path = os.getcwd()
+    # 1. Test on FluorescenceDataset
+    train_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'train')
+    valid_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'valid')
+    test_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'test')
+
+
+    # 2. Test on Processed Proteins
+    train_batch = collate_fn(train_fluo)
+    valid_batch = collate_fn(valid_fluo)
+    test_batch = collate_fn(test_fluo)
+
+    # 3. 
+    print(train_batch['protein_smiles'][:2])
+    print(train_batch['targets'][:2])
+
 
