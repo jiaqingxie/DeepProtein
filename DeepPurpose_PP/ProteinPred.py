@@ -232,14 +232,17 @@ class Protein_Prediction:
 				score = self.model(v_p)
 				label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
 
+
 				if self.binary:
 					loss_fct = torch.nn.BCELoss()
 					m = torch.nn.Sigmoid()
 					n = torch.squeeze(m(score), 1)
+					label = torch.squeeze(label, 1)
 					loss = loss_fct(n, label)
 				else:
 					loss_fct = torch.nn.MSELoss()
 					n = torch.squeeze(score, 1)
+					label = torch.squeeze(label, 1)
 					loss = loss_fct(n, label)
 				loss_history.append(loss.item())
 

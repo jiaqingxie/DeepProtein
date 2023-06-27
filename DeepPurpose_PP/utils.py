@@ -806,7 +806,6 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 			v_p = protein_2_embed(v_p)
 		#print("len(v_d)", len(v_d))
 		y = self.labels[index]
-		print(v_p.size)
 		return v_p, y
 
 
