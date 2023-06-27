@@ -117,9 +117,7 @@ def collate_fn(batch):
     target = torch.FloatTensor(target)  # type: ignore
     target = target.unsqueeze(1)
 
-    return {'protein_smiles': protein_processed,
-            'targets': target,
-            'protein_idx': protein_idx}
+    return protein_processed, target, protein_idx
 
 if __name__ == "__main__":
     import os
@@ -135,8 +133,8 @@ if __name__ == "__main__":
     valid_batch = collate_fn(valid_fluo)
     test_batch = collate_fn(test_fluo)
 
-    # 3. 
-    print(train_batch['protein_smiles'][:2])
-    print(train_batch['targets'][:2])
+    train_protein_processed, train_target, train_protein_idx = train_batch
+    print(train_target[:10])
+    
 
 
