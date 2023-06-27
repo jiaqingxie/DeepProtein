@@ -326,7 +326,6 @@ class DGL_GCN(nn.Module):
 		self.transform = nn.Linear(self.gnn.hidden_feats[-1] * 2, predictor_dim)
 
 	def forward(self, bg):
-		print(bg)
 		bg = bg.to(device)
 		feats = bg.ndata.pop('h') 
 		node_feats = self.gnn(bg, feats)

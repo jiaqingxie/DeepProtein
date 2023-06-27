@@ -131,7 +131,7 @@ if __name__ == "__main__":
     test_batch = collate_fn(test_fluo)
 
     train_protein_processed, train_target, train_protein_idx = train_batch
-    print(train_target[:10])
+    # print(train_target[:10])
 
 
 
