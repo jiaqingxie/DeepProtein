@@ -1,13 +1,10 @@
-import pandas as pd
+
 import numpy as np
 
-from zipfile import ZipFile
-from utils import *
+from .utils import *
 from rdkit import Chem
 import lmdb
-from collections import defaultdict
-
-from typing import Union, List, Tuple, Sequence, Dict, Any, Optional, Collection
+from typing import Union
 from pathlib import Path
 from torch.utils.data import Dataset
 from tqdm import tqdm
@@ -135,6 +132,6 @@ if __name__ == "__main__":
 
     train_protein_processed, train_target, train_protein_idx = train_batch
     print(train_target[:10])
-    
+
 
 
