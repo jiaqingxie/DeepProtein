@@ -1106,6 +1106,7 @@ def protein_2_embed(x):
 def trans_drug(x):
 	temp = list(x)
 	temp = [i if i in smiles_char else '?' for i in temp]
+
 	if len(temp) < MAX_SEQ_DRUG:
 		temp = temp + ['?'] * (MAX_SEQ_DRUG-len(temp))
 	else:

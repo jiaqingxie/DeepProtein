@@ -7,8 +7,9 @@ import DeepPurpose_PP.ProteinPred as models
 
 if __name__ == "__main__":
 
-    drug_encoding = "DGL_GCN"
-    target_encoding = "ESPF"
+
+
+    target_encoding = "CNN"
 
     path = os.getcwd()
     # 1. Test on FluorescenceDataset
@@ -21,17 +22,16 @@ if __name__ == "__main__":
                                 split_method='random',frac=[0.7,0.1,0.2],
                                 random_seed = 1)
 
+    print(train[:1])
+
 
     config = generate_config(target_encoding = target_encoding, 
                          cls_hidden_dims = [512], 
                          train_epoch = 40, 
-                         LR = 0.0001, 
+                         LR = 0.0008, 
                          batch_size = 128,
                         )
     
+    
     model = models.model_initialize(**config)
     model.train(train, val, test)
-
-    
-
-    

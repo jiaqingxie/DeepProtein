@@ -121,6 +121,7 @@ class Protein_Prediction:
 			y_pred = y_pred + logits.flatten().tolist()
 			outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
 		
+
 		model.train()
 		if self.binary:
 			if repurposing_mode:
@@ -184,6 +185,8 @@ class Protein_Prediction:
 	    		'num_workers': self.config['num_workers'],
 	    		'drop_last': False}
 		
+		print(train.index.values)
+		
 		training_generator = data.DataLoader(data_process_loader_Protein_Prediction(train.index.values, 
 																					 train.Label.values, 
 																					 train, **self.config), 
@@ -194,6 +197,7 @@ class Protein_Prediction:
 																						**params)
 		
 		if test is not None:
+
 			info = data_process_loader_Protein_Prediction(test.index.values, test.Label.values, test, **self.config)
 			params_test = {'batch_size': BATCH_SIZE,
 					'shuffle': False,
@@ -230,7 +234,7 @@ class Protein_Prediction:
 					v_p = v_p.float().to(self.device) 
 
 				score = self.model(v_p)
-				label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
+				label = torch.from_numpy(np.array(label)).float().to(self.device)
 
 
 				if self.binary:
@@ -242,10 +246,10 @@ class Protein_Prediction:
 				else:
 					loss_fct = torch.nn.MSELoss()
 					n = torch.squeeze(score, 1)
+					
 					label = torch.squeeze(label, 1)
 					loss = loss_fct(n, label)
-					#print(label)
-					#print(n)
+
 				loss_history.append(loss.item())
 
 				opt.zero_grad()

@@ -104,9 +104,11 @@ def collate_fn(batch):
 
     protein_idx =  np.array(list(range(batch_len)))
 
-    protein_processed = []
-    for i in tqdm(range(batch_len)):
-        protein_processed.append(Chem.MolToSmiles(Chem.MolFromSequence(protein_orig[i]))) 
+    # protein_processed = []
+    # for i in tqdm(range(batch_len)):
+    #     protein_processed.append(Chem.MolToSmiles(Chem.MolFromSequence(protein_orig[i]))) 
+        # if i % 10 == 0:
+        #     print(protein_orig[i])
 
     
     # protein_processed =  [  for i in range(batch_len)]
@@ -114,7 +116,7 @@ def collate_fn(batch):
     target = torch.FloatTensor(target)  # type: ignore
     target = target.unsqueeze(1)
 
-    return protein_processed, target, protein_idx
+    return protein_orig, target, protein_idx
 
 if __name__ == "__main__":
     import os
