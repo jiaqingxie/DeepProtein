@@ -8,11 +8,11 @@ import DeepPurpose_PP.ProteinPred as models
 if __name__ == "__main__":
 
     drug_encoding = "DGL_GCN"
-    target_encoding = "CNN"
+    target_encoding = "ESPF"
 
     path = os.getcwd()
     # 1. Test on FluorescenceDataset
-    train_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'train')
+    train_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'valid')
     train_protein_processed, train_target, train_protein_idx  = collate_fn(train_fluo)
 
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     config = generate_config(target_encoding = target_encoding, 
                          cls_hidden_dims = [512], 
                          train_epoch = 40, 
-                         LR = 0.0005, 
+                         LR = 0.0001, 
                          batch_size = 128,
                         )
     

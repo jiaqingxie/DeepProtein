@@ -244,6 +244,8 @@ class Protein_Prediction:
 					n = torch.squeeze(score, 1)
 					label = torch.squeeze(label, 1)
 					loss = loss_fct(n, label)
+					#print(label)
+					#print(n)
 				loss_history.append(loss.item())
 
 				opt.zero_grad()
