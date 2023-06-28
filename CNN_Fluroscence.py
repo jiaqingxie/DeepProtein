@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     config = generate_config(target_encoding = target_encoding, 
                          cls_hidden_dims = [512], 
-                         train_epoch = 40, 
+                         train_epoch = 20, 
                          LR = 0.0008, 
                          batch_size = 128,
                         )

@@ -66,6 +66,13 @@ def model_pretrained(path_dir = None, model = None):
 	model.load_pretrained(path_dir + '/model.pt')    
 	return model
 
+def dgl_collate_func(x):
+
+	x, y = zip(*x)
+	import dgl
+	x = dgl.batch(x)
+	return x, torch.tensor(y)
+
 class Protein_Prediction:
 	'''
 		Protein Function Prediction 
@@ -82,6 +89,11 @@ class Protein_Prediction:
 			self.model_protein = CNN_RNN('protein', **config)
 		elif target_encoding == 'Transformer':
 			self.model_protein = transformer('protein', **config)
+		elif target_encoding == 'DGL_GCN':
+			self.model_protein = DGL_GCN(in_feats = 74, 
+									hidden_feats = [config['gnn_hid_dim_drug']] * config['gnn_num_layers'], 
+									activation = [config['gnn_activation']] * config['gnn_num_layers'], 
+									predictor_dim = config['hidden_dim_drug'])
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
@@ -104,7 +116,7 @@ class Protein_Prediction:
 		y_label = []
 		model.eval()
 		for i, (v_p, label) in enumerate(data_generator):
-			if self.target_encoding == 'Transformer':
+			if self.target_encoding in ['Transformer', 'DGL_GCN']:
 				v_p = v_p
 			else:
 				v_p = v_p.float().to(self.device)              
@@ -146,6 +158,7 @@ class Protein_Prediction:
 				   concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None, verbose = True):
+
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 			self.config['binary'] = True
@@ -185,7 +198,8 @@ class Protein_Prediction:
 	    		'num_workers': self.config['num_workers'],
 	    		'drop_last': False}
 		
-		print(train.index.values)
+		if self.target_encoding in ['DGL_GCN']:
+			params['collate_fn'] = dgl_collate_func
 		
 		training_generator = data.DataLoader(data_process_loader_Protein_Prediction(train.index.values, 
 																					 train.Label.values, 
@@ -204,6 +218,10 @@ class Protein_Prediction:
 					'num_workers': self.config['num_workers'],
 					'drop_last': False,
 					'sampler':SequentialSampler(info)}
+			
+			if self.target_encoding in ['DGL_GCN']:
+				params_test['collate_fn'] = dgl_collate_func
+			
 			testing_generator = data.DataLoader(data_process_loader_Protein_Prediction(test.index.values, test.Label.values, test, **self.config), **params_test)
 
 		# early stopping
@@ -225,10 +243,13 @@ class Protein_Prediction:
 		if verbose:
 			print('--- Go for Training ---')
 		t_start = time() 
+
+		print(len(training_generator))
 		for epo in range(train_epoch):
+			
 			for i, (v_p, label) in enumerate(training_generator):
-				
-				if self.target_encoding == 'Transformer':
+				if self.target_encoding in [ 'Transformer', 'DGL_GCN']:
+
 					v_p = v_p
 				else:
 					v_p = v_p.float().to(self.device) 
@@ -246,8 +267,8 @@ class Protein_Prediction:
 				else:
 					loss_fct = torch.nn.MSELoss()
 					n = torch.squeeze(score, 1)
-					
-					label = torch.squeeze(label, 1)
+					if self.target_encoding not in ['DGL_GCN']:
+						label = torch.squeeze(label, 1)
 					loss = loss_fct(n, label)
 
 				loss_history.append(loss.item())
@@ -358,6 +379,10 @@ class Protein_Prediction:
 				'num_workers': self.config['num_workers'],
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
+		
+		if self.target_encoding in ['DGL_GCN']:
+			params['collate_fn'] = dgl_collate_func
+
 
 		generator = data.DataLoader(info, **params)
 

@@ -96,7 +96,7 @@ class FluorescenceDataset(Dataset):
     
         return protein_orig, target
 
-def collate_fn(batch):
+def collate_fn(batch, graph = False):
     protein_orig, target = tuple(zip(*batch))
     protein_orig = list(protein_orig)
     batch_len = len(target)
@@ -104,14 +104,11 @@ def collate_fn(batch):
 
     protein_idx =  np.array(list(range(batch_len)))
 
-    # protein_processed = []
-    # for i in tqdm(range(batch_len)):
-    #     protein_processed.append(Chem.MolToSmiles(Chem.MolFromSequence(protein_orig[i]))) 
-        # if i % 10 == 0:
-        #     print(protein_orig[i])
+    # protein_processed = []    
 
-    
-    # protein_processed =  [  for i in range(batch_len)]
+    if graph:
+        for i in tqdm(range(batch_len)):
+            protein_orig[i] = Chem.MolToSmiles(Chem.MolFromSequence(protein_orig[i]))
 
     target = torch.FloatTensor(target)  # type: ignore
     target = target.unsqueeze(1)

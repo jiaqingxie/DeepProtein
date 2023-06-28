@@ -445,6 +445,8 @@ def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', sa
 		AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	elif target_encoding in ['DGL_GCN', 'DGL_NeuralFP']:
+		df_data[save_column_name] = df_data[column_name]
 	else:
 		raise AttributeError("Please use the correct protein encoding available!")
 	return df_data
@@ -794,6 +796,14 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 		self.df = df
 		self.config = config
 
+
+		if self.config['target_encoding'] in ['DGL_GCN']:
+			from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
+			self.node_featurizer = CanonicalAtomFeaturizer()
+			self.edge_featurizer = CanonicalBondFeaturizer(self_loop = True)
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
 	def __len__(self):
 		'Denotes the total number of samples'
 		return len(self.list_IDs)
@@ -802,8 +812,12 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 		'Generates one sample of data'
 		index = self.list_IDs[index]
 		v_p = self.df.iloc[index]['target_encoding']
+
 		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
 			v_p = protein_2_embed(v_p)
+		elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+			v_p = self.fc(smiles = v_p, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
+
 		#print("len(v_d)", len(v_d))
 		y = self.labels[index]
 		return v_p, y
@@ -981,6 +995,10 @@ def generate_config(drug_encoding = None, target_encoding = None,
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 		base_config['hidden_dim_protein'] = transformer_emb_size_target
+	elif target_encoding == 'DGL_GCN':
+		base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+		base_config['gnn_num_layers'] = gnn_num_layers
+		base_config['gnn_activation'] = gnn_activation
 	elif target_encoding is None:
 		pass
 	else:
@@ -1082,7 +1100,7 @@ smiles_char = ['?', '#', '%', ')', '(', '+', '-', '.', '1', '0', '3', '2', '5', 
        '7', '6', '9', '8', '=', 'A', 'C', 'B', 'E', 'D', 'G', 'F', 'I',
        'H', 'K', 'M', 'L', 'O', 'N', 'P', 'S', 'R', 'U', 'T', 'W', 'V',
        'Y', '[', 'Z', ']', '_', 'a', 'c', 'b', 'e', 'd', 'g', 'f', 'i',
-       'h', 'm', 'l', 'o', 'n', 's', 'r', 'u', 't', 'y']
+       'h', 'm', 'l', 'o', 'n', 's', 'r', 'u', 't', 'y', '@']
 
 from sklearn.preprocessing import OneHotEncoder
 enc_protein = OneHotEncoder().fit(np.array(amino_char).reshape(-1, 1))
