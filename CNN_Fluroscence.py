@@ -46,3 +46,6 @@ if __name__ == "__main__":
 
     model = models.model_initialize(**config)
     model.train(train, val, test)
+
+
+    

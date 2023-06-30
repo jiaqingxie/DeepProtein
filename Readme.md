@@ -22,8 +22,8 @@ python GCN_Fluroscence.py
 
 
 TODO: 
-1. ESM test on Fluorescence Dataset 
-2. Geatnet test on Fluorescence Dataset
+1. ProtBert test on Fluorescence Dataset 
+2. ProtAlbert test on Fluorescence Dataset
 3. ESM-Gearnet test on Fluorescence Dataset
 3. Transformer test on Fluorescence Dataset
 4. Flow test on Fluorescence Datasets
