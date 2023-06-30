@@ -8,16 +8,25 @@
 Done: 
 1. Dataset Built for: Fluorescence Dataset 
 
-test on the pre-processing on the dataset
+test on the CNN probing on the Fluorescence dataset
+
 ```python
-python dataset.py
+python CNN_Fluroscence.py
+```
+
+test on the GCN probing on the Fluorescence dataset
+
+```python
+python GCN_Fluroscence.py
 ```
 
 
 TODO: 
-1. test on Fluorescence Dataset 
-
-
+1. ESM test on Fluorescence Dataset 
+2. Geatnet test on Fluorescence Dataset
+3. ESM-Gearnet test on Fluorescence Dataset
+3. Transformer test on Fluorescence Dataset
+4. Flow test on Fluorescence Datasets
 
 ```python
 python test.py
