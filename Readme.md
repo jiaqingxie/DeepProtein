@@ -1,4 +1,13 @@
-# DeepPurpose ++ : An Extension Library for DeepPurpose focusing on Protein Learning Tasks
+<p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="400px" /></p>
+
+
+<h3 align="center">
+<p> DeepPurpose ++ : An Extension Library for DeepPurpose focusing on Protein Learning Tasks<br></h3>
+<h4 align="center">
+<p> ... </h4>
+
+
+
 
 
 
