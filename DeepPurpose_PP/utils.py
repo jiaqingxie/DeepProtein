@@ -10,6 +10,7 @@ import torch
 from torch.utils import data
 from torch.autograd import Variable
 import torch.nn.functional as F
+import re
 
 try:
 	from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
@@ -432,7 +433,7 @@ def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', sa
 		AA = pd.Series(df_data[column_name].unique()).apply(protein2espf)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-	elif target_encoding == 'CNN':
+	elif target_encoding == 'CNN' or "Protbert":
 		AA = pd.Series(df_data[column_name].unique()).apply(trans_protein)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
@@ -820,6 +821,8 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 			v_p = protein_2_embed(v_p)
 		elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN']:
 			v_p = self.fc(smiles = v_p, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
+		elif self.config['target_encoding'] in ['Protbert']:
+			v_p = re.sub(r"[UZOB?]", "X", ''.join(v_p))
 		y = self.labels[index]
 		return v_p, y
 

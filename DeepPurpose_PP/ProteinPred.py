@@ -96,6 +96,8 @@ class Protein_Prediction:
 									predictor_dim = config['hidden_dim_drug'])
 		elif target_encoding == 'DGL_GIN':
 			self.model_protein =  DGL_GIN_InfoMax(1)
+		elif target_encoding == "Protbert":
+			self.model_protein = Protbert("Protbert", **config)
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
@@ -120,6 +122,8 @@ class Protein_Prediction:
 		for i, (v_p, label) in enumerate(data_generator):
 			if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GIN']:
 				v_p = v_p
+			elif self.target_encoding in ['Protbert']:
+				v_p = list(v_p)
 			else:
 				v_p = v_p.float().to(self.device)              
 			score = self.model(v_p)
@@ -252,9 +256,12 @@ class Protein_Prediction:
 			for i, (v_p, label) in enumerate(training_generator):
 				if self.target_encoding in [ 'Transformer', 'DGL_GCN', 'DGL_GIN']:
 					v_p = v_p
+				elif self.target_encoding in ['Protbert']:
+					v_p = list(v_p)
 				else:
 					v_p = v_p.float().to(self.device) 
 
+				
 				score = self.model(v_p)
 				label = torch.from_numpy(np.array(label)).float().to(self.device)
 
