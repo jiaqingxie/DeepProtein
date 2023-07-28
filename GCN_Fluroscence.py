@@ -36,6 +36,7 @@ if __name__ == "__main__":
                                 split_method='random',frac=[1e-4,1e-4,0.9998],
                                 random_seed = 1)
 
+
     config = generate_config(target_encoding = target_encoding, 
                          cls_hidden_dims = [256], 
                          train_epoch = 20, 
