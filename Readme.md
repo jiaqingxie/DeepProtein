@@ -1,8 +1,6 @@
 <p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="400px" /></p>
-
-
 <h3 align="center">
-<p> DeepPurpose ++ : An Extension Library for DeepPurpose focusing on Protein Learning Tasks<br></h3>
+<p> DeepPurpose 2.0 : A Benchmark Study on Learning Based Protein Discovery<br></h3>
 <h4 align="center">
 <p> ... </h4>
 
