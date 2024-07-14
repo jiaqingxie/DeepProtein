@@ -8,7 +8,7 @@ import copy
 import math
 import collections
 
-torch.manual_seed(1)
+# torch.manual_seed(1)
 np.random.seed(1)
 
 class LayerNorm(nn.Module):

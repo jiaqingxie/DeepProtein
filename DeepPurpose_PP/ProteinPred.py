@@ -14,7 +14,7 @@ from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr, spearmanr
 import pickle 
-torch.manual_seed(2)
+# torch.manual_seed(2)
 np.random.seed(3)
 import copy
 from prettytable import PrettyTable
@@ -291,7 +291,7 @@ class Protein_Prediction:
 							' with loss ' + str(loss.cpu().detach().numpy())[:7] +\
 							". Total time " + str(int(t_now - t_start)/3600)[:7] + " hours") 
 						### record total run time
-
+			wandb.log({"training loss": loss.cpu().detach().numpy()})
 			##### validate, select the best model up to now 
 			with torch.set_grad_enabled(False):
 				if self.binary:  
@@ -302,9 +302,11 @@ class Protein_Prediction:
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc
+					wandb.log({"epoch": epo + 1, "AUROC": auc, "AUPRC": auprc, "F1": f1})
 					if verbose:
 						print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
 						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
+
 				else:
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index
 
@@ -316,6 +318,7 @@ class Protein_Prediction:
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
+					wandb.log({"epoch": epo + 1, "MSE": mse, "R2": r2, "p_val": p_val, "Concordance Index": CI})
 					if verbose:
 						if self.config['use_spearmanr']:
 							print('Validation at Epoch ' + str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Spearman Correlation: ' \
@@ -341,12 +344,14 @@ class Protein_Prediction:
 				auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True, verbose = verbose)
 				test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
 				test_table.add_row(list(map(float2str, [auc, auprc, f1])))
+				wandb.log({"TEST AUROC": auc, "TEST AUPRC": auprc, "TEST F1": f1})
 				if verbose:
 					print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
 			else:
 				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max, test = True, verbose = verbose)
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
+				wandb.log({"TEST MSE": mse, "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
 				if verbose:
 					if self.config['use_spearmanr']:
 						print('Testing MSE: ' + str(mse) + ' , Spearman Correlation: ' + str(r2)

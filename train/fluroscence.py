@@ -3,10 +3,15 @@ import os
 import DeepPurpose_PP.utils as utils
 import DeepPurpose_PP.ProteinPred as models
 import argparse
+import torch
+import wandb
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with DeepPurpose++")
     parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
+    parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
+    parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
+
     return parser.parse_args()
 
 
@@ -14,6 +19,10 @@ if __name__ == "__main__":
 
     args = parse_args()
     target_encoding = args.target_encoding
+    wandb_project = args.wandb_project
+    job_name = f"Fluorescence + {target_encoding}"
+    wandb.init(project=wandb_project, name=job_name)
+    wandb.config.update(args)
 
     # path = os.getcwd()
     path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
@@ -50,6 +59,7 @@ if __name__ == "__main__":
                          batch_size = 32,
                         )
 
+    torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
     model.train(train, val, test)
 
