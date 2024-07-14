@@ -2,13 +2,18 @@ from DeepPurpose_PP.dataset import *
 import os
 import DeepPurpose_PP.utils as utils
 import DeepPurpose_PP.ProteinPred as models
+import argparse
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Protein Prediction with DeepPurpose++")
+    parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
 
-
-    target_encoding = "CNN"
+    args = parse_args()
+    target_encoding = args.target_encoding
 
     # path = os.getcwd()
     path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
@@ -24,25 +29,25 @@ if __name__ == "__main__":
 
     train, _, _ = utils.data_process(X_target = train_protein_processed, y = train_target, target_encoding = target_encoding, 
                                         # drug_encoding= drug_encoding,
-                                split_method='random',frac=[0.9998,1e-4,1e-4],
+                                split_method='random',frac=[0.99998,1e-5,1e-5],
                                 random_seed = 1)
     
     _, val, _ = utils.data_process(X_target = valid_protein_processed, y = valid_target, target_encoding = target_encoding, 
                                         # drug_encoding= drug_encoding,
-                                split_method='random',frac=[1e-4,0.9998,1e-4],
+                                split_method='random',frac=[1e-5,0.99998,1e-5],
                                 random_seed = 1)
     
     _, _, test = utils.data_process(X_target = test_protein_processed, y = test_target, target_encoding = target_encoding, 
                                         # drug_encoding= drug_encoding,
-                                split_method='random',frac=[1e-4,1e-4,0.9998],
+                                split_method='random',frac=[1e-5,1e-5,0.99998],
                                 random_seed = 1)
 
 
     config = generate_config(target_encoding = target_encoding, 
-                         cls_hidden_dims = [512], 
+                         cls_hidden_dims = [1024],
                          train_epoch = 20, 
-                         LR = 0.0008, 
-                         batch_size = 128,
+                         LR = 0.0001,
+                         batch_size = 32,
                         )
 
     model = models.model_initialize(**config)

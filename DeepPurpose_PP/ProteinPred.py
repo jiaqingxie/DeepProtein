@@ -348,7 +348,11 @@ class Protein_Prediction:
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
 				if verbose:
-					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
+					if self.config['use_spearmanr']:
+						print('Testing MSE: ' + str(mse) + ' , Spearman Correlation: ' + str(r2)
+							  + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI))
+					else:
+						print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2)
 					  + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.target_encoding)
 				     + '_logits.npy'), np.array(logits))                

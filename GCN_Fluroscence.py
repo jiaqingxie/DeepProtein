@@ -37,10 +37,10 @@ if __name__ == "__main__":
                                 random_seed = 1)
 
     config = generate_config(target_encoding = target_encoding, 
-                         cls_hidden_dims = [256], 
+                         cls_hidden_dims = [1024, 1024],
                          train_epoch = 20, 
-                         LR = 0.0008, 
-                         batch_size = 128,
+                         LR = 0.0001,
+                         batch_size = 32,
                         )
 
     model = models.model_initialize(**config)
