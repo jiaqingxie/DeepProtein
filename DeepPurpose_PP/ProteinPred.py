@@ -12,7 +12,7 @@ import pandas as pd
 from time import time
 from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score
 from lifelines.utils import concordance_index
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, spearmanr
 import pickle 
 torch.manual_seed(2)
 np.random.seed(3)
@@ -154,6 +154,11 @@ class Protein_Prediction:
 		else:
 			if repurposing_mode:
 				return y_pred
+			elif self.config['use_spearmanr']:
+				return mean_squared_error(y_label, y_pred), \
+					spearmanr(y_label, y_pred)[0], \
+					spearmanr(y_label, y_pred)[1], \
+					concordance_index(y_label, y_pred), y_pred
 			return mean_squared_error(y_label, y_pred), \
 				   pearsonr(y_label, y_pred)[0], \
 				   pearsonr(y_label, y_pred)[1], \
@@ -300,16 +305,23 @@ class Protein_Prediction:
 					if verbose:
 						print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
 						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
-				else:  
-					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
+				else:
+					### regression: MSE, Pearson Correlation, with p-value, Concordance Index
+
 					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
+
+
 					lst = ["epoch " + str(epo)] + list(map(float2str,[mse, r2, p_val, CI]))
 					valid_metric_record.append(lst)
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
 					if verbose:
-						print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
+						if self.config['use_spearmanr']:
+							print('Validation at Epoch ' + str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Spearman Correlation: ' \
+								  + str(r2)[:7] + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI)[:7])
+						else:
+							print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
 						 + str(r2)[:7] + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI)[:7])
 			table.add_row(lst)
 

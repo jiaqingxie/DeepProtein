@@ -10,7 +10,8 @@ if __name__ == "__main__":
 
     target_encoding = "CNN"
 
-    path = os.getcwd()
+    # path = os.getcwd()
+    path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
     #  Test on FluorescenceDataset
     train_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'train')
     train_protein_processed, train_target, train_protein_idx  = collate_fn(train_fluo)
