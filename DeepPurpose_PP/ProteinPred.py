@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.utils import data
 from torch.utils.data import SequentialSampler
 from torch import nn 
-
+import wandb
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np

@@ -1,10 +1,18 @@
-from DeepPurpose_PP.dataset import *
 import os
-import DeepPurpose_PP.utils as utils
-import DeepPurpose_PP.ProteinPred as models
+import sys
 import argparse
 import torch
 import wandb
+
+module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
+from DeepPurpose_PP.dataset import *
+import DeepPurpose_PP.utils as utils
+import DeepPurpose_PP.ProteinPred as models
+
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with DeepPurpose++")
@@ -19,7 +27,7 @@ if __name__ == "__main__":
 
     args = parse_args()
     target_encoding = args.target_encoding
-    wandb_project = args.wandb_project
+    wandb_project = args.wandb_proj
     job_name = f"Fluorescence + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
@@ -28,13 +36,20 @@ if __name__ == "__main__":
     path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
     #  Test on FluorescenceDataset
     train_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'train')
-    train_protein_processed, train_target, train_protein_idx  = collate_fn(train_fluo)
-
     valid_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'valid')
-    valid_protein_processed, valid_target, valid_protein_idx  = collate_fn(valid_fluo)
-
     test_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'test')
-    test_protein_processed, test_target, test_protein_idx  = collate_fn(test_fluo)
+
+    if target_encoding == 'GCN':
+        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph = True)
+        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph = True)
+        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph = True)
+
+    else:
+        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
+        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
+        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
+
+
 
     train, _, _ = utils.data_process(X_target = train_protein_processed, y = train_target, target_encoding = target_encoding, 
                                         # drug_encoding= drug_encoding,
@@ -53,8 +68,8 @@ if __name__ == "__main__":
 
 
     config = generate_config(target_encoding = target_encoding, 
-                         cls_hidden_dims = [1024],
-                         train_epoch = 20, 
+                         cls_hidden_dims = [64, 64],
+                         train_epoch = 100,
                          LR = 0.0001,
                          batch_size = 32,
                         )

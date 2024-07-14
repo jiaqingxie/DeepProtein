@@ -1,4 +1,4 @@
-from DeepPurpose_PP.dataset import *
+from .DeepPurpose_PP.dataset import *
 import os
 import DeepPurpose_PP.utils as utils
 import DeepPurpose_PP.ProteinPred as models
@@ -37,7 +37,7 @@ if __name__ == "__main__":
                                 random_seed = 1)
 
     config = generate_config(target_encoding = target_encoding, 
-                         cls_hidden_dims = [1024, 1024],
+                         cls_hidden_dims = [64, 64],
                          train_epoch = 20, 
                          LR = 0.0001,
                          batch_size = 32,

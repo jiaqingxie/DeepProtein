@@ -14,7 +14,7 @@
 
 ETH_USERNAME=jiaxie
 PROJECT_NAME=DeepPurposePlusPlus
-DIRECTORY=/itet-stor/${ETH_USERNAME}/net_scratch/${PROJECT_NAME}
+DIRECTORY=/itet-stor/${ETH_USERNAME}/net_scratch/${PROJECT_NAME}/train
 CONDA_ENVIRONMENT=grit
 # Set a directory for temporary files unique to the job with automatic removal at job termination
 TMPDIR=$(mktemp -d)
@@ -43,7 +43,7 @@ echo "Conda activated"
 cd ${DIRECTORY}
 
 # Execute your code
-python train/fluroscence.py --target_encoding CNN --seed 42 --wandb_proj DeepPurposePP
+python fluroscence.py --target_encoding GCN --seed 100 --wandb_proj DeepPurposePP
 
 echo "Finished at: $(date)"
 
