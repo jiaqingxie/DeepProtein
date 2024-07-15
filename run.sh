@@ -5,9 +5,9 @@
 #SBATCH --mem=5G
 #SBATCH --time=48:00:00
 #SBATCH --cpus-per-task=2
-#SBATCH --gres=gpu:titan_xp:1
+#SBATCH --gres=gpu:geforce_rtx_3090:1
 #SBATCH --exclude=tikgpu10
-#SBATCH --nodelist=tikgpu02
+#SBATCH --nodelist=tikgpu07
 #CommentSBATCH --account=tik-internal
 #CommentSBATCH --constraint='titan_rtx|tesla_v100|titan_xp|a100_80gb'
 
@@ -49,7 +49,7 @@ cd ${DIRECTORY}
 #python fluroscence.py --target_encoding Transformer --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
 #python fluroscence.py --target_encoding CNN_RNN --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
 
-python beta.py --target_encoding CNN --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
+python beta.py --target_encoding CNN --seed 42 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100 --lr 0.0001 --batch_size 64
 
 echo "Finished at: $(date)"
 

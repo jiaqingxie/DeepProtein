@@ -1,7 +1,7 @@
 
 import numpy as np
 import torch
-# from .utils import *
+from .utils import *
 from rdkit import Chem
 import lmdb
 from typing import Union

@@ -64,17 +64,17 @@ if __name__ == "__main__":
 
     train, _, _ = utils.data_process(X_target = train_protein_processed, y = train_target, target_encoding = target_encoding, 
                                         # drug_encoding= drug_encoding,
-                                split_method='random',frac=[0.99998,1e-5,1e-5],
+                                split_method='random',frac=[0.998,1e-3,1e-3],
                                 random_seed = 1)
     
     _, val, _ = utils.data_process(X_target = valid_protein_processed, y = valid_target, target_encoding = target_encoding,
                                         # drug_encoding= drug_encoding,
-                                split_method='random',frac=[1e-5,0.99998,1e-5],
+                                split_method='random',frac=[1e-3,0.998,1e-3],
                                 random_seed = 1)
     
     _, _, test = utils.data_process(X_target = test_protein_processed, y = test_target, target_encoding = target_encoding, 
                                         # drug_encoding= drug_encoding,
-                                split_method='random',frac=[1e-5,1e-5,0.99998],
+                                split_method='random',frac=[1e-3,1e-3,0.998],
                                 random_seed = 1)
 
 
