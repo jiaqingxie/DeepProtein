@@ -2,11 +2,12 @@
 #SBATCH --mail-type=NONE # mail configuration: NONE, BEGIN, END, FAIL, REQUEUE, ALL
 #SBATCH --output=/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus/jobs/%j.out # where to store the output (%j is the JOBID), subdirectory "jobs" must exist
 #SBATCH --error=/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus/jobs/%j.err # where to store error messages
-#SBATCH --mem=10G
-#SBATCH --cpus-per-task=2
-#SBATCH --gres=gpu:geforce_rtx_3090:1
+#SBATCH --mem=5G
+#SBATCH --time=48:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --gres=gpu:titan_xp:1
 #SBATCH --exclude=tikgpu10
-#SBATCH --nodelist=tikgpu06
+#SBATCH --nodelist=tikgpu03
 #CommentSBATCH --account=tik-internal
 #CommentSBATCH --constraint='titan_rtx|tesla_v100|titan_xp|a100_80gb'
 
@@ -43,7 +44,11 @@ echo "Conda activated"
 cd ${DIRECTORY}
 
 # Execute your code
-python fluroscence.py --target_encoding GCN --seed 100 --wandb_proj DeepPurposePP
+#python fluroscence.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepPurposePP --lr 0.00001 --num_layers 2 --epochs 40  --batch_size 128
+python fluroscence.py --target_encoding DGL_GAT --seed 0 --wandb_proj DeepPurposePP --lr 0.00001 --num_layers 2 --epochs 40
+#python fluroscence.py --target_encoding Transformer --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
+#python fluroscence.py --target_encoding CNN_RNN --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
+
 
 echo "Finished at: $(date)"
 

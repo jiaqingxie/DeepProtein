@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.utils import data
 from torch.utils.data import SequentialSampler
 from torch import nn 
-
+from dgl.nn import GINEConv
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -332,34 +332,24 @@ class DGL_GCN(nn.Module):
 		graph_feats = self.readout(bg, node_feats)
 		return self.transform(graph_feats)
 
+class DGL_GAT(nn.Module):
+	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gcn_predictor.py#L16
+	def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):
+		super(DGL_GAT, self).__init__()
+		from dgllife.model.gnn.gat import GAT
+		from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
 
-class DGL_GIN_InfoMax(nn.Module):
-	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
-	def __init__(self, predictor_dim=None):
-		super( DGL_GIN_InfoMax, self).__init__()
-		from dgllife.model import load_pretrained
-		from dgl.nn.pytorch.glob import AvgPooling
-
-		## this is fixed hyperparameters as it is a pretrained model
-		self.gnn = load_pretrained('gin_supervised_infomax')
-
-		self.readout = AvgPooling()
-		self.transform = nn.Linear(300, predictor_dim)
+		self.gnn = GAT(in_feats=in_feats,
+						hidden_feats=hidden_feats,
+						activations=activation
+						)
+		gnn_out_feats = self.gnn.hidden_feats[-1]
+		self.readout = WeightedSumAndMax(gnn_out_feats)
+		self.transform = nn.Linear(self.gnn.hidden_feats[-1] * 2, predictor_dim)
 
 	def forward(self, bg):
-		bg = bg.to(device) 
-    
-		node_feats = [
-			bg.ndata.pop('h').to(torch.int32),
-		]
-
-
-		edge_feats = [
-			bg.edata.pop('e'),
-		]
-
-
-		node_feats = self.gnn(bg, node_feats, edge_feats)
+		bg = bg.to(device)
+		feats = bg.ndata.pop('h')
+		node_feats = self.gnn(bg, feats)
 		graph_feats = self.readout(bg, node_feats)
 		return self.transform(graph_feats)
-	

@@ -395,7 +395,7 @@ def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name
 		unique = pd.Series(df_data[column_name].unique()).apply(smiles2erg)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
-	elif drug_encoding in ['DGL_GCN', 'GIN']:
+	elif drug_encoding in ['DGL_GCN', 'DGL_GIN']:
 		df_data[save_column_name] = df_data[column_name]
 	elif drug_encoding == 'DGL_AttentiveFP':
 		df_data[save_column_name] = df_data[column_name]
@@ -445,7 +445,7 @@ def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', sa
 		AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-	elif target_encoding in ['DGL_GCN', 'DGL_GIN']:
+	elif target_encoding in ['DGL_GCN', 'DGL_GIN', 'DGL_GAT']:
 		df_data[save_column_name] = df_data[column_name]
 	else:
 		raise AttributeError("Please use the correct protein encoding available!")
@@ -676,7 +676,7 @@ class data_process_DDI_loader(data.Dataset):
 		self.df = df
 		self.config = config
 
-		if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP']:
+		if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN']:
 			from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
 			self.node_featurizer = CanonicalAtomFeaturizer()
 			self.edge_featurizer = CanonicalBondFeaturizer(self_loop = True)
@@ -706,12 +706,12 @@ class data_process_DDI_loader(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding_1']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
-		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP', 'DGL_GIN']:
 			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		v_p = self.df.iloc[index]['drug_encoding_2']
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_p = drug_2_embed(v_p)
-		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP', 'DGL_GIN']:
 			v_p = self.fc(smiles = v_p, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		y = self.labels[index]
 		return v_d, v_p, y
@@ -799,7 +799,7 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 		self.config = config
 
 
-		if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN']:
+		if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_GAT']:
 			from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
 			self.node_featurizer = CanonicalAtomFeaturizer()
 			self.edge_featurizer = CanonicalBondFeaturizer(self_loop = True)
@@ -818,7 +818,7 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 	
 		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
 			v_p = protein_2_embed(v_p)
-		elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN']:
+		elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_GAT']:
 			v_p = self.fc(smiles = v_p, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		y = self.labels[index]
 		return v_p, y
@@ -938,7 +938,7 @@ def generate_config(drug_encoding = None, target_encoding = None,
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
-	elif drug_encoding == 'DGL_GCN':
+	elif drug_encoding == 'DGL_GCN' or 'DGL_GIN':
 		base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
 		base_config['gnn_num_layers'] = gnn_num_layers
 		base_config['gnn_activation'] = gnn_activation
@@ -998,7 +998,7 @@ def generate_config(drug_encoding = None, target_encoding = None,
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 		base_config['hidden_dim_protein'] = transformer_emb_size_target
-	elif target_encoding == 'DGL_GCN' or 'DGL_GIN':
+	elif target_encoding == 'DGL_GCN' or 'DGL_GIN' or 'DGL_GAT':
 		base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
 		base_config['gnn_num_layers'] = gnn_num_layers
 		base_config['gnn_activation'] = gnn_activation

@@ -19,6 +19,11 @@ def parse_args():
     parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
+    parser.add_argument('--batch_size', type=int, default=32, help='16/32/64/128')
+    parser.add_argument('--lr', type=float, default=0.0001, help='0.001/0.0001/0.00001')
+    parser.add_argument('--num_layers', type=int, default=1, help='1/2/4/8')
+    parser.add_argument('--epochs', type=int, default=20, help='20/50/100')
+    parser.add_argument('--embed_dim',type=int, default=1024, help='32/128/512/1024')
 
     return parser.parse_args()
 
@@ -28,6 +33,11 @@ if __name__ == "__main__":
     args = parse_args()
     target_encoding = args.target_encoding
     wandb_project = args.wandb_proj
+    batch_size = args.batch_size
+    lr = args.lr
+    num_layers = args.num_layers
+    epochs = args.epochs
+    embed_dim = args.embed_dim
     job_name = f"Fluorescence + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
@@ -39,7 +49,7 @@ if __name__ == "__main__":
     valid_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'valid')
     test_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'test')
 
-    if target_encoding == 'GCN':
+    if target_encoding == 'DGL_GCN' or 'DGL_GAT':
         train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph = True)
         valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph = True)
         test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph = True)
@@ -56,7 +66,7 @@ if __name__ == "__main__":
                                 split_method='random',frac=[0.99998,1e-5,1e-5],
                                 random_seed = 1)
     
-    _, val, _ = utils.data_process(X_target = valid_protein_processed, y = valid_target, target_encoding = target_encoding, 
+    _, val, _ = utils.data_process(X_target = valid_protein_processed, y = valid_target, target_encoding = target_encoding,
                                         # drug_encoding= drug_encoding,
                                 split_method='random',frac=[1e-5,0.99998,1e-5],
                                 random_seed = 1)
@@ -68,11 +78,13 @@ if __name__ == "__main__":
 
 
     config = generate_config(target_encoding = target_encoding, 
-                         cls_hidden_dims = [64, 64],
-                         train_epoch = 100,
-                         LR = 0.0001,
-                         batch_size = 32,
+                         cls_hidden_dims = [embed_dim] * num_layers,
+                         train_epoch = epochs,
+                         LR = lr,
+                         batch_size = batch_size,
                         )
+    config['gnn_num_layers'] = num_layers
+    config['gnn_hid_dim_drug'] = embed_dim
 
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)

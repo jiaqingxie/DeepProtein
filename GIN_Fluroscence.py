@@ -7,7 +7,7 @@ import DeepPurpose_PP.ProteinPred as models
 if __name__ == "__main__":
 
 
-    target_encoding = "DGL_GIN"
+    target_encoding = "DGL_GAT"
 
     path = os.getcwd()
     #  Test on FluorescenceDataset
