@@ -1,7 +1,7 @@
 
 import numpy as np
-
-from .utils import *
+import torch
+# from .utils import *
 from rdkit import Chem
 import lmdb
 from typing import Union
@@ -96,6 +96,34 @@ class FluorescenceDataset(Dataset):
     
         return protein_orig, target
 
+
+class Beta_lactamase(Dataset):
+
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test']")
+
+        data_path = Path(data_path)
+        data_file = f'beta_lactamase/beta_lactamase_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+        # print(self.__getitem__(0))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        item = self.data[index]
+
+        protein_orig = item['primary']
+        target = item['scaled_effect1']
+        # print(protein_orig, target)
+        return protein_orig, target
+
+
 def collate_fn(batch, graph = False):
     protein_orig, target = tuple(zip(*batch))
     protein_orig = list(protein_orig)
@@ -110,26 +138,27 @@ def collate_fn(batch, graph = False):
         for i in tqdm(range(batch_len)):
             protein_orig[i] = Chem.MolToSmiles(Chem.MolFromSequence(protein_orig[i]))
 
-    target = torch.FloatTensor(target)  # type: ignore
+    # print(target)
+    target = torch.FloatTensor(np.array(target))  # type: ignore
     target = target.unsqueeze(1)
 
     return protein_orig, target, protein_idx
 
 if __name__ == "__main__":
     import os
-    path = os.getcwd()
-    # 1. Test on FluorescenceDataset
-    train_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'train')
-    valid_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'valid')
-    test_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'test')
+    path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
+    # 1. Test on Beta
+    train_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'train')
+    valid_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'valid')
+    test_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'test')
 
 
     # 2. Test on Processed Proteins
-    train_batch = collate_fn(train_fluo)
-    valid_batch = collate_fn(valid_fluo)
-    test_batch = collate_fn(test_fluo)
+    train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
+    valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
+    test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
 
-    train_protein_processed, train_target, train_protein_idx = train_batch
+    # train_protein_processed, train_target, train_protein_idx = train_batch
     # print(train_target[:10])
 
 
