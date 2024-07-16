@@ -1,4 +1,3 @@
-
 import numpy as np
 import torch
 from .utils import *
@@ -19,7 +18,9 @@ def dataset_factory(data_file: Union[str, Path], *args, **kwargs) -> Dataset:
     else:
         raise ValueError(f"Unrecognized datafile type {data_file.suffix}")
 
+
 import pickle as pkl
+
 
 class LMDBDataset(Dataset):
     """Creates a dataset from an lmdb file.
@@ -69,17 +70,16 @@ class LMDBDataset(Dataset):
                     self._cache[index] = item
         return item
 
+
 class FluorescenceDataset(Dataset):
 
     def __init__(self,
                  data_path: Union[str, Path],
                  split: str,
                  in_memory: bool = False):
-
         if split not in ('train', 'valid', 'test'):
             raise ValueError(f"Unrecognized split: {split}. "
                              f"Must be one of ['train', 'valid', 'test']")
-
 
         data_path = Path(data_path)
         data_file = f'fluorescence/fluorescence_{split}.lmdb'
@@ -93,7 +93,7 @@ class FluorescenceDataset(Dataset):
 
         protein_orig = item['primary']
         target = item['log_fluorescence'][0]
-    
+
         return protein_orig, target
 
 
@@ -122,6 +122,7 @@ class Beta_lactamase(Dataset):
         # print(protein_orig, target)
         return protein_orig, target
 
+
 class Stability(Dataset):
 
     def __init__(self,
@@ -147,15 +148,15 @@ class Stability(Dataset):
         # print(protein_orig, target)
         return protein_orig, target
 
-def collate_fn(batch, graph = False, unsqueeze = True):
+
+def collate_fn(batch, graph=False, unsqueeze=True):
     protein_orig, target = tuple(zip(*batch))
     protein_orig = list(protein_orig)
     batch_len = len(target)
 
+    protein_idx = np.array(list(range(batch_len)))
 
-    protein_idx =  np.array(list(range(batch_len)))
-
-    # protein_processed = []    
+    # protein_processed = []
 
     if graph:
         for i in tqdm(range(batch_len)):
@@ -168,14 +169,15 @@ def collate_fn(batch, graph = False, unsqueeze = True):
 
     return protein_orig, target, protein_idx
 
+
 if __name__ == "__main__":
     import os
+
     path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
     # 1. Test on Beta
     train_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'train')
     valid_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'valid')
     test_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'test')
-
 
     # 2. Test on Processed Proteins
     train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
@@ -184,6 +186,3 @@ if __name__ == "__main__":
 
     # train_protein_processed, train_target, train_protein_idx = train_batch
     # print(train_target[:10])
-
-
-
