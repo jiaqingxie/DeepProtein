@@ -38,7 +38,7 @@ if __name__ == "__main__":
     num_layers = args.num_layers
     epochs = args.epochs
     embed_dim = args.embed_dim
-    job_name = f"Fluorescence + {target_encoding}"
+    job_name = f"Stability + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 

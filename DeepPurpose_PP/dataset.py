@@ -147,7 +147,7 @@ class Stability(Dataset):
         # print(protein_orig, target)
         return protein_orig, target
 
-def collate_fn(batch, graph = False):
+def collate_fn(batch, graph = False, unsqueeze = True):
     protein_orig, target = tuple(zip(*batch))
     protein_orig = list(protein_orig)
     batch_len = len(target)
@@ -163,7 +163,8 @@ def collate_fn(batch, graph = False):
 
     # print(target)
     target = torch.FloatTensor(np.array(target))  # type: ignore
-    target = target.unsqueeze(1)
+    if unsqueeze:
+        target = target.unsqueeze(1)
 
     return protein_orig, target, protein_idx
 

@@ -51,9 +51,9 @@ if __name__ == "__main__":
     test_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'test')
 
     if target_encoding == 'DGL_GCN' or 'DGL_GAT':
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph = True)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph = True)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph = True)
+        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph = True, unsqueeze = False)
+        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph = True, unsqueeze = False)
+        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph = True, unsqueeze = False)
 
     else:
         train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
