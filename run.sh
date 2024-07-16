@@ -4,7 +4,7 @@
 #SBATCH --error=/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus/jobs/%j.err # where to store error messages
 #SBATCH --mem=5G
 #SBATCH --time=48:00:00
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:geforce_rtx_3090:1
 #SBATCH --exclude=tikgpu10
 #SBATCH --nodelist=tikgpu07
@@ -49,7 +49,7 @@ cd ${DIRECTORY}
 #python fluroscence.py --target_encoding Transformer --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
 #python fluroscence.py --target_encoding CNN_RNN --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
 
-python stability.py --target_encoding CNN --seed 0 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100  --lr 0.0001
+python beta.py --target_encoding CNN --seed 0 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100  --lr 0.0001
 
 echo "Finished at: $(date)"
 

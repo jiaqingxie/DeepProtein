@@ -50,14 +50,14 @@ if __name__ == "__main__":
     test_fluo = Stability(path + '/DeepPurpose_PP/data', 'test')
 
     if target_encoding == 'DGL_GCN' or 'DGL_GAT':
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph = True)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph = True)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph = True)
+        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph = True, unsqueeze = False)
+        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph = True, unsqueeze = False)
+        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph = True, unsqueeze = False)
 
     else:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
+        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, unsqueeze = False)
+        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, unsqueeze = False)
+        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, unsqueeze = False)
 
 
 
@@ -84,7 +84,8 @@ if __name__ == "__main__":
                          batch_size = batch_size,
                         )
     config['gnn_num_layers'] = num_layers
-    config['gnn_hid_dim_drug'] = embed_dim
+    # config['gnn_hid_dim_drug'] = embed_dim
+    config['hidden_dim_protein'] = embed_dim
 
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)

@@ -76,10 +76,11 @@ class CNN(nn.Sequential):
 		if encoding == 'protein':
 			in_ch = [26] + config['cnn_target_filters']
 			kernels = config['cnn_target_kernels']
+			# kernels = [5, 5]
 			layer_size = len(config['cnn_target_filters'])
 			self.conv = nn.ModuleList([nn.Conv1d(in_channels = in_ch[i], 
 													out_channels = in_ch[i+1], 
-													kernel_size = kernels[i]) for i in range(layer_size)])
+													kernel_size = kernels[i], padding = 2) for i in range(layer_size)])
 			self.conv = self.conv.double()
 			n_size_p = self._get_conv_output((26, 1000))
 
