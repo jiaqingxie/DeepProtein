@@ -70,9 +70,9 @@ if __name__ == "__main__":
                              train_epoch=100,
                              LR=0.0001,
                              batch_size=32,
-                             binary = True
                              )
-
+    
+    config['binary'] = True
 
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
