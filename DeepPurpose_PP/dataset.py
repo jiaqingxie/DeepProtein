@@ -122,6 +122,30 @@ class Beta_lactamase(Dataset):
         # print(protein_orig, target)
         return protein_orig, target
 
+class Stability(Dataset):
+
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test']")
+
+        data_path = Path(data_path)
+        data_file = f'stability/stability_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+        # print(self.__getitem__(0))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        item = self.data[index]
+        protein_orig = item['primary']
+        target = item['stability_score']
+        # print(protein_orig, target)
+        return protein_orig, target
 
 def collate_fn(batch, graph = False):
     protein_orig, target = tuple(zip(*batch))
