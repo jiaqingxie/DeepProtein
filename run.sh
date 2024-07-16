@@ -49,7 +49,7 @@ cd ${DIRECTORY}
 #python fluroscence.py --target_encoding Transformer --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
 #python fluroscence.py --target_encoding CNN_RNN --seed 100 --wandb_proj DeepPurposePP --num_layers 2 --epochs 100
 
-python beta.py --target_encoding CNN --seed 42 --wandb_proj DeepPurposePP --num_layers 2 --epochs 300 --lr 0.0001 --batch_size 64
+python beta.py --target_encoding Transformer --seed 0 --wandb_proj DeepPurposePP --num_layers 4 --epochs 100 --batch_size 64 --lr 0.00005
 
 echo "Finished at: $(date)"
 

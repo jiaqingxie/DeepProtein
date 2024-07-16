@@ -117,7 +117,6 @@ class Beta_lactamase(Dataset):
 
     def __getitem__(self, index: int):
         item = self.data[index]
-
         protein_orig = item['primary']
         target = item['scaled_effect1']
         # print(protein_orig, target)

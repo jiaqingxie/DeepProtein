@@ -661,7 +661,7 @@ class data_process_loader(data.Dataset):
 		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
 			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		v_p = self.df.iloc[index]['target_encoding']
-		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
+		if self.config['target_encoding'] in ['CNN', 'CNN_RNN', 'Transformer']:
 			v_p = protein_2_embed(v_p)
 		y = self.labels[index]
 		return v_d, v_p, y
@@ -816,7 +816,7 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 		index = self.list_IDs[index]
 		v_p = self.df.iloc[index]['target_encoding']
 	
-		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
+		if self.config['target_encoding'] in ['CNN', 'CNN_RNN', 'Transformer']:
 			v_p = protein_2_embed(v_p)
 		elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_GAT']:
 			v_p = self.fc(smiles = v_p, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
@@ -1163,7 +1163,7 @@ def obtain_compound_embedding(net, file, drug_encoding):
 
 def obtain_protein_embedding(net, file, target_encoding):
 
-	if target_encoding == 'CNN' or target_encoding == 'CNN_RNN':
+	if target_encoding in ['CNN', 'CNN_RNN', 'Transformer']:
 		v_d = [protein_2_embed(i) for i in file['target_encoding'].values]
 		x = np.stack(v_d)
 	else:
