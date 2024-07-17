@@ -1,0 +1,49 @@
+2024-07-17 18:51:22,555 INFO    StreamThr :212145 [internal.py:wandb_internal():85] W&B internal server running at pid: 212145, started at: 2024-07-17 18:51:22.554670
+2024-07-17 18:51:22,556 DEBUG   HandlerThread:212145 [handler.py:handle_request():158] handle_request: status
+2024-07-17 18:51:22,558 INFO    WriterThread:212145 [datastore.py:open_for_write():87] open: /home/jiaqing/Desktop/DeepPurposePlusPlus/wandb/run-20240717_185122-dcokceke/run-dcokceke.wandb
+2024-07-17 18:51:22,559 DEBUG   SenderThread:212145 [sender.py:send():379] send: header
+2024-07-17 18:51:22,589 DEBUG   SenderThread:212145 [sender.py:send():379] send: run
+2024-07-17 18:51:23,292 ERROR   SenderThread:212145 [internal_api.py:execute():349] 500 response executing GraphQL.
+2024-07-17 18:51:23,292 ERROR   SenderThread:212145 [internal_api.py:execute():350] {"error":"An internal error occurred. Please contact support."}
+2024-07-17 18:51:24,657 ERROR   SenderThread:212145 [internal_api.py:execute():349] 500 response executing GraphQL.
+2024-07-17 18:51:24,657 ERROR   SenderThread:212145 [internal_api.py:execute():350] {"error":"An internal error occurred. Please contact support."}
+2024-07-17 18:51:27,039 ERROR   SenderThread:212145 [internal_api.py:execute():349] 500 response executing GraphQL.
+2024-07-17 18:51:27,039 ERROR   SenderThread:212145 [internal_api.py:execute():350] {"error":"An internal error occurred. Please contact support."}
+2024-07-17 18:51:27,039 INFO    SenderThread:212145 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/jiaqing/miniconda3/envs/graph/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/jiaqing/miniconda3/envs/graph/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 345, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/home/jiaqing/miniconda3/envs/graph/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/jiaqing/miniconda3/envs/graph/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/jiaqing/miniconda3/envs/graph/lib/python3.9/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/jiaqing/miniconda3/envs/graph/lib/python3.9/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://api.wandb.ai/graphql
+2024-07-17 18:51:27,590 DEBUG   HandlerThread:212145 [handler.py:handle_request():158] handle_request: keepalive
+2024-07-17 18:51:31,820 ERROR   SenderThread:212145 [internal_api.py:execute():349] 500 response executing GraphQL.
+2024-07-17 18:51:31,820 ERROR   SenderThread:212145 [internal_api.py:execute():350] {"error":"An internal error occurred. Please contact support."}
+2024-07-17 18:51:31,871 DEBUG   HandlerThread:212145 [handler.py:handle_request():158] handle_request: shutdown
+2024-07-17 18:51:31,871 INFO    HandlerThread:212145 [handler.py:finish():882] shutting down handler
+2024-07-17 18:51:32,591 INFO    WriterThread:212145 [datastore.py:close():296] close: /home/jiaqing/Desktop/DeepPurposePlusPlus/wandb/run-20240717_185122-dcokceke/run-dcokceke.wandb
+2024-07-17 18:51:40,759 ERROR   SenderThread:212145 [internal_api.py:execute():349] 500 response executing GraphQL.
+2024-07-17 18:51:40,759 ERROR   SenderThread:212145 [internal_api.py:execute():350] {"error":"An internal error occurred. Please contact support."}
+2024-07-17 18:52:00,610 ERROR   SenderThread:212145 [internal_api.py:execute():349] 500 response executing GraphQL.
+2024-07-17 18:52:00,610 ERROR   SenderThread:212145 [internal_api.py:execute():350] {"error":"An internal error occurred. Please contact support."}
+2024-07-17 18:52:38,439 ERROR   SenderThread:212145 [internal_api.py:execute():349] 500 response executing GraphQL.
+2024-07-17 18:52:38,439 ERROR   SenderThread:212145 [internal_api.py:execute():350] {"error":"An internal error occurred. Please contact support."}
+2024-07-17 18:56:25,736 INFO    SenderThread:212145 [dir_watcher.py:__init__():211] watching files in: /home/jiaqing/Desktop/DeepPurposePlusPlus/wandb/run-20240717_185122-dcokceke/files
+2024-07-17 18:56:25,736 INFO    SenderThread:212145 [sender.py:_start_run_threads():1188] run started: dcokceke with start time 1721213482.554676
+2024-07-17 18:56:25,736 INFO    SenderThread:212145 [sender.py:finish():1608] shutting down sender
+2024-07-17 18:56:25,736 INFO    SenderThread:212145 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-07-17 18:56:26,737 INFO    SenderThread:212145 [dir_watcher.py:finish():388] scan: /home/jiaqing/Desktop/DeepPurposePlusPlus/wandb/run-20240717_185122-dcokceke/files
+2024-07-17 18:56:26,737 INFO    SenderThread:212145 [dir_watcher.py:finish():402] scan save: /home/jiaqing/Desktop/DeepPurposePlusPlus/wandb/run-20240717_185122-dcokceke/files/config.yaml config.yaml
+2024-07-17 18:56:26,737 INFO    SenderThread:212145 [file_pusher.py:finish():169] shutting down file pusher
+2024-07-17 18:56:26,737 INFO    SenderThread:212145 [file_pusher.py:join():175] waiting for file pusher
+2024-07-17 18:56:28,470 INFO    wandb-upload_0:212145 [upload_job.py:push():130] Uploaded file /home/jiaqing/Desktop/DeepPurposePlusPlus/wandb/run-20240717_185122-dcokceke/files/config.yaml
+2024-07-17 18:56:28,740 INFO    SenderThread:212145 [file_stream.py:finish():601] file stream finish called
+2024-07-17 18:56:34,711 INFO    SenderThread:212145 [file_stream.py:finish():605] file stream finish is done

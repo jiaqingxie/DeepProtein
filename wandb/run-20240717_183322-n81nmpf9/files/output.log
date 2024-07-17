@@ -1,0 +1,12 @@
+Protein Function Prediction Mode...
+in total: 4158 proteins
+encoding protein...
+unique target sequence: 4158
+Traceback (most recent call last):
+  File "/home/jiaqing/Desktop/DeepPurposePlusPlus/train/beta.py", line 52, in <module>
+    train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
+  File "/home/jiaqing/Desktop/DeepPurposePlusPlus/DeepPurpose_PP/utils.py", line 569, in data_process
+    df_data = encode_protein(df_data, target_encoding)
+  File "/home/jiaqing/Desktop/DeepPurposePlusPlus/DeepPurpose_PP/utils.py", line 470, in encode_protein
+    raise AttributeError("Please use the correct protein encoding available!")
+AttributeError: Please use the correct protein encoding available!

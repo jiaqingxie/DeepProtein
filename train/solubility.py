@@ -31,9 +31,8 @@ if __name__ == "__main__":
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 
-    # path = os.getcwd()
-    # path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
-    path = "/home/jiaqing/Desktop/DeepPurposePlusPlus"
+    path = os.getcwd()
+ 
 
 
     train_fluo = Solubility(path + '/DeepPurpose_PP/data', 'train')

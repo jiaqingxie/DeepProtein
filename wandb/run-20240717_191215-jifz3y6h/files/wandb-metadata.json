@@ -1,0 +1,115 @@
+{
+    "os": "Linux-5.15.0-116-generic-x86_64-with-glibc2.31",
+    "python": "3.9.19",
+    "heartbeatAt": "2024-07-17T11:12:18.250809",
+    "startedAt": "2024-07-17T11:12:15.666119",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--target_encoding",
+        "CNN_RNN",
+        "--seed",
+        "42",
+        "--wandb_proj",
+        "DeepPurposePP"
+    ],
+    "state": "running",
+    "program": "/home/jiaqing/Desktop/DeepPurposePlusPlus/train/beta.py",
+    "codePathLocal": "train/beta.py",
+    "codePath": "train/beta.py",
+    "git": {
+        "remote": "https://github.com/jiaqingxie/DeepPurposePlusPlus.git",
+        "commit": "46ac424cd511d2242bfd901744acdba192a70e4d"
+    },
+    "email": "jiaxie@student.ethz.ch",
+    "root": "/home/jiaqing/Desktop/DeepPurposePlusPlus",
+    "host": "jiaqing-MS-7B89",
+    "username": "jiaqing",
+    "executable": "/home/jiaqing/miniconda3/envs/graph/bin/python",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 2416.3455833333333,
+        "min": 2200.0,
+        "max": 3600.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2800.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2448.341,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 3947.806,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3600.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 456.8854446411133,
+            "used": 178.45663452148438
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 2060 SUPER",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 2060 SUPER",
+            "memory_total": 8361672704
+        }
+    ],
+    "memory": {
+        "total": 15.556827545166016
+    }
+}
