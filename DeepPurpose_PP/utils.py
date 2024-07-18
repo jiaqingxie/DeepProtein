@@ -464,7 +464,7 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-    elif target_encoding in ['DGL_GCN', 'DGL_GIN']:
+    elif target_encoding in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP']:
         df_data[save_column_name] = df_data[column_name]
     else:
         raise AttributeError("Please use the correct protein encoding available!")

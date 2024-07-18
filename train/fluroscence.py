@@ -28,6 +28,8 @@ if __name__ == "__main__":
     args = parse_args()
     target_encoding = args.target_encoding
     wandb_project = args.wandb_proj
+    lr = args.lr
+    epochs = args.epochs
     job_name = f"Fluorescence + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
@@ -66,8 +68,8 @@ if __name__ == "__main__":
 
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
-                             train_epoch=100,
-                             LR=0.0001,
+                             train_epoch=epochs,
+                             LR=lr,
                              batch_size=32,
                              )
 

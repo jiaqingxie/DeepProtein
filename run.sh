@@ -43,7 +43,7 @@ echo "Conda activated"
 cd ${DIRECTORY}
 
 # Execute your code
-python fluroscence.py --target_encoding DGL_GCN --seed 0 --wandb_proj DeepPurposePP --epochs 60 --lr 0.00001
+python beta.py --target_encoding DGL_NeuralFP --seed 0 --wandb_proj DeepPurposePP --epochs 60 --lr 0.00001
 
 echo "Finished at: $(date)"
 
