@@ -18,7 +18,8 @@ def parse_args():
     parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
-
+    parser.add_argument('--lr', type=float, default=0.0001, help='0.0001/0.00001')
+    parser.add_argument('--epochs', type=int, default=100, help='50/100')
     return parser.parse_args()
 
 
@@ -31,14 +32,13 @@ if __name__ == "__main__":
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 
-    # path = os.getcwd()
-    path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
+    path = os.getcwd()
     #  Test on FluorescenceDataset
     train_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'train')
     valid_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'valid')
     test_fluo = FluorescenceDataset(path + '/DeepPurpose_PP/data', 'test')
 
-    if target_encoding == 'GCN':
+    if target_encoding in ['DGL_GCN']:
         train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph=True)
         valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph=True)
         test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph=True)

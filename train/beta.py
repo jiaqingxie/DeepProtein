@@ -31,8 +31,7 @@ if __name__ == "__main__":
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 
-    # path = os.getcwd()
-    path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
+    path = os.getcwd()
     #  Test on FluorescenceDataset
     train_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'train')
     valid_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'valid')
