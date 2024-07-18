@@ -844,7 +844,7 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN']:
+        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP']:
             v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
         return v_p, y
