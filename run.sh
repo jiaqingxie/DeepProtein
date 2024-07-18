@@ -3,7 +3,7 @@
 #SBATCH --output=/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus/jobs/%j.out # where to store the output (%j is the JOBID), subdirectory "jobs" must exist
 #SBATCH --error=/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus/jobs/%j.err # where to store error messages
 #SBATCH --mem=10G
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=3
 #SBATCH --gres=gpu:titan_rtx:1
 #SBATCH --exclude=tikgpu10
 #SBATCH --nodelist=tikgpu04
@@ -43,7 +43,7 @@ echo "Conda activated"
 cd ${DIRECTORY}
 
 # Execute your code
-python fluroscence.py --target_encoding DGL_GCN --seed 0 --wandb_proj DeepPurposePP --epochs 60 --lr 0.00005
+python fluroscence.py --target_encoding DGL_GCN --seed 0 --wandb_proj DeepPurposePP --epochs 60 --lr 0.00001
 
 echo "Finished at: $(date)"
 

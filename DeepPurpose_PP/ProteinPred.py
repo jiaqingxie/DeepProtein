@@ -99,6 +99,14 @@ class Protein_Prediction:
                                          hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
                                          activation=[config['gnn_activation']] * config['gnn_num_layers'],
                                          predictor_dim=config['hidden_dim_drug'])
+        elif target_encoding == 'DGL_NeuralFP':
+            self.model_protein = DGL_NeuralFP(in_feats = 74,
+									hidden_feats = [config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+									max_degree = config['neuralfp_max_degree'],
+									activation = [config['gnn_activation']] * config['gnn_num_layers'],
+									predictor_hidden_size = config['neuralfp_predictor_hid_dim'],
+									predictor_dim = config['hidden_dim_drug'],
+									predictor_activation = config['neuralfp_predictor_activation'])
         elif target_encoding == 'DGL_GIN':
             self.model_protein = DGL_GIN_InfoMax(1)
         else:
