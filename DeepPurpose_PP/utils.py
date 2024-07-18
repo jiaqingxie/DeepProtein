@@ -825,10 +825,17 @@ class data_process_loader_Protein_Prediction(data.Dataset):
         self.df = df
         self.config = config
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN']:
+        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
             self.node_featurizer = CanonicalAtomFeaturizer()
             self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
+            from functools import partial
+            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
+        elif self.config['target_encoding'] == 'DGL_AttentiveFP':
+            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
+            self.node_featurizer = AttentiveFPAtomFeaturizer()
+            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
             from functools import partial
             self.fc = partial(smiles_to_bigraph, add_self_loop=True)
 
