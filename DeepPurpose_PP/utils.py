@@ -1023,10 +1023,17 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
         base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
         base_config['hidden_dim_protein'] = transformer_emb_size_target
-    elif target_encoding == 'DGL_GCN' or 'DGL_NeuralFP':
+    elif target_encoding == 'DGL_GCN':
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
         base_config['gnn_activation'] = gnn_activation
+    elif target_encoding == 'DGL_NeuralFP':
+        base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+        base_config['neuralfp_max_degree'] = neuralfp_max_degree
+        base_config['gnn_activation'] = gnn_activation
+        base_config['neuralfp_predictor_hid_dim'] = neuralfp_predictor_hid_dim
+        base_config['gnn_num_layers'] = gnn_num_layers
+        base_config['neuralfp_predictor_activation'] = neuralfp_predictor_activation
     elif target_encoding is None:
         pass
     else:
