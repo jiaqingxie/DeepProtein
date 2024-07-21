@@ -18,6 +18,8 @@ def parse_args():
     parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
+    parser.add_argument('--lr', type=float, default=0.0001, help='0.0001/0.00001')
+    parser.add_argument('--epochs', type=int, default=100, help='50/100')
 
     return parser.parse_args()
 
@@ -27,6 +29,8 @@ if __name__ == "__main__":
     args = parse_args()
     target_encoding = args.target_encoding
     wandb_project = args.wandb_proj
+    lr = args.lr
+    epochs = args.epochs
     job_name = f"Stability + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
@@ -64,8 +68,8 @@ if __name__ == "__main__":
 
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
-                             train_epoch=100,
-                             LR=0.0001,
+                             train_epoch=epochs,
+                             LR=lr,
                              batch_size=32,
                              )
 
