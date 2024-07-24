@@ -464,8 +464,12 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-    elif target_encoding in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP', 'DGL_AttentiveFP']:
+    elif target_encoding in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN']:
         df_data[save_column_name] = df_data[column_name]
+    # elif target_encoding == 'MPNN':
+    #     unique = pd.Series(df_data[column_name].unique()).apply(smiles2mpnnfeature)
+    #     unique_dict = dict(zip(df_data[column_name].unique(), unique))
+    #     df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
     else:
         raise AttributeError("Please use the correct protein encoding available!")
     return df_data
@@ -649,7 +653,7 @@ class data_process_loader(data.Dataset):
         self.df = df
         self.config = config
 
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
+        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_MPNN']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
             self.node_featurizer = CanonicalAtomFeaturizer()
             self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
@@ -825,7 +829,7 @@ class data_process_loader_Protein_Prediction(data.Dataset):
         self.df = df
         self.config = config
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP']:
+        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP', 'DGL_MPNN']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
             self.node_featurizer = CanonicalAtomFeaturizer()
             self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
@@ -851,7 +855,7 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP', 'DGL_AttentiveFP']:
+        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN']:
             v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
         return v_p, y
@@ -1045,6 +1049,13 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
         base_config['attentivefp_num_timesteps'] = attentivefp_num_timesteps
+    elif target_encoding == 'DGL_MPNN':
+        base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+    # elif target_encoding == 'MPNN':
+    #     base_config['hidden_dim_drug'] = hidden_dim_drug
+    #     base_config['batch_size'] = batch_size
+    #     base_config['mpnn_hidden_size'] = mpnn_hidden_size
+    #     base_config['mpnn_depth'] = mpnn_depth
     elif target_encoding is None:
         pass
     else:
@@ -1222,6 +1233,8 @@ def obtain_protein_embedding(net, file, target_encoding):
     if target_encoding == 'CNN' or target_encoding == 'CNN_RNN':
         v_d = [protein_2_embed(i) for i in file['target_encoding'].values]
         x = np.stack(v_d)
+    # elif target_encoding == 'MPNN':
+    #     x = mpnn_collate_func(file['target_encoding'].values)
     else:
         v_d = file['target_encoding'].values
         x = np.stack(v_d)
