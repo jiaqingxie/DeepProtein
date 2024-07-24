@@ -40,7 +40,7 @@ if __name__ == "__main__":
     valid_fluo = Solubility(path + '/DeepPurpose_PP/data', 'valid')
     test_fluo = Solubility(path + '/DeepPurpose_PP/data', 'test')
 
-    if target_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP']:
+    if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN']:
         train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph=True)
         valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph=True)
         test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph=True)
