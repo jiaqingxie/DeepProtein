@@ -123,7 +123,7 @@ class Protein_Prediction:
         elif target_encoding == 'DGL_MPNN':
             self.model_protein = DGL_MPNN(node_feat_size = 74,
                                     edge_feat_size = 13,
-                                    num_timesteps = 2,
+                                    num_timesteps = 1,
                                     graph_feat_size = config['gnn_hid_dim_drug'],
                                     predictor_dim = config['hidden_dim_drug']
         )
