@@ -133,6 +133,15 @@ class Protein_Prediction:
                                        edge_feat_size = 13,
                                        graph_feat_size = config['gnn_hid_dim_drug'],
                                        predictor_dim=config['hidden_dim_drug'])
+        elif target_encoding == 'EGT':
+            self.model_protein = EGT(node_feat_size=74,
+                                     edge_feat_size=13,
+                                     graph_feat_size = config['gnn_hid_dim_drug'],
+                                     predictor_dim=config['hidden_dim_drug'])
+        elif target_encoding == 'Graphormer':
+            self.model_protein = Graphormer(node_feat_size=74,
+                                             graph_feat_size=config['gnn_hid_dim_drug'],
+                                             predictor_dim=config['hidden_dim_drug'])
         else:
             raise AttributeError('Please use one of the available encoding method.')
 
@@ -155,7 +164,8 @@ class Protein_Prediction:
         y_label = []
         model.eval()
         for i, (v_p, label) in enumerate(data_generator):
-            if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN']:
+            if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
+                                        'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
                 v_p = v_p
             else:
                 v_p = v_p.float().to(self.device)
@@ -242,7 +252,8 @@ class Protein_Prediction:
                   'num_workers': self.config['num_workers'],
                   'drop_last': False}
 
-        if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN']:
+        if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
+                                    'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
             params['collate_fn'] = dgl_collate_func
 
         training_generator = data.DataLoader(data_process_loader_Protein_Prediction(train.index.values,
@@ -268,7 +279,8 @@ class Protein_Prediction:
                            'drop_last': False,
                            'sampler': SequentialSampler(info)}
 
-            if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN']:
+            if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
+                                        'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
                 params_test['collate_fn'] = dgl_collate_func
 
             testing_generator = data.DataLoader(
@@ -305,7 +317,8 @@ class Protein_Prediction:
         for epo in range(train_epoch):
 
             for i, (v_p, label) in enumerate(training_generator):
-                if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN']:
+                if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
+                                            'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
                     v_p = v_p
                 else:
                     v_p = v_p.float().to(self.device)
@@ -322,7 +335,8 @@ class Protein_Prediction:
                 else:
                     loss_fct = torch.nn.MSELoss()
                     n = torch.squeeze(score, 1)
-                    if self.target_encoding not in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN']:
+                    if self.target_encoding not in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
+                                                    'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
                         label = torch.squeeze(label, 1)
                     loss = loss_fct(n, label)
 
@@ -453,7 +467,8 @@ class Protein_Prediction:
                   'drop_last': False,
                   'sampler': SequentialSampler(info)}
 
-        if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN']:
+        if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
+                                    'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
             params['collate_fn'] = dgl_collate_func
 
         generator = data.DataLoader(info, **params)
