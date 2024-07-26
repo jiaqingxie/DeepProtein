@@ -201,7 +201,7 @@ class Protein_Prediction:
                 pearsonr(y_label, y_pred)[1], \
                 concordance_index(y_label, y_pred), y_pred
 
-    def train(self, train, val, test=None, verbose=True):
+    def train(self, train, val, test=None, verbose=True, compute_pos_enc=False):
 
         if len(train.Label.unique()) == 2:
             self.binary = True
@@ -275,9 +275,11 @@ class Protein_Prediction:
                 data_process_loader_Protein_Prediction(test.index.values, test.Label.values, test, **self.config),
                 **params_test)
 
-        training_generator = compute_pos(training_generator)
-        validation_generator = compute_pos(validation_generator)
-        testing_generator = compute_pos(testing_generator)
+
+        if compute_pos_enc:
+            training_generator = compute_pos(training_generator)
+            validation_generator = compute_pos(validation_generator)
+            testing_generator = compute_pos(testing_generator)
 
 
         # early stopping

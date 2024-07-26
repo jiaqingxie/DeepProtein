@@ -20,6 +20,8 @@ def parse_args():
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
     parser.add_argument('--lr', type=float, default=0.0001, help='0.0001/0.00001')
     parser.add_argument('--epochs', type=int, default=100, help='50/100')
+    parser.add_argument('--compute_pos_enc', type=bool, default=False, help='compute position encoding')
+
 
     return parser.parse_args()
 
@@ -31,6 +33,7 @@ if __name__ == "__main__":
     wandb_project = args.wandb_proj
     lr = args.lr
     epochs = args.epochs
+    compute_pos = args.compute_pos_enc
     job_name = f"Stability + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
@@ -75,6 +78,6 @@ if __name__ == "__main__":
 
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
-    model.train(train, val, test)
+    model.train(train, val, test, compute_pos_enc = compute_pos)
 
 
