@@ -1598,7 +1598,7 @@ def compute_pos(generator, method = "Laplacian"):
 
     if method == 'Laplacian':
         for graph, label in generator:
-            graph.ndata['PE'] = dgl.laplacian_pe(graph, k = 18)
+            graph.ndata['PE'] = dgl.laplacian_pe(graph, k = 74)
             modified_graphs.append(graph)
             modified_labels.append(label)
 

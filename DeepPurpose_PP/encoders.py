@@ -525,29 +525,63 @@ class PAGTN(nn.Module):
         node_feats = self.gnn(bg, node_feats, edge_feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
+
 class EGT(nn.Module):
-    def __init__(self, node_feat_size, edge_feat_size, num_timesteps=2, graph_feat_size=200,
+    def __init__(self, node_feat_size, edge_feat_size, graph_feat_size=200,
                  predictor_dim=None):
         super(EGT, self).__init__()
-        from dgllife.model.gnn import MPNNGNN
-        from dgl.nn.pytorch.glob import AvgPooling
+        from dgl.nn.pytorch.gt import EGTLayer
+        from dgl.nn.pytorch.glob import MaxPooling
         from dgllife.model.readout.sum_and_max import SumAndMax
 
-        self.gnn = MPNNGNN(
-                        node_in_feats = node_feat_size,
-                        edge_in_feats = edge_feat_size,
-                        node_out_feats= graph_feat_size,
-                        edge_hidden_feats = graph_feat_size,
-                        num_step_message_passing = num_timesteps)
+        self.gnn = EGTLayer(
+                    feat_size=node_feat_size,
+                    edge_feat_size=edge_feat_size,
+                    num_heads=8,
+                    num_virtual_nodes=4,
+        )
 
-        self.readout = SumAndMax()
-        self.transform = nn.Linear(graph_feat_size, predictor_dim)
+        self.readout = MaxPooling()
+        self.transform = nn.Linear(node_feat_size, predictor_dim)
 
     def forward(self, bg):
         bg = bg.to(device)
         node_feats = bg.ndata.pop('h')
         edge_feats = bg.edata.pop('e')
+        pos_enc = bg.ndata.pop('PE')
+        node_feats = node_feats + pos_enc
+
 
         node_feats = self.gnn(bg, node_feats, edge_feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
+
+class Graphormer(nn.Module):
+    def __init__(self, node_feat_size, graph_feat_size=200,
+                 predictor_dim=None):
+        super(Graphormer, self).__init__()
+        from dgl.nn.pytorch.gt import GraphormerLayer
+        from dgl.nn.pytorch.glob import MaxPooling
+        from dgllife.model.readout.sum_and_max import SumAndMax
+
+        self.gnn = GraphormerLayer(
+                    feat_size=node_feat_size,
+                    hidden_size=graph_feat_size,
+                    num_heads=8
+        )
+
+        self.readout = MaxPooling()
+        self.transform = nn.Linear(node_feat_size, predictor_dim)
+
+    def forward(self, bg):
+        bg = bg.to(device)
+        node_feats = bg.ndata.pop('h')
+        edge_feats = bg.edata.pop('e')
+        pos_enc = bg.ndata.pop('PE')
+        node_feats = node_feats + pos_enc
+
+
+        node_feats = self.gnn(bg, node_feats, edge_feats)
+        graph_feats = self.readout(bg, node_feats)
+        return self.transform(graph_feats)
+
