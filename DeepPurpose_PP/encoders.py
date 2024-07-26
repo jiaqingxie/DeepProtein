@@ -347,7 +347,8 @@ class DGL_GAT(nn.Module):
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
 
         self.gnn = GAT(in_feats=in_feats,
-                       hidden_feats=hidden_feats
+                       hidden_feats=hidden_feats,
+                       activations = activation
                        )
         gnn_out_feats = self.gnn.hidden_feats[-1]
         self.readout = WeightedSumAndMax(gnn_out_feats)
