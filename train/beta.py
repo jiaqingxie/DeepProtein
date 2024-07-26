@@ -14,13 +14,15 @@ import DeepPurpose_PP.ProteinPred as models
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Protein Prediction with DeepPurpose++")
+    parser = argparse.ArgumentParser(description="Protein Prediction with DeepPurpose2.0")
     parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
     parser.add_argument('--lr', type=float, default=0.0001, help='0.0001/0.00001')
     parser.add_argument('--epochs', type=int, default=100, help='50/100')
     parser.add_argument('--compute_pos_enc', type=bool, default=False, help='compute position encoding')
+    parser.add_argument('--batch_size', type=int, default=32, help='batch size')
+
     return parser.parse_args()
 
 
@@ -32,6 +34,8 @@ if __name__ == "__main__":
     lr = args.lr
     epochs = args.epochs
     compute_pos = args.compute_pos_enc
+    batch_size = args.batch_size
+
     job_name = f"Beta + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
@@ -72,7 +76,7 @@ if __name__ == "__main__":
                              cls_hidden_dims=[1024, 1024],
                              train_epoch=epochs,
                              LR=lr,
-                             batch_size=32,
+                             batch_size=batch_size ,
                              )
 
     torch.manual_seed(args.seed)
