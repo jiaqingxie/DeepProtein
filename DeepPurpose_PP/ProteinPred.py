@@ -301,7 +301,7 @@ class Protein_Prediction:
                     loss_fct = torch.nn.BCELoss()
                     m = torch.nn.Sigmoid()
                     n = torch.squeeze(m(score), 1)
-                    label = torch.squeeze(label, 1)
+                    # label = torch.squeeze(label, 1)
                     loss = loss_fct(n, label)
                 else:
                     loss_fct = torch.nn.MSELoss()
