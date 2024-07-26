@@ -25,6 +25,7 @@ from zipfile import ZipFile
 import os
 import sys
 import pathlib
+import dgl
 
 this_dir = str(pathlib.Path(__file__).parent.absolute())
 
@@ -1577,3 +1578,30 @@ def download_pretrained_model_S3(model_name, save_dir='./save_folder'):
 
     pretrained_dir = os.path.join(pretrained_dir, model_name)
     return pretrained_dir
+
+
+class GraphDataset(Dataset):
+    def __init__(self, graphs, labels):
+        self.graphs = graphs
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.graphs)
+
+    def __getitem__(self, idx):
+        return self.graphs[idx], self.labels[idx]
+# compute positional encodings for graph transformers
+def compute_pos(generator, method = "Laplacian"):
+    """ Return a new Dataset"""
+    modified_graphs = []
+    modified_labels = []
+
+    if method == 'Laplacian':
+        for graph, label in generator:
+            graph.ndata['PE'] = dgl.laplacian_pe(graph, k = 18)
+            modified_graphs.append(graph)
+            modified_labels.append(label)
+
+    modified_dataset = list(zip(modified_graphs, modified_labels))
+    modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels))
+    return modified_generator

@@ -503,7 +503,7 @@ class DGL_MPNN(nn.Module):
 class PAGTN(nn.Module):
     def __init__(self, node_feat_size, node_hid_size, edge_feat_size, graph_feat_size=200,
                  predictor_dim=None):
-        super(DGL_PAGTN, self).__init__()
+        super(PAGTN, self).__init__()
         from dgllife.model.gnn import PAGTNGNN
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
         from dgllife.model.readout.sum_and_max import SumAndMax
@@ -525,9 +525,6 @@ class PAGTN(nn.Module):
         node_feats = self.gnn(bg, node_feats, edge_feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
-
-
-
 class EGT(nn.Module):
     def __init__(self, node_feat_size, edge_feat_size, num_timesteps=2, graph_feat_size=200,
                  predictor_dim=None):

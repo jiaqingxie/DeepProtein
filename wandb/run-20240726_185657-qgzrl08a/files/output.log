@@ -1,0 +1,70 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|██████████████████████████████████████████████████████████████████████████████| 4158/4158 [01:15<00:00, 54.98it/s]
+
+
+
+
+100%|████████████████████████████████████████████████████████████████████████████████| 520/520 [00:09<00:00, 55.35it/s]
+
+
+
+
+100%|████████████████████████████████████████████████████████████████████████████████| 520/520 [00:09<00:00, 55.07it/s]
+Protein Function Prediction Mode...
+in total: 4158 proteins
+encoding protein...
+unique target sequence: 4158
+Done.
+Protein Function Prediction Mode...
+in total: 520 proteins
+encoding protein...
+unique target sequence: 520
+Done.
+Protein Function Prediction Mode...
+in total: 520 proteins
+encoding protein...
+unique target sequence: 520
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+E:\anaconda3\envs\graph\lib\site-packages\transformers\utils\generic.py:441: UserWarning: torch.utils._pytree._register_pytree_node is deprecated. Please use torch.utils._pytree.register_pytree_node instead.
+  _torch_pytree._register_pytree_node(
+Graph(num_nodes=70809, num_edges=215123,
+      ndata_schemes={'h': Scheme(shape=(74,), dtype=torch.float32)}
+      edata_schemes={'e': Scheme(shape=(13,), dtype=torch.float32)})

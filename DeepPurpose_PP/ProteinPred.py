@@ -133,8 +133,6 @@ class Protein_Prediction:
                                        edge_feat_size = 13,
                                        graph_feat_size = config['gnn_hid_dim_drug'],
                                        predictor_dim=config['hidden_dim_drug'])
-        elif target_encoding == 'DGL_GIN':
-            self.model_protein = DGL_GIN_InfoMax(1)
         else:
             raise AttributeError('Please use one of the available encoding method.')
 
@@ -251,6 +249,11 @@ class Protein_Prediction:
                                                                                     train.Label.values,
                                                                                     train, **self.config),
                                              **params)
+
+
+
+
+
         validation_generator = data.DataLoader(data_process_loader_Protein_Prediction(val.index.values,
                                                                                       val.Label.values,
                                                                                       val, **self.config),
@@ -271,6 +274,11 @@ class Protein_Prediction:
             testing_generator = data.DataLoader(
                 data_process_loader_Protein_Prediction(test.index.values, test.Label.values, test, **self.config),
                 **params_test)
+
+        training_generator = compute_pos(training_generator)
+        validation_generator = compute_pos(validation_generator)
+        testing_generator = compute_pos(testing_generator)
+
 
         # early stopping
         if self.binary:
