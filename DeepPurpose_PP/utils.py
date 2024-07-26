@@ -10,7 +10,7 @@ import torch
 from torch.utils import data
 from torch.autograd import Variable
 import torch.nn.functional as F
-
+from torch.utils.data import Dataset
 try:
     from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
 except:
