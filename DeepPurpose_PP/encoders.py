@@ -480,6 +480,7 @@ class DGL_MPNN(nn.Module):
         super(DGL_MPNN, self).__init__()
         from dgllife.model.gnn import MPNNGNN
         from dgl.nn.pytorch.glob import AvgPooling
+        from dgllife.model.readout.sum_and_max import SumAndMax
         self.gnn = MPNNGNN(
                         node_in_feats = node_feat_size,
                         edge_in_feats = edge_feat_size,
@@ -487,7 +488,62 @@ class DGL_MPNN(nn.Module):
                         edge_hidden_feats = graph_feat_size,
                         num_step_message_passing = num_timesteps)
 
-        self.readout = AvgPooling()
+        self.readout = SumAndMax()
+        self.transform = nn.Linear(graph_feat_size, predictor_dim)
+
+    def forward(self, bg):
+        bg = bg.to(device)
+        node_feats = bg.ndata.pop('h')
+        edge_feats = bg.edata.pop('e')
+
+        node_feats = self.gnn(bg, node_feats, edge_feats)
+        graph_feats = self.readout(bg, node_feats)
+        return self.transform(graph_feats)
+
+class PAGTN(nn.Module):
+    def __init__(self, node_feat_size, node_hid_size, edge_feat_size, graph_feat_size=200,
+                 predictor_dim=None):
+        super(DGL_PAGTN, self).__init__()
+        from dgllife.model.gnn import PAGTNGNN
+        from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
+        from dgllife.model.readout.sum_and_max import SumAndMax
+        self.gnn = PAGTNGNN(
+                        node_in_feats = node_feat_size,
+                        node_out_feats = graph_feat_size,
+                        node_hid_feats = node_hid_size,
+                        edge_feats = edge_feat_size,
+        )
+
+        self.readout =  WeightedSumAndMax(graph_feat_size)
+        self.transform = nn.Linear(graph_feat_size, predictor_dim)
+
+    def forward(self, bg):
+        bg = bg.to(device)
+        node_feats = bg.ndata.pop('h')
+        edge_feats = bg.edata.pop('e')
+
+        node_feats = self.gnn(bg, node_feats, edge_feats)
+        graph_feats = self.readout(bg, node_feats)
+        return self.transform(graph_feats)
+
+
+
+class EGT(nn.Module):
+    def __init__(self, node_feat_size, edge_feat_size, num_timesteps=2, graph_feat_size=200,
+                 predictor_dim=None):
+        super(EGT, self).__init__()
+        from dgllife.model.gnn import MPNNGNN
+        from dgl.nn.pytorch.glob import AvgPooling
+        from dgllife.model.readout.sum_and_max import SumAndMax
+
+        self.gnn = MPNNGNN(
+                        node_in_feats = node_feat_size,
+                        edge_in_feats = edge_feat_size,
+                        node_out_feats= graph_feat_size,
+                        edge_hidden_feats = graph_feat_size,
+                        num_step_message_passing = num_timesteps)
+
+        self.readout = SumAndMax()
         self.transform = nn.Linear(graph_feat_size, predictor_dim)
 
     def forward(self, bg):

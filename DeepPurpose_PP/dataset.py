@@ -197,17 +197,17 @@ def collate_fn(batch, graph=False, unsqueeze=True):
 
 # if __name__ == "__main__":
 #     import os
-
-#     path = "/itet-stor/jiaxie/net_scratch/DeepPurposePlusPlus"
+#
+#     path = os.getcwd()
 #     # 1. Test on Beta
 #     train_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'train')
 #     valid_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'valid')
 #     test_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'test')
-
+#
 #     # 2. Test on Processed Proteins
 #     train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
 #     valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
 #     test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
-
+#
 #     # train_protein_processed, train_target, train_protein_idx = train_batch
 #     # print(train_target[:10])
