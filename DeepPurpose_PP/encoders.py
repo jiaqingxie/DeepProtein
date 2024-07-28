@@ -489,7 +489,7 @@ class DGL_MPNN(nn.Module):
                         num_step_message_passing = num_timesteps)
 
         self.readout = SumAndMax()
-        self.transform = nn.Linear(graph_feat_size, predictor_dim)
+        self.transform = nn.Linear(graph_feat_size * 2, predictor_dim)
 
     def forward(self, bg):
         bg = bg.to(device)
