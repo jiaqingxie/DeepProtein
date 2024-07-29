@@ -521,7 +521,9 @@ class PAGTN(nn.Module):
         bg = bg.to(device)
         node_feats = bg.ndata.pop('h')
         edge_feats = bg.edata.pop('e')
-
+        if bg.ndata['PE'] is not None:
+            pos_enc = bg.ndata.pop('PE')
+            node_feats = node_feats + pos_enc
         node_feats = self.gnn(bg, node_feats, edge_feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
@@ -548,10 +550,9 @@ class EGT(nn.Module):
         bg = bg.to(device)
         node_feats = bg.ndata.pop('h')
         edge_feats = bg.edata.pop('e')
-        pos_enc = bg.ndata.pop('PE')
-        node_feats = node_feats + pos_enc
-
-
+        if bg.ndata['PE'] is not None:
+            pos_enc = bg.ndata.pop('PE')
+            node_feats = node_feats + pos_enc
         node_feats = self.gnn(bg, node_feats, edge_feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
@@ -577,9 +578,9 @@ class Graphormer(nn.Module):
         bg = bg.to(device)
         node_feats = bg.ndata.pop('h')
         edge_feats = bg.edata.pop('e')
-        pos_enc = bg.ndata.pop('PE')
-        node_feats = node_feats + pos_enc
-
+        if bg.ndata['PE'] is not None:
+            pos_enc = bg.ndata.pop('PE')
+            node_feats = node_feats + pos_enc
 
         node_feats = self.gnn(bg, node_feats, edge_feats)
         graph_feats = self.readout(bg, node_feats)

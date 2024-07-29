@@ -1596,7 +1596,7 @@ class GraphDataset(Dataset):
     def __getitem__(self, idx):
         return self.graphs[idx], self.labels[idx]
 # compute positional encodings for graph transformers
-def compute_pos(generator, method = "Laplacian"):
+def compute_pos(generator, params, method = "Laplacian"):
     """ Return a new Dataset"""
     modified_graphs = []
     modified_labels = []
@@ -1608,5 +1608,5 @@ def compute_pos(generator, method = "Laplacian"):
             modified_labels.append(label)
 
     modified_dataset = list(zip(modified_graphs, modified_labels))
-    modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels))
+    modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels), **params)
     return modified_generator
