@@ -289,6 +289,7 @@ class Protein_Prediction:
 
 
         if compute_pos_enc:
+            print("========= Computing Positional Encoding ..... =========")
             training_generator = compute_pos(training_generator, **params)
             validation_generator = compute_pos(validation_generator, **params)
             testing_generator = compute_pos(testing_generator, **params)

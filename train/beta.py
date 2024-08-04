@@ -81,6 +81,6 @@ if __name__ == "__main__":
 
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
-    model.train(train, val, test, compute_pos_enc = compute_pos)
+    model.train(train, val, test, compute_pos_enc = False)
 
 
