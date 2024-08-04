@@ -515,7 +515,7 @@ class PAGTN(nn.Module):
         )
 
         self.readout =  WeightedSumAndMax(graph_feat_size)
-        self.transform = nn.Linear(graph_feat_size, predictor_dim)
+        self.transform = nn.Linear(graph_feat_size * 2, predictor_dim)
 
     def forward(self, bg):
         bg = bg.to(device)
@@ -544,7 +544,7 @@ class EGT(nn.Module):
         )
 
         self.readout = MaxPooling()
-        self.transform = nn.Linear(node_feat_size, predictor_dim)
+        self.transform = nn.Linear(node_feat_size * 2, predictor_dim)
 
     def forward(self, bg):
         bg = bg.to(device)
@@ -572,7 +572,7 @@ class Graphormer(nn.Module):
         )
 
         self.readout = MaxPooling()
-        self.transform = nn.Linear(node_feat_size, predictor_dim)
+        self.transform = nn.Linear(node_feat_size * 2, predictor_dim)
 
     def forward(self, bg):
         bg = bg.to(device)
