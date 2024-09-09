@@ -5,7 +5,7 @@
 <p> ... </h4>
 
 
-
+pip install lmdb 
 
 
 
