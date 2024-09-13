@@ -5,7 +5,6 @@
 <p> ... </h4>
 
 
-pip install lmdb 
 ### Installation
 
 First we recommend you to follow the instruction of how DeepPurpose's dependencies are installed.
