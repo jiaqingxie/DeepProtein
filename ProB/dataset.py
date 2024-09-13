@@ -200,9 +200,9 @@ def collate_fn(batch, graph=False, unsqueeze=True):
 #
 #     path = os.getcwd()
 #     # 1. Test on Beta
-#     train_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'train')
-#     valid_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'valid')
-#     test_fluo = Beta_lactamase(path + '/DeepPurpose_PP/data', 'test')
+#     train_fluo = Beta_lactamase(path + '/ProB/data', 'train')
+#     valid_fluo = Beta_lactamase(path + '/ProB/data', 'valid')
+#     test_fluo = Beta_lactamase(path + '/ProB/data', 'test')
 #
 #     # 2. Test on Processed Proteins
 #     train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)

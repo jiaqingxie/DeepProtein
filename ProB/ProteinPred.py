@@ -22,9 +22,9 @@ from prettytable import PrettyTable
 
 import os
 
-from DeepPurpose_PP.utils import *
-from DeepPurpose_PP.model_helper import Encoder_MultipleLayers, Embeddings
-from DeepPurpose_PP.encoders import *
+from ProB.utils import *
+from ProB.model_helper import Encoder_MultipleLayers, Embeddings
+from ProB.encoders import *
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 

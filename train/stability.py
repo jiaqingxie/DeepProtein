@@ -8,9 +8,9 @@ module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from DeepPurpose_PP.dataset import *
-import DeepPurpose_PP.utils as utils
-import DeepPurpose_PP.ProteinPred as models
+from ProB.dataset import *
+import ProB.utils as utils
+import ProB.ProteinPred as models
 
 
 def parse_args():
@@ -41,9 +41,9 @@ if __name__ == "__main__":
 
     path = os.getcwd()
     #  Test on FluorescenceDataset
-    train_fluo = Stability(path + '/DeepPurpose_PP/data', 'train')
-    valid_fluo = Stability(path + '/DeepPurpose_PP/data', 'valid')
-    test_fluo = Stability(path + '/DeepPurpose_PP/data', 'test')
+    train_fluo = Stability(path + '/ProB/data', 'train')
+    valid_fluo = Stability(path + '/ProB/data', 'valid')
+    test_fluo = Stability(path + '/ProB/data', 'test')
 
     if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP',
                             'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
