@@ -1,4 +1,4 @@
-<p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="400px" /></p>
+<p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="200px" /></p>
 <h3 align="center">
 <p> ProB: Learning Based Protein Benchmark <br></h3>
 <h4 align="center">
