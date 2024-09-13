@@ -326,6 +326,8 @@ class Protein_Prediction:
                 else:
                     v_p = v_p.float().to(self.device)
 
+
+
                 score = self.model(v_p)
                 label = torch.from_numpy(np.array(label)).float().to(self.device)
 

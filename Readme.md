@@ -58,7 +58,6 @@ Currently, we support the following encodings:
 | DGL_AttentiveFP | Attentive FP, Xiong et al. 2020                 |
 | DGL_GAT         | Graph Attention Network                         |
 | PAGTN           | Path Augmented Graph Transformer Network        |
-| EGT             | Edge Augmented Graph Transformer                |
 | Graphormer      | Do Transformers Really Perform Bad, Ying et al. |
 
 

@@ -335,6 +335,7 @@ class DGL_GCN(nn.Module):
     def forward(self, bg):
         bg = bg.to(device)
         feats = bg.ndata.pop('h')
+        print(feats.shape)
         node_feats = self.gnn(bg, feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
@@ -528,34 +529,38 @@ class PAGTN(nn.Module):
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
 
-class EGT(nn.Module):
-    def __init__(self, node_feat_size, node_hid_size, edge_feat_size, graph_feat_size=200,
-                 predictor_dim=None):
-        super(EGT, self).__init__()
-        from dgl.nn.pytorch.gt import EGTLayer
-        from dgl.nn.pytorch.glob import MaxPooling
-        from dgllife.model.readout.sum_and_max import SumAndMax
-        self.gnn = EGTLayer(
-                    feat_size=node_hid_size,
-                    edge_feat_size=edge_feat_size,
-                    num_heads=8,
-                    num_virtual_nodes=4,
-        )
-        self.pre_linear = nn.Linear(node_feat_size, node_hid_size)
-        self.readout = MaxPooling()
-        self.transform = nn.Linear(node_hid_size * 2, predictor_dim)
-
-    def forward(self, bg):
-        bg = bg.to(device)
-        node_feats = bg.ndata.pop('h')
-        edge_feats = bg.edata.pop('e')
-        if 'PE' in bg.ndata and bg.ndata['PE'] is not None:
-            pos_enc = bg.ndata.pop('PE')
-            node_feats = node_feats + pos_enc
-        node_feats = self.pre_linear(node_feats)
-        node_feats, edge_feats = self.gnn(node_feats, edge_feats)
-        graph_feats = self.readout(bg, node_feats)
-        return self.transform(graph_feats)
+# TODO:
+# This code has bug:
+# class EGT(nn.Module):
+#     def __init__(self, node_feat_size, node_hid_size, edge_feat_size, graph_feat_size=200,
+#                  predictor_dim=None):
+#         super(EGT, self).__init__()
+#         from dgl.nn.pytorch.gt import EGTLayer
+#         from dgl.nn.pytorch.glob import MaxPooling
+#         from dgllife.model.readout.sum_and_max import SumAndMax
+#         self.gnn = EGTLayer(
+#                     feat_size=node_hid_size,
+#                     edge_feat_size=edge_feat_size,
+#                     num_heads=8,
+#                     num_virtual_nodes=4,
+#         )
+#         self.pre_linear = nn.Linear(node_feat_size, node_hid_size)
+#         self.readout = MaxPooling()
+#         self.transform = nn.Linear(node_hid_size * 2, predictor_dim)
+#
+#     def forward(self, bg):
+#         bg = bg.to(device)
+#         node_feats = bg.ndata.pop('h')
+#         edge_feats = bg.edata.pop('e')
+#         if 'PE' in bg.ndata and bg.ndata['PE'] is not None:
+#             pos_enc = bg.ndata.pop('PE')
+#             node_feats = node_feats + pos_enc
+#         node_feats = self.pre_linear(node_feats)
+#         # print(node_feats.shape)
+#         # print(edge_feats.shape)
+#         node_feats, edge_feats = self.gnn(node_feats, edge_feats)
+#         graph_feats = self.readout(bg, node_feats)
+#         return self.transform(graph_feats)
 
 class Graphormer(nn.Module):
     def __init__(self, node_feat_size, node_hid_size, graph_feat_size=200,
@@ -583,7 +588,10 @@ class Graphormer(nn.Module):
             pos_enc = bg.ndata.pop('PE')
             node_feats = node_feats + pos_enc
         node_feats = self.pre_linear(node_feats)
+        node_feats = node_feats.unsqueeze(0)
+
         node_feats = self.gnn(node_feats)
+        node_feats = node_feats.squeeze(0)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
 
