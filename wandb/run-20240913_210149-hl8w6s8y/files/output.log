@@ -1,0 +1,90 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|██████████████████████████████████████████████████████████████████████████████| 4158/4158 [01:37<00:00, 42.49it/s]
+
+
+
+
+
+
+
+
+
+
+
+100%|████████████████████████████████████████████████████████████████████████████████| 520/520 [00:22<00:00, 22.68it/s]
+
+
+
+
+
+
+
+
+
+
+
+100%|████████████████████████████████████████████████████████████████████████████████| 520/520 [00:22<00:00, 22.83it/s]
+Protein Function Prediction Mode...
+in total: 4158 proteins
+encoding protein...
+unique target sequence: 4158
+Done.
+Protein Function Prediction Mode...
+in total: 520 proteins
+encoding protein...
+unique target sequence: 520
+Done.
+Protein Function Prediction Mode...
+in total: 520 proteins
+encoding protein...
+unique target sequence: 520
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
