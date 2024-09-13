@@ -335,7 +335,6 @@ class DGL_GCN(nn.Module):
     def forward(self, bg):
         bg = bg.to(device)
         feats = bg.ndata.pop('h')
-        print(feats.shape)
         node_feats = self.gnn(bg, feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
