@@ -29,6 +29,32 @@ A version of torch 2.1+  is required to installed, since dgl required a version 
     conda install -c dglteam/label/th23_cpu dgl
     ```
 
+
+
+## Encodings
+
+Thanks to DeepPurpose and dgllife, we could borrow some of the encodings from DeepPurpose. The new added encodings are PAGTN, 
+EGT and Graphormer which belong to graph transformer modules that are prevailing methods
+these years for encoding protein graphs.
+
+Currently, we support the following encodings:
+
+| Drug Encodings  | Description                                     |
+|-----------------|-------------------------------------------------|
+| CNN             | Convolutional Neural Network on SMILES          |
+| CNN_RNN         | A GRU/LSTM on top of a CNN on SMILES            |
+| Transformer     | Transformer Encoder on ESPF                     |
+| MPNN            | Message-passing neural network                  |
+| DGL_GCN         | Graph Convolutional Network                     |
+| DGL_NeuralFP    | Neural Fingerprint                              |
+| DGL_AttentiveFP | Attentive FP, Xiong et al. 2020                 |
+| DGL_GAT         | Graph Attention Network                         |
+| PAGTN           | Path Augmented Graph Transformer Network        |
+| EGT             | Edge Augmented Graph Transformer                |
+| Graphormer      | Do Transformers Really Perform Bad, Ying et al. |
+
+
+
 ### 1. Protein Function (Property) Prediction
 
 
