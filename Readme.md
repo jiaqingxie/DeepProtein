@@ -1,13 +1,34 @@
 <p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="400px" /></p>
 <h3 align="center">
-<p> DeepPurpose 2.0 : A Benchmark Study on Learning Based Protein Discovery<br></h3>
+<p> ProB: Learning Based Protein Benchmark <br></h3>
 <h4 align="center">
 <p> ... </h4>
 
 
 pip install lmdb 
+### Installation
 
+First we recommend you to follow the instruction of how DeepPurpose's dependencies are installed.
+```bash
+conda create -n prob python=3.9
+conda activate prob
+pip install git+https://github.com/bp-kelley/descriptastorus
+pip install lmdb
+pip install DeepPurpose
+```
 
+A version of torch 2.1+  is required to installed, since dgl required a version of torch >=2.1.0. 
+
+1. If you want to use GPU, then firstly find a matched torch version, then install dgl with cuda version. We give an example of torch 2.3.0 with cuda 11.8:
+    ```bash
+   pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu118
+   conda install -c dglteam/label/th23_cu118 dgl
+   ```
+2. If you are not using a GPU, then follow this:
+    ```bash
+    pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cpu
+    conda install -c dglteam/label/th23_cpu dgl
+    ```
 
 ### 1. Protein Function (Property) Prediction
 
