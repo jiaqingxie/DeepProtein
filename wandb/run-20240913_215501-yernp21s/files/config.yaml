@@ -16,6 +16,12 @@ _wandb:
       - 53
       - 55
       - 76
+      2:
+      - 1
+      - 5
+      - 53
+      - 55
+      - 76
       3:
       - 13
       - 23
@@ -25,3 +31,24 @@ _wandb:
       - 3
       - 5
       13: windows-amd64
+target_encoding:
+  desc: null
+  value: Graphormer
+seed:
+  desc: null
+  value: 7
+wandb_proj:
+  desc: null
+  value: DeepPurposePP
+lr:
+  desc: null
+  value: 1.0e-05
+epochs:
+  desc: null
+  value: 150
+compute_pos_enc:
+  desc: null
+  value: false
+batch_size:
+  desc: null
+  value: 32

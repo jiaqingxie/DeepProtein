@@ -61,6 +61,10 @@ Currently, we support the following encodings:
 | Graphormer      | Do Transformers Really Perform Bad, Ying et al. |
 
 
+Note that we've tried EGT, however, it would lead to memory error if we want to 
+construct a large batched edge feature matrix therefore we ignore the implementation of EGT.
+This could be solved if applied to small graphs so it will be our future work. 
+
 
 ### 1. Protein Function (Property) Prediction
 
