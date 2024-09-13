@@ -3,7 +3,7 @@
 <h3 align="center">
 <p> ProB: Learning Based Protein Benchmark <br></h3>
 <h4 align="center">
-<p>  Applications in Drug Repurposing, Virtual Screening, QSAR, Side Effect Prediction and More </h4>
+<p>  Applications in Protein Property Prediction, Localization Prediction and Protein-Protein Interaction etc. </h4>
 
 ---
 
