@@ -576,7 +576,7 @@ class Graphormer(nn.Module):
         )
         self.pre_linear = nn.Linear(node_feat_size, node_hid_size)
         self.readout = MaxPooling()
-        self.transform = nn.Linear(node_hid_size * 2, predictor_dim)
+        self.transform = nn.Linear(node_hid_size, predictor_dim)
 
     def forward(self, bg):
         bg = bg.to(device)
