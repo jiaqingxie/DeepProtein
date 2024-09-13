@@ -134,12 +134,14 @@ class Protein_Prediction:
                                        graph_feat_size = config['gnn_hid_dim_drug'],
                                        predictor_dim=config['hidden_dim_drug'])
         elif target_encoding == 'EGT':
-            self.model_protein = EGT(node_feat_size=74,
-                                     edge_feat_size=13,
+            self.model_protein = EGT(node_feat_size =74,
+                                     node_hid_size = config['gnn_hid_dim_drug'],
+                                     edge_feat_size = 13,
                                      graph_feat_size = config['gnn_hid_dim_drug'],
                                      predictor_dim=config['hidden_dim_drug'])
         elif target_encoding == 'Graphormer':
             self.model_protein = Graphormer(node_feat_size=74,
+                                            node_hid_size=config['gnn_hid_dim_drug'],
                                              graph_feat_size=config['gnn_hid_dim_drug'],
                                              predictor_dim=config['hidden_dim_drug'])
         else:
