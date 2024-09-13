@@ -1,9 +1,17 @@
 <p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="200px" /></p>
+
 <h3 align="center">
 <p> ProB: Learning Based Protein Benchmark <br></h3>
 <h4 align="center">
 <p> ... </h4>
 
+---
+
+[![PyPI version](https://badge.fury.io/py/ProB.svg)](https://pypi.org/project/ProB/)
+[![Downloads](https://pepy.tech/badge/ProB/month)](https://pepy.tech/project/ProB)
+[![Downloads](https://pepy.tech/badge/ProB)](https://pepy.tech/project/ProB)
+[![GitHub Repo stars](https://img.shields.io/github/stars/jiaqingxie/DeepPurposePlusPlus)](https://github.com/jiaqingxie/DeepPurposePlusPlus/stargazers)
+[![GitHub Repo forks](https://img.shields.io/github/forks/jiaqingxie/DeepPurposePlusPlus)](https://github.com/jiaqingxie/DeepPurposePlusPlus/network/members)
 
 ### Installation
 
