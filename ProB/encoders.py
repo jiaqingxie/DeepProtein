@@ -553,7 +553,7 @@ class EGT(nn.Module):
             pos_enc = bg.ndata.pop('PE')
             node_feats = node_feats + pos_enc
         node_feats = self.pre_linear(node_feats)
-        node_feats = self.gnn(bg, node_feats, edge_feats)
+        node_feats = self.gnn(node_feats, edge_feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
 
@@ -583,7 +583,7 @@ class Graphormer(nn.Module):
             pos_enc = bg.ndata.pop('PE')
             node_feats = node_feats + pos_enc
         node_feats = self.pre_linear(node_feats)
-        node_feats = self.gnn(bg, node_feats, edge_feats)
+        node_feats = self.gnn(node_feats)
         graph_feats = self.readout(bg, node_feats)
         return self.transform(graph_feats)
 
