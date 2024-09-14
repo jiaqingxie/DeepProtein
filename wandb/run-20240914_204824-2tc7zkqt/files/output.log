@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular.py", line 56, in <module>
+    train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
+  File "E:\DeepPurposePlusPlus\ProB\dataset.py", line 227, in collate_fn
+    protein_orig, target = tuple(zip(*batch))
+  File "E:\DeepPurposePlusPlus\ProB\dataset.py", line 94, in __getitem__
+    target = item['"localization'][0]
+KeyError: '"localization'

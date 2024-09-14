@@ -91,7 +91,7 @@ class Subcellular(Dataset):
         item = self.data[index]
 
         protein_orig = item['primary']
-        target = item['"localization'][0]
+        target = item['localization'][0]
 
         return protein_orig, target
 
@@ -115,7 +115,7 @@ class BinarySubcellular(Dataset):
         item = self.data[index]
 
         protein_orig = item['primary']
-        target = item['"localization'][0]
+        target = item['localization'][0]
 
         return protein_orig, target
 
