@@ -189,9 +189,13 @@ class Protein_Prediction:
             y_pred = y_pred + logits.flatten().tolist()
             outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
 
-            multi_outputs = np.argmax(np.asarray(y_pred), axis=-1)
-            multi_y_pred = multi_y_pred + logits.tolist()
 
+            multi_y_pred = multi_y_pred + logits.tolist()
+            multi_outputs = np.argmax(np.asarray(multi_y_pred), axis=-1)
+
+        print(multi_outputs)
+
+        print(multi_y_pred)
 
         model.train()
         if self.binary:
