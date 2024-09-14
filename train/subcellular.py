@@ -37,7 +37,7 @@ if __name__ == "__main__":
     compute_pos = args.compute_pos_enc
     batch_size = args.batch_size
 
-    job_name = f"Solubility + {target_encoding}"
+    job_name = f"SubCellular + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 
