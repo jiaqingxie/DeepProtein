@@ -1,0 +1,25 @@
+Protein Function Prediction Mode...
+in total: 4158 proteins
+encoding protein...
+unique target sequence: 4158
+Done.
+Protein Function Prediction Mode...
+in total: 520 proteins
+encoding protein...
+unique target sequence: 520
+Done.
+Protein Function Prediction Mode...
+in total: 520 proteins
+encoding protein...
+unique target sequence: 520
+Done.
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\beta.py", line 83, in <module>
+    model = models.model_initialize(**config)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 62, in model_initialize
+    model = Protein_Prediction(**config)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 152, in __init__
+    self.model = Classifier(self.model_protein, **config)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 43, in __init__
+    if not config['multi']:
+KeyError: 'multi'

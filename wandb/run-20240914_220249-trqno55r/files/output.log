@@ -1,0 +1,37 @@
+Protein Function Prediction Mode...
+in total: 8420 proteins
+encoding protein...
+unique target sequence: 8383
+Done.
+Protein Function Prediction Mode...
+in total: 2811 proteins
+encoding protein...
+unique target sequence: 2807
+Done.
+Protein Function Prediction Mode...
+in total: 2773 proteins
+encoding protein...
+unique target sequence: 2768
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 2.30178. Total time 0.00888 hours
+E:\anaconda3\envs\graph\lib\site-packages\torch\autograd\graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Training at Epoch 1 iteration 100 with loss 2.20278. Total time 0.01027 hours
+Training at Epoch 1 iteration 200 with loss 2.25098. Total time 0.01166 hours
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular.py", line 88, in <module>
+    model.train(train, val, test, compute_pos_enc = compute_pos)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 427, in train
+    acc, auprc, f1, logits = self.test_(validation_generator, self.model)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 204, in test_
+    print(accuracy_score(y_label, multi_y_pred))
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\utils\_param_validation.py", line 211, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\metrics\_classification.py", line 220, in accuracy_score
+    y_type, y_true, y_pred = _check_targets(y_true, y_pred)
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\metrics\_classification.py", line 93, in _check_targets
+    raise ValueError(
+ValueError: Classification metrics can't handle a mix of multiclass and continuous-multioutput targets

@@ -1,0 +1,52 @@
+Protein Function Prediction Mode...
+in total: 8420 proteins
+encoding protein...
+unique target sequence: 8383
+Done.
+Protein Function Prediction Mode...
+in total: 2811 proteins
+encoding protein...
+unique target sequence: 2807
+Done.
+Protein Function Prediction Mode...
+in total: 2773 proteins
+encoding protein...
+unique target sequence: 2768
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 2.30178. Total time 0.00861 hours
+E:\anaconda3\envs\graph\lib\site-packages\torch\autograd\graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Training at Epoch 1 iteration 100 with loss 2.20184. Total time 0.01 hours
+Training at Epoch 1 iteration 200 with loss 2.14970. Total time 0.01138 hours
+Validation at Epoch 1 , Accuracy: 0.35467 , AUPRC: 0.15185 , F1: 0.09906
+Training at Epoch 2 iteration 0 with loss 2.12354. Total time 0.03027 hours
+Training at Epoch 2 iteration 100 with loss 2.08079. Total time 0.03138 hours
+Training at Epoch 2 iteration 200 with loss 2.21174. Total time 0.03277 hours
+Validation at Epoch 2 , Accuracy: 0.24261 , AUPRC: 0.13812 , F1: 0.08405
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular.py", line 88, in <module>
+    model.train(train, val, test, compute_pos_enc = compute_pos)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 359, in train
+    for i, (v_p, label) in enumerate(training_generator):
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\utils\data\dataloader.py", line 439, in __iter__
+    return self._get_iterator()
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\utils\data\dataloader.py", line 387, in _get_iterator
+    return _MultiProcessingDataLoaderIter(self)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\utils\data\dataloader.py", line 1040, in __init__
+    w.start()
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\process.py", line 121, in start
+    self._popen = self._Popen(self)
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\context.py", line 224, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\context.py", line 327, in _Popen
+    return Popen(process_obj)
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\popen_spawn_win32.py", line 93, in __init__
+    reduction.dump(process_obj, to_child)
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\reduction.py", line 60, in dump
+    ForkingPickler(file, protocol).dump(obj)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\multiprocessing\reductions.py", line 354, in reduce_tensor
+    return (rebuild_tensor, (type(tensor), storage, metadata))
+KeyboardInterrupt

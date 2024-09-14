@@ -1,0 +1,32 @@
+Protein Function Prediction Mode...
+in total: 5184 proteins
+encoding protein...
+unique target sequence: 5161
+Done.
+Protein Function Prediction Mode...
+in total: 1729 proteins
+encoding protein...
+unique target sequence: 1727
+Done.
+Protein Function Prediction Mode...
+in total: 1749 proteins
+encoding protein...
+unique target sequence: 1746
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular_binary.py", line 88, in <module>
+    model.train(train, val, test, compute_pos_enc = compute_pos)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 376, in train
+    loss = loss_fct(n, label)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\loss.py", line 618, in forward
+    return F.binary_cross_entropy(input, target, weight=self.weight, reduction=self.reduction)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\functional.py", line 3145, in binary_cross_entropy
+    raise ValueError(
+ValueError: Using a target size (torch.Size([32, 1])) that is different to the input size (torch.Size([32])) is deprecated. Please ensure they have the same size.

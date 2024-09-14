@@ -197,6 +197,11 @@ class Protein_Prediction:
 
         if self.multi:
             y_label = np.array(y_label).astype(int)
+            # multi_y_pred = np.array(multi_y_pred).astype(int)
+
+
+        # print(accuracy_score(y_label, multi_outputs))
+
 
         model.train()
         if self.binary:
@@ -224,8 +229,8 @@ class Protein_Prediction:
                     plt.figure(0)
                     plot_confusion_matrix(multi_y_pred, y_label, roc_auc_file, self.target_encoding)
 
-            return accuracy_score(y_label, multi_y_pred), average_precision_score(y_label, multi_y_pred), f1_score(y_label,
-                                                                                                      multi_outputs), multi_y_pred
+            return accuracy_score(y_label, multi_outputs), average_precision_score(y_label, multi_y_pred, average='macro'), f1_score(y_label,
+                                                                                multi_outputs, average='macro'), multi_y_pred
 
 
         else:
@@ -339,7 +344,7 @@ class Protein_Prediction:
         if self.binary:
             valid_metric_header.extend(["AUROC", "AUPRC", "F1"])
         elif self.multi:
-            valid_metric_header.extend(["ACC", "F1"])
+            valid_metric_header.extend(["ACC", "AUPRC", "F1"])
         else:
             valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
         table = PrettyTable(valid_metric_header)
@@ -372,11 +377,10 @@ class Protein_Prediction:
 
                 elif self.multi:
 
-                    loss_fct = torch.nn.CrossEntropyLoss()
-                    m = torch.nn.Softmax(dim=-1)
+                    loss_fct = torch.nn.NLLLoss()
+                    m = torch.nn.LogSoftmax(dim=-1)
                     n = m(score)
                     label = torch.squeeze(label, 1).long()
-
                     loss = loss_fct(n, label)
 
                 else:

@@ -80,6 +80,7 @@ if __name__ == "__main__":
                              )
     
     config['binary'] = True
+    config['multi'] = False
 
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)

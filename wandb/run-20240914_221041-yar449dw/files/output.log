@@ -1,0 +1,42 @@
+Protein Function Prediction Mode...
+in total: 8420 proteins
+encoding protein...
+unique target sequence: 8383
+Done.
+Protein Function Prediction Mode...
+in total: 2811 proteins
+encoding protein...
+unique target sequence: 2807
+Done.
+Protein Function Prediction Mode...
+in total: 2773 proteins
+encoding protein...
+unique target sequence: 2768
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular.py", line 88, in <module>
+    model.train(train, val, test, compute_pos_enc = compute_pos)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 359, in train
+    for i, (v_p, label) in enumerate(training_generator):
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\utils\data\dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\utils\data\dataloader.py", line 1329, in _next_data
+    idx, data = self._get_data()
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\utils\data\dataloader.py", line 1295, in _get_data
+    success, data = self._try_get_data()
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\utils\data\dataloader.py", line 1133, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\queues.py", line 113, in get
+    if not self._poll(timeout):
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\connection.py", line 257, in poll
+    return self._poll(timeout)
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\connection.py", line 330, in _poll
+    return bool(wait([self], timeout))
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\connection.py", line 879, in wait
+    ready_handles = _exhaustive_wait(waithandle_to_obj.keys(), timeout)
+  File "E:\anaconda3\envs\graph\lib\multiprocessing\connection.py", line 811, in _exhaustive_wait
+    res = _winapi.WaitForMultipleObjects(L, False, timeout)
+KeyboardInterrupt

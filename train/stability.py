@@ -78,6 +78,7 @@ if __name__ == "__main__":
                              batch_size=batch_size,
                              )
 
+    config['multi'] = False
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
     model.train(train, val, test, compute_pos_enc = compute_pos)
