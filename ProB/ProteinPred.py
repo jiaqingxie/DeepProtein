@@ -156,6 +156,7 @@ class Protein_Prediction:
         if not os.path.exists(self.result_folder):
             os.mkdir(self.result_folder)
         self.binary = config['binary']
+        self.multi = config['multi']
         if 'num_workers' not in self.config.keys():
             self.config['num_workers'] = 0
         if 'decay' not in self.config.keys():

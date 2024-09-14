@@ -71,6 +71,31 @@ class LMDBDataset(Dataset):
         return item
 
 
+
+class Subcellular(Dataset):
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test']")
+
+        data_path = Path(data_path)
+        data_file = f'subcellular_localization/subcellular_localization_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        item = self.data[index]
+
+        protein_orig = item['primary']
+        target = item['"localization'][0]
+
+        return protein_orig, target
+
+
 class FluorescenceDataset(Dataset):
 
     def __init__(self,
@@ -195,19 +220,4 @@ def collate_fn(batch, graph=False, unsqueeze=True):
     return protein_orig, target, protein_idx
 
 
-# if __name__ == "__main__":
-#     import os
 #
-#     path = os.getcwd()
-#     # 1. Test on Beta
-#     train_fluo = Beta_lactamase(path + '/ProB/data', 'train')
-#     valid_fluo = Beta_lactamase(path + '/ProB/data', 'valid')
-#     test_fluo = Beta_lactamase(path + '/ProB/data', 'test')
-#
-#     # 2. Test on Processed Proteins
-#     train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
-#     valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
-#     test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
-#
-#     # train_protein_processed, train_target, train_protein_idx = train_batch
-#     # print(train_target[:10])
