@@ -164,6 +164,7 @@ class Protein_Prediction:
 
     def test_(self, data_generator, model, repurposing_mode=False, test=False, verbose=True):
         y_pred = []
+        multi_y_pred = []
         y_label = []
         model.eval()
         for i, (v_p, label) in enumerate(data_generator):
@@ -189,7 +190,7 @@ class Protein_Prediction:
             outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
 
             multi_outputs = np.argmax(np.asarray(y_pred), axis=-1)
-            multi_y_pred = y_pred + logits.tolist()
+            multi_y_pred = multi_y_pred + logits.tolist()
 
 
         model.train()
@@ -210,16 +211,16 @@ class Protein_Prediction:
                                                                                                       outputs), y_pred
         elif self.multi:
             if repurposing_mode:
-                return y_pred
+                return multi_y_pred
 
             if test:
                 if verbose:
                     roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
                     plt.figure(0)
-                    plot_confusion_matrix(y_pred, y_label, roc_auc_file, self.target_encoding)
+                    plot_confusion_matrix(multi_y_pred, y_label, roc_auc_file, self.target_encoding)
 
-            return accuracy_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
-                                                                                                      outputs), y_pred
+            return accuracy_score(y_label, multi_y_pred), average_precision_score(y_label, multi_y_pred), f1_score(y_label,
+                                                                                                      multi_outputs), multi_y_pred
 
 
         else:

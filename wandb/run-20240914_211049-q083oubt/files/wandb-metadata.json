@@ -1,0 +1,64 @@
+{
+    "os": "Windows-10-10.0.22631-SP0",
+    "python": "3.9.18",
+    "heartbeatAt": "2024-09-14T19:10:50.275511",
+    "startedAt": "2024-09-14T19:10:49.065414",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--target_encoding",
+        "CNN",
+        "--seed",
+        "42",
+        "--wandb_proj",
+        "DeepPurposePP",
+        "--lr",
+        "0.0001",
+        "--epochs",
+        "100"
+    ],
+    "state": "running",
+    "program": "E:\\DeepPurposePlusPlus\\train\\subcellular.py",
+    "codePathLocal": "train\\subcellular.py",
+    "codePath": "train\\subcellular.py",
+    "git": {
+        "remote": "https://github.com/jiaqingxie/ProB.git",
+        "commit": "e55c2c3f5a8323b8b98b4676c65a83fb3880e129"
+    },
+    "email": "jiaxie@student.ethz.ch",
+    "root": "E:/DeepPurposePlusPlus",
+    "host": "DESKTOP-E5HJ25M",
+    "username": "\u5609\u5e86",
+    "executable": "E:\\anaconda3\\envs\\graph\\python.exe",
+    "cpu_count": 16,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2100.0,
+        "min": 0.0,
+        "max": 2100.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2100.0,
+            "min": 0.0,
+            "max": 2100.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 214.84276962280273,
+            "used": 101.30643081665039
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+            "memory_total": 8585740288
+        }
+    ],
+    "memory": {
+        "total": 15.812370300292969
+    }
+}
