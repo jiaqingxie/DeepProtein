@@ -91,6 +91,39 @@ def roc_curve(y_pred, y_label, figure_file, method_name):
     return
 
 
+def plot_confusion_matrix(y_pred, y_label, figure_file, method_name):
+    '''
+    y_pred is a list of predicted labels (for multi-class classification).
+    y_label is a list of true labels (multi-class).
+    This function plots and saves a confusion matrix for multi-class classification.
+    '''
+    import matplotlib.pyplot as plt
+    from sklearn.metrics import confusion_matrix
+    import seaborn as sns
+    import numpy as np
+
+    # Generate the confusion matrix
+    cm = confusion_matrix(y_label, y_pred)
+
+    # Set up the plot
+    plt.figure(figsize=(8, 6))
+    sns.set(font_scale=1.2)
+
+    # Plot the confusion matrix using a heatmap
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False,
+                xticklabels=np.unique(y_label),
+                yticklabels=np.unique(y_label))
+
+    # Set plot labels and title
+    plt.xlabel('Predicted Labels', fontsize=14)
+    plt.ylabel('True Labels', fontsize=14)
+    plt.title(f'Confusion Matrix: {method_name}', fontsize=16)
+
+    # Save the plot to a file
+    plt.savefig(figure_file)
+    return
+
+
 def prauc_curve(y_pred, y_label, figure_file, method_name):
     '''
         y_pred is a list of length n.  (0,1)

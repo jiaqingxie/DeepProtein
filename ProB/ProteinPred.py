@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from time import time
-from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score
+from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score, accuracy_score
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr, spearmanr
 import pickle
@@ -177,6 +177,9 @@ class Protein_Prediction:
             if self.binary:
                 m = torch.nn.Sigmoid()
                 logits = torch.squeeze(m(score)).detach().cpu().numpy()
+            elif self.multi:
+                m = torch.nn.Softmax(dim=-1)
+                logits = torch.squeeze(m(score)).detach().cpu().numpy()
             else:
                 logits = torch.squeeze(score).detach().cpu().numpy()
 
@@ -184,6 +187,10 @@ class Protein_Prediction:
             y_label = y_label + label_ids.flatten().tolist()
             y_pred = y_pred + logits.flatten().tolist()
             outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
+
+            multi_outputs = np.argmax(np.asarray(y_pred), axis=-1)
+            multi_y_pred = y_pred + logits.tolist()
+
 
         model.train()
         if self.binary:
@@ -201,6 +208,20 @@ class Protein_Prediction:
 
             return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
                                                                                                       outputs), y_pred
+        elif self.multi:
+            if repurposing_mode:
+                return y_pred
+
+            if test:
+                if verbose:
+                    roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
+                    plt.figure(0)
+                    plot_confusion_matrix(y_pred, y_label, roc_auc_file, self.target_encoding)
+
+            return accuracy_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
+                                                                                                      outputs), y_pred
+
+
         else:
             if repurposing_mode:
                 return y_pred
@@ -301,6 +322,8 @@ class Protein_Prediction:
         # early stopping
         if self.binary:
             max_auc = 0
+        elif self.multi:
+            max_acc = 0
         else:
             max_MSE = 10000
         model_max = copy.deepcopy(self.model)
@@ -309,6 +332,8 @@ class Protein_Prediction:
         valid_metric_header = ["# epoch"]
         if self.binary:
             valid_metric_header.extend(["AUROC", "AUPRC", "F1"])
+        elif self.multi:
+            valid_metric_header.extend(["ACC", "F1"])
         else:
             valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
         table = PrettyTable(valid_metric_header)
@@ -338,6 +363,14 @@ class Protein_Prediction:
                     n = torch.squeeze(m(score), 1)
                     # label = torch.squeeze(label, 1)
                     loss = loss_fct(n, label)
+
+                elif self.multi:
+
+                    loss_fct = torch.nn.CrossEntropyLoss()
+                    m = torch.nn.Softmax(dim=-1)
+                    n = m(score)
+                    loss = loss_fct(score, label)
+
                 else:
                     loss_fct = torch.nn.MSELoss()
                     n = torch.squeeze(score, 1)
@@ -374,6 +407,19 @@ class Protein_Prediction:
                     wandb.log({"epoch": epo + 1, "AUROC": auc, "AUPRC": auprc, "F1": f1})
                     if verbose:
                         print('Validation at Epoch ' + str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
+                              ' , AUPRC: ' + str(auprc)[:7] + ' , F1: ' + str(f1)[:7])
+
+                elif self.multi:
+
+                    acc, auprc, f1, logits = self.test_(validation_generator, self.model)
+                    lst = ["epoch " + str(epo)] + list(map(float2str, [acc, auprc, f1]))
+                    valid_metric_record.append(lst)
+                    if acc > max_acc:
+                        model_max = copy.deepcopy(self.model)
+                        max_acc = acc
+                    wandb.log({"epoch": epo + 1, "Accuracy": acc, "AUPRC": auprc, "F1": f1})
+                    if verbose:
+                        print('Validation at Epoch ' + str(epo + 1) + ' , Accuracy: ' + str(acc)[:7] + \
                               ' , AUPRC: ' + str(auprc)[:7] + ' , F1: ' + str(f1)[:7])
 
                 else:
@@ -418,6 +464,15 @@ class Protein_Prediction:
                 wandb.log({"TEST AUROC": auc, "TEST AUPRC": auprc, "TEST F1": f1})
                 if verbose:
                     print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
+
+            elif self.multi:
+                acc, auprc, f1, logits = self.test_(testing_generator, model_max, test=True, verbose=verbose)
+                test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+                test_table.add_row(list(map(float2str, [acc, auprc, f1])))
+                wandb.log({"TEST Accuracy": acc, "TEST AUPRC": auprc, "TEST F1": f1})
+                if verbose:
+                    print('Testing Accuracy: ' + str(acc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
+
             else:
                 mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max, test=True, verbose=verbose)
                 test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
@@ -511,3 +566,4 @@ class Protein_Prediction:
         self.model.load_state_dict(state_dict)
 
         self.binary = self.config['binary']
+        self.multi = self.config['multi']
