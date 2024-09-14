@@ -40,8 +40,10 @@ class Classifier(nn.Sequential):
 
         self.hidden_dims = config['cls_hidden_dims']
         layer_size = len(self.hidden_dims) + 1
-        dims = [self.input_dim_protein] + self.hidden_dims + [1]
-
+        if not config['multi']:
+            dims = [self.input_dim_protein] + self.hidden_dims + [1]
+        else:
+            dims = [self.input_dim_protein] + self.hidden_dims + [config['classes']]
         self.predictor = nn.ModuleList([nn.Linear(dims[i], dims[i + 1]) for i in range(layer_size)])
 
     def forward(self, v_P):
@@ -193,9 +195,8 @@ class Protein_Prediction:
             multi_y_pred = multi_y_pred + logits.tolist()
             multi_outputs = np.argmax(np.asarray(multi_y_pred), axis=-1)
 
-        print(multi_outputs)
-
-        print(multi_y_pred)
+        if self.multi:
+            y_label = np.array(y_label).astype(int)
 
         model.train()
         if self.binary:
@@ -374,7 +375,9 @@ class Protein_Prediction:
                     loss_fct = torch.nn.CrossEntropyLoss()
                     m = torch.nn.Softmax(dim=-1)
                     n = m(score)
-                    loss = loss_fct(score, label)
+                    label = torch.squeeze(label, 1).long()
+
+                    loss = loss_fct(n, label)
 
                 else:
                     loss_fct = torch.nn.MSELoss()

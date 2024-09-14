@@ -1,0 +1,25 @@
+Protein Function Prediction Mode...
+in total: 8420 proteins
+encoding protein...
+unique target sequence: 8383
+Done.
+Protein Function Prediction Mode...
+in total: 2811 proteins
+encoding protein...
+unique target sequence: 2807
+Done.
+Protein Function Prediction Mode...
+in total: 2773 proteins
+encoding protein...
+unique target sequence: 2768
+Done.
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular.py", line 87, in <module>
+    model = models.model_initialize(**config)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 62, in model_initialize
+    model = Protein_Prediction(**config)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 152, in __init__
+    self.model = Classifier(self.model_protein, **config)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 46, in __init__
+    dims = [self.input_dim_protein] + self.hidden_dims + config['classes']
+TypeError: can only concatenate list (not "int") to list
