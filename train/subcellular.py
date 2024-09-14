@@ -14,7 +14,7 @@ import ProB.ProteinPred as models
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Protein Prediction with ProB")
+    parser = argparse.ArgumentParser(description="Protein Prediction with `ProB`")
     parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')

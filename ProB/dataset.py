@@ -106,7 +106,7 @@ class BinarySubcellular(Dataset):
                              f"Must be one of ['train', 'valid', 'test']")
 
         data_path = Path(data_path)
-        data_file = f'subcellular_localization/subcellular_localization_{split}.lmdb'
+        data_file = f'subcellular_localization_2/subcellular_localization_2_{split}.lmdb'
         self.data = dataset_factory(data_path / data_file, in_memory)
     def __len__(self) -> int:
         return len(self.data)
