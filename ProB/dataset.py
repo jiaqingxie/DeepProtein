@@ -96,6 +96,30 @@ class Subcellular(Dataset):
         return protein_orig, target
 
 
+class BinarySubcellular(Dataset):
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test']")
+
+        data_path = Path(data_path)
+        data_file = f'subcellular_localization/subcellular_localization_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        item = self.data[index]
+
+        protein_orig = item['primary']
+        target = item['"localization'][0]
+
+        return protein_orig, target
+
+
 class FluorescenceDataset(Dataset):
 
     def __init__(self,
