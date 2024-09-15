@@ -172,6 +172,8 @@ class Beta_lactamase(Dataset):
         return protein_orig, target
 
 
+
+
 class Stability(Dataset):
 
     def __init__(self,
@@ -224,24 +226,40 @@ class Solubility(Dataset):
 
 
 def collate_fn(batch, graph=False, unsqueeze=True):
+    # Unpack batch into protein sequences and targets
     protein_orig, target = tuple(zip(*batch))
     protein_orig = list(protein_orig)
+    target = list(target)
     batch_len = len(target)
 
-    protein_idx = np.array(list(range(batch_len)))
-
-    # protein_processed = []
+    # Lists to store valid proteins, targets, and indices
+    valid_proteins = []
+    valid_targets = []
 
     if graph:
         for i in tqdm(range(batch_len)):
-            protein_orig[i] = Chem.MolToSmiles(Chem.MolFromSequence(protein_orig[i]))
+            # Try to convert protein sequence to a molecule and then to SMILES
+            mol = Chem.MolFromSequence(protein_orig[i])
+            if mol is not None:
+                # Append valid protein and target
+                valid_proteins.append(Chem.MolToSmiles(mol))
+                valid_targets.append(target[i])
+            else:
+                # Log warning for invalid sequence
+                print(f"Warning: Failed to create molecule from sequence: {protein_orig[i]}")
 
-    # print(target)
-    target = torch.FloatTensor(np.array(target))  # type: ignore
+    # Convert target to torch tensor, based on valid targets
+    valid_targets = torch.FloatTensor(np.array(valid_targets))
     if unsqueeze:
-        target = target.unsqueeze(1)
+        # Unsqueeze to add an extra dimension if needed
+        valid_targets = valid_targets.unsqueeze(1)
 
-    return protein_orig, target, protein_idx
+    # Create a new protein_idx with indices from 0 to number of valid proteins - 1
+    protein_idx = np.array(list(range(len(valid_proteins))))
+
+    # Return valid protein sequences, valid target values, and the new indices
+    return valid_proteins, valid_targets, protein_idx
+
 
 
 #

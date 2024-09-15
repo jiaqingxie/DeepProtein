@@ -1,0 +1,203 @@
+Protein Function Prediction Mode...
+in total: 5184 proteins
+encoding protein...
+unique target sequence: 5161
+Done.
+Protein Function Prediction Mode...
+in total: 1729 proteins
+encoding protein...
+unique target sequence: 1727
+Done.
+Protein Function Prediction Mode...
+in total: 1749 proteins
+encoding protein...
+unique target sequence: 1746
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 0.69147. Total time 0.01055 hours
+E:\anaconda3\envs\graph\lib\site-packages\torch\autograd\graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Training at Epoch 1 iteration 100 with loss 0.68493. Total time 0.01166 hours
+Validation at Epoch 1 , AUROC: 0.72257 , AUPRC: 0.80323 , F1: 0.74482
+Training at Epoch 2 iteration 0 with loss 0.69194. Total time 0.02944 hours
+Training at Epoch 2 iteration 100 with loss 0.51442. Total time 0.03083 hours
+Validation at Epoch 2 , AUROC: 0.89418 , AUPRC: 0.89969 , F1: 0.88193
+Training at Epoch 3 iteration 0 with loss 0.30845. Total time 0.04861 hours
+Training at Epoch 3 iteration 100 with loss 0.36472. Total time 0.05 hours
+Validation at Epoch 3 , AUROC: 0.90830 , AUPRC: 0.90978 , F1: 0.90050
+Training at Epoch 4 iteration 0 with loss 0.29730. Total time 0.06805 hours
+Training at Epoch 4 iteration 100 with loss 0.38231. Total time 0.06944 hours
+Validation at Epoch 4 , AUROC: 0.91220 , AUPRC: 0.91282 , F1: 0.80495
+Training at Epoch 5 iteration 0 with loss 0.50191. Total time 0.08722 hours
+Training at Epoch 5 iteration 100 with loss 0.47693. Total time 0.08861 hours
+Validation at Epoch 5 , AUROC: 0.91501 , AUPRC: 0.91674 , F1: 0.90686
+Training at Epoch 6 iteration 0 with loss 0.30061. Total time 0.10611 hours
+Training at Epoch 6 iteration 100 with loss 0.28106. Total time 0.1075 hours
+Validation at Epoch 6 , AUROC: 0.91923 , AUPRC: 0.92208 , F1: 0.89671
+Training at Epoch 7 iteration 0 with loss 0.34280. Total time 0.125 hours
+Training at Epoch 7 iteration 100 with loss 0.28388. Total time 0.12638 hours
+Validation at Epoch 7 , AUROC: 0.92453 , AUPRC: 0.92878 , F1: 0.90697
+Training at Epoch 8 iteration 0 with loss 0.19606. Total time 0.14388 hours
+Training at Epoch 8 iteration 100 with loss 0.36694. Total time 0.14527 hours
+Validation at Epoch 8 , AUROC: 0.92911 , AUPRC: 0.93502 , F1: 0.91071
+Training at Epoch 9 iteration 0 with loss 0.15665. Total time 0.16472 hours
+Training at Epoch 9 iteration 100 with loss 0.13373. Total time 0.16611 hours
+Validation at Epoch 9 , AUROC: 0.93573 , AUPRC: 0.94207 , F1: 0.91879
+Training at Epoch 10 iteration 0 with loss 0.20731. Total time 0.18166 hours
+Training at Epoch 10 iteration 100 with loss 0.08498. Total time 0.18305 hours
+Validation at Epoch 10 , AUROC: 0.93852 , AUPRC: 0.94470 , F1: 0.87537
+Training at Epoch 11 iteration 0 with loss 0.07333. Total time 0.19888 hours
+Training at Epoch 11 iteration 100 with loss 0.08170. Total time 0.20027 hours
+Validation at Epoch 11 , AUROC: 0.93798 , AUPRC: 0.94540 , F1: 0.91331
+Training at Epoch 12 iteration 0 with loss 0.03861. Total time 0.21638 hours
+Training at Epoch 12 iteration 100 with loss 0.07424. Total time 0.21777 hours
+Validation at Epoch 12 , AUROC: 0.93973 , AUPRC: 0.94514 , F1: 0.91705
+Training at Epoch 13 iteration 0 with loss 0.04860. Total time 0.23416 hours
+Training at Epoch 13 iteration 100 with loss 0.01324. Total time 0.23527 hours
+Validation at Epoch 13 , AUROC: 0.93605 , AUPRC: 0.94079 , F1: 0.82788
+Training at Epoch 14 iteration 0 with loss 0.10844. Total time 0.25138 hours
+Training at Epoch 14 iteration 100 with loss 0.00523. Total time 0.25277 hours
+Validation at Epoch 14 , AUROC: 0.94323 , AUPRC: 0.94841 , F1: 0.89857
+Training at Epoch 15 iteration 0 with loss 0.00691. Total time 0.26861 hours
+Training at Epoch 15 iteration 100 with loss 0.00428. Total time 0.27 hours
+Validation at Epoch 15 , AUROC: 0.94396 , AUPRC: 0.94864 , F1: 0.88643
+Training at Epoch 16 iteration 0 with loss 0.00583. Total time 0.28638 hours
+Training at Epoch 16 iteration 100 with loss 0.00400. Total time 0.28777 hours
+Validation at Epoch 16 , AUROC: 0.94324 , AUPRC: 0.94777 , F1: 0.91591
+Training at Epoch 17 iteration 0 with loss 0.00305. Total time 0.30388 hours
+Training at Epoch 17 iteration 100 with loss 0.00084. Total time 0.30527 hours
+Validation at Epoch 17 , AUROC: 0.94328 , AUPRC: 0.94790 , F1: 0.91749
+Training at Epoch 18 iteration 0 with loss 0.00153. Total time 0.32111 hours
+Training at Epoch 18 iteration 100 with loss 0.00112. Total time 0.3225 hours
+Validation at Epoch 18 , AUROC: 0.94365 , AUPRC: 0.94838 , F1: 0.91705
+Training at Epoch 19 iteration 0 with loss 0.00095. Total time 0.33861 hours
+Training at Epoch 19 iteration 100 with loss 0.00197. Total time 0.34 hours
+Validation at Epoch 19 , AUROC: 0.94369 , AUPRC: 0.94848 , F1: 0.91863
+Training at Epoch 20 iteration 0 with loss 0.00091. Total time 0.35583 hours
+Training at Epoch 20 iteration 100 with loss 0.00074. Total time 0.35722 hours
+Validation at Epoch 20 , AUROC: 0.94368 , AUPRC: 0.94848 , F1: 0.91879
+Training at Epoch 21 iteration 0 with loss 0.00055. Total time 0.37277 hours
+Training at Epoch 21 iteration 100 with loss 0.00031. Total time 0.37416 hours
+Validation at Epoch 21 , AUROC: 0.94401 , AUPRC: 0.94891 , F1: 0.91583
+Training at Epoch 22 iteration 0 with loss 0.00083. Total time 0.39 hours
+Training at Epoch 22 iteration 100 with loss 0.00020. Total time 0.39138 hours
+Validation at Epoch 22 , AUROC: 0.94389 , AUPRC: 0.94875 , F1: 0.91634
+Training at Epoch 23 iteration 0 with loss 0.00067. Total time 0.4075 hours
+Training at Epoch 23 iteration 100 with loss 0.00014. Total time 0.40861 hours
+Validation at Epoch 23 , AUROC: 0.94400 , AUPRC: 0.94885 , F1: 0.91863
+Training at Epoch 24 iteration 0 with loss 0.00017. Total time 0.42416 hours
+Training at Epoch 24 iteration 100 with loss 0.00036. Total time 0.42555 hours
+Validation at Epoch 24 , AUROC: 0.94411 , AUPRC: 0.94903 , F1: 0.91702
+Training at Epoch 25 iteration 0 with loss 0.00048. Total time 0.44111 hours
+Training at Epoch 25 iteration 100 with loss 0.00014. Total time 0.4425 hours
+Validation at Epoch 25 , AUROC: 0.94401 , AUPRC: 0.94891 , F1: 0.91658
+Training at Epoch 26 iteration 0 with loss 0.00030. Total time 0.45833 hours
+Training at Epoch 26 iteration 100 with loss 0.00038. Total time 0.45972 hours
+Validation at Epoch 26 , AUROC: 0.94395 , AUPRC: 0.94881 , F1: 0.91871
+Training at Epoch 27 iteration 0 with loss 0.00015. Total time 0.47555 hours
+Training at Epoch 27 iteration 100 with loss 4.22799. Total time 0.47694 hours
+Validation at Epoch 27 , AUROC: 0.94403 , AUPRC: 0.94894 , F1: 0.91702
+Training at Epoch 28 iteration 0 with loss 7.95001. Total time 0.49277 hours
+Training at Epoch 28 iteration 100 with loss 0.00017. Total time 0.49416 hours
+Validation at Epoch 28 , AUROC: 0.94398 , AUPRC: 0.94886 , F1: 0.91812
+Training at Epoch 29 iteration 0 with loss 7.17201. Total time 0.51027 hours
+Training at Epoch 29 iteration 100 with loss 0.00013. Total time 0.51166 hours
+Validation at Epoch 29 , AUROC: 0.94387 , AUPRC: 0.94873 , F1: 0.91863
+Training at Epoch 30 iteration 0 with loss 0.00014. Total time 0.52694 hours
+Training at Epoch 30 iteration 100 with loss 8.69698. Total time 0.52833 hours
+Validation at Epoch 30 , AUROC: 0.94395 , AUPRC: 0.94883 , F1: 0.91658
+Training at Epoch 31 iteration 0 with loss 9.12490. Total time 0.54388 hours
+Training at Epoch 31 iteration 100 with loss 0.00010. Total time 0.54527 hours
+Validation at Epoch 31 , AUROC: 0.94391 , AUPRC: 0.94879 , F1: 0.91761
+Training at Epoch 32 iteration 0 with loss 3.05203. Total time 0.56083 hours
+Training at Epoch 32 iteration 100 with loss 3.33926. Total time 0.56194 hours
+Validation at Epoch 32 , AUROC: 0.94396 , AUPRC: 0.94880 , F1: 0.91761
+Training at Epoch 33 iteration 0 with loss 4.62587. Total time 0.57888 hours
+Training at Epoch 33 iteration 100 with loss 4.31733. Total time 0.58027 hours
+Validation at Epoch 33 , AUROC: 0.94407 , AUPRC: 0.94899 , F1: 0.91737
+Training at Epoch 34 iteration 0 with loss 7.04958. Total time 0.59777 hours
+Training at Epoch 34 iteration 100 with loss 4.83670. Total time 0.59916 hours
+Validation at Epoch 34 , AUROC: 0.94398 , AUPRC: 0.94883 , F1: 0.91710
+Training at Epoch 35 iteration 0 with loss 2.97533. Total time 0.61694 hours
+Training at Epoch 35 iteration 100 with loss 6.29517. Total time 0.61805 hours
+Validation at Epoch 35 , AUROC: 0.94386 , AUPRC: 0.94869 , F1: 0.91828
+Training at Epoch 36 iteration 0 with loss 6.10273. Total time 0.63527 hours
+Training at Epoch 36 iteration 100 with loss 2.17001. Total time 0.63666 hours
+Validation at Epoch 36 , AUROC: 0.94392 , AUPRC: 0.94880 , F1: 0.91717
+Training at Epoch 37 iteration 0 with loss 5.60598. Total time 0.65416 hours
+Training at Epoch 37 iteration 100 with loss 4.73682. Total time 0.65555 hours
+Validation at Epoch 37 , AUROC: 0.94390 , AUPRC: 0.94867 , F1: 0.91828
+Training at Epoch 38 iteration 0 with loss 3.32787. Total time 0.67305 hours
+Training at Epoch 38 iteration 100 with loss 2.00611. Total time 0.67444 hours
+Validation at Epoch 38 , AUROC: 0.94388 , AUPRC: 0.94866 , F1: 0.91828
+Training at Epoch 39 iteration 0 with loss 2.64038. Total time 0.69194 hours
+Training at Epoch 39 iteration 100 with loss 2.33996. Total time 0.69305 hours
+Validation at Epoch 39 , AUROC: 0.94409 , AUPRC: 0.94905 , F1: 0.91737
+Training at Epoch 40 iteration 0 with loss 2.48754. Total time 0.71166 hours
+Training at Epoch 40 iteration 100 with loss 4.81383. Total time 0.71305 hours
+Validation at Epoch 40 , AUROC: 0.94393 , AUPRC: 0.94870 , F1: 0.91828
+Training at Epoch 41 iteration 0 with loss 1.53651. Total time 0.73027 hours
+Training at Epoch 41 iteration 100 with loss 1.91228. Total time 0.73166 hours
+Validation at Epoch 41 , AUROC: 0.94410 , AUPRC: 0.94890 , F1: 0.91666
+Training at Epoch 42 iteration 0 with loss 1.69593. Total time 0.74972 hours
+Training at Epoch 42 iteration 100 with loss 1.99343. Total time 0.75111 hours
+Validation at Epoch 42 , AUROC: 0.94402 , AUPRC: 0.94863 , F1: 0.91666
+Training at Epoch 43 iteration 0 with loss 7.24148. Total time 0.76944 hours
+Training at Epoch 43 iteration 100 with loss 1.33826. Total time 0.77083 hours
+Validation at Epoch 43 , AUROC: 0.94408 , AUPRC: 0.94893 , F1: 0.91666
+Training at Epoch 44 iteration 0 with loss 1.62013. Total time 0.78916 hours
+Training at Epoch 44 iteration 100 with loss 3.70050. Total time 0.79027 hours
+Validation at Epoch 44 , AUROC: 0.94407 , AUPRC: 0.94874 , F1: 0.91753
+Training at Epoch 45 iteration 0 with loss 6.80861. Total time 0.80833 hours
+Training at Epoch 45 iteration 100 with loss 8.95755. Total time 0.80972 hours
+Validation at Epoch 45 , AUROC: 0.94395 , AUPRC: 0.94839 , F1: 0.91710
+Training at Epoch 46 iteration 0 with loss 1.30571. Total time 0.82805 hours
+Training at Epoch 46 iteration 100 with loss 1.44094. Total time 0.82916 hours
+Validation at Epoch 46 , AUROC: 0.94393 , AUPRC: 0.94853 , F1: 0.91828
+Training at Epoch 47 iteration 0 with loss 4.69547. Total time 0.84638 hours
+Training at Epoch 47 iteration 100 with loss 4.94183. Total time 0.84777 hours
+Validation at Epoch 47 , AUROC: 0.94389 , AUPRC: 0.94852 , F1: 0.91784
+Training at Epoch 48 iteration 0 with loss 1.19350. Total time 0.86583 hours
+Training at Epoch 48 iteration 100 with loss 1.48261. Total time 0.86694 hours
+Validation at Epoch 48 , AUROC: 0.94412 , AUPRC: 0.94901 , F1: 0.91710
+Training at Epoch 49 iteration 0 with loss 6.66866. Total time 0.88527 hours
+Training at Epoch 49 iteration 100 with loss 2.23031. Total time 0.88666 hours
+Validation at Epoch 49 , AUROC: 0.94403 , AUPRC: 0.94820 , F1: 0.91753
+Training at Epoch 50 iteration 0 with loss 5.74415. Total time 0.90361 hours
+Training at Epoch 50 iteration 100 with loss 2.67296. Total time 0.905 hours
+Validation at Epoch 50 , AUROC: 0.94376 , AUPRC: 0.94662 , F1: 0.91725
+Training at Epoch 51 iteration 0 with loss 3.82049. Total time 0.9225 hours
+Training at Epoch 51 iteration 100 with loss 6.12173. Total time 0.92361 hours
+Validation at Epoch 51 , AUROC: 0.94375 , AUPRC: 0.94678 , F1: 0.91623
+Training at Epoch 52 iteration 0 with loss 2.35269. Total time 0.94166 hours
+Training at Epoch 52 iteration 100 with loss 1.05062. Total time 0.94277 hours
+Validation at Epoch 52 , AUROC: 0.94391 , AUPRC: 0.94735 , F1: 0.91710
+Training at Epoch 53 iteration 0 with loss 4.29041. Total time 0.96055 hours
+Training at Epoch 53 iteration 100 with loss 5.67150. Total time 0.96166 hours
+Validation at Epoch 53 , AUROC: 0.94394 , AUPRC: 0.94766 , F1: 0.91784
+Training at Epoch 54 iteration 0 with loss 5.91347. Total time 0.97944 hours
+Training at Epoch 54 iteration 100 with loss 6.86365. Total time 0.98083 hours
+Validation at Epoch 54 , AUROC: 0.94392 , AUPRC: 0.94763 , F1: 0.91717
+Training at Epoch 55 iteration 0 with loss 4.44463. Total time 0.99916 hours
+Training at Epoch 55 iteration 100 with loss 1.66537. Total time 1.00055 hours
+Validation at Epoch 55 , AUROC: 0.94398 , AUPRC: 0.94785 , F1: 0.91745
+Training at Epoch 56 iteration 0 with loss 3.84523. Total time 1.01777 hours
+Training at Epoch 56 iteration 100 with loss 5.33882. Total time 1.01916 hours
+Validation at Epoch 56 , AUROC: 0.94343 , AUPRC: 0.94559 , F1: 0.91784
+Training at Epoch 57 iteration 0 with loss 4.61117. Total time 1.03694 hours
+Training at Epoch 57 iteration 100 with loss 4.00013. Total time 1.03833 hours
+Validation at Epoch 57 , AUROC: 0.94383 , AUPRC: 0.94656 , F1: 0.91784
+Training at Epoch 58 iteration 0 with loss 2.46117. Total time 1.05583 hours
+Training at Epoch 58 iteration 100 with loss 4.84801. Total time 1.05722 hours
+Validation at Epoch 58 , AUROC: 0.94365 , AUPRC: 0.94619 , F1: 0.91776
+Training at Epoch 59 iteration 0 with loss 4.20604. Total time 1.07555 hours
+Training at Epoch 59 iteration 100 with loss 4.31534. Total time 1.07694 hours
+Validation at Epoch 59 , AUROC: 0.94372 , AUPRC: 0.94646 , F1: 0.91733
+Training at Epoch 60 iteration 0 with loss 1.52436. Total time 1.09472 hours
+Training at Epoch 60 iteration 100 with loss 1.08348. Total time 1.09583 hours
+Validation at Epoch 60 , AUROC: 0.94398 , AUPRC: 0.94705 , F1: 0.91623
+--- Go for Testing ---
+Testing AUROC: 0.9045999909024989 , AUPRC: 0.9056660770211697 , F1: 0.8765550239234449
+--- Training Finished ---

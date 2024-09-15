@@ -27,3 +27,4 @@ config: {}
 2024-09-15 09:56:13,867 INFO    MainThread:25104 [wandb_run.py:_redirect():2325] Redirects installed.
 2024-09-15 09:56:13,868 INFO    MainThread:25104 [wandb_init.py:init():847] run started, returning control to user process
 2024-09-15 09:56:13,868 INFO    MainThread:25104 [wandb_run.py:_config_callback():1382] config_cb None None {'target_encoding': 'CNN', 'seed': 42, 'wandb_proj': 'DeepPurposePP', 'lr': 0.0001, 'epochs': 60, 'compute_pos_enc': False, 'batch_size': 32}
+2024-09-15 11:07:48,076 WARNING MsgRouterThr:25104 [router.py:message_loop():77] message_loop has been closed
