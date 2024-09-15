@@ -103,6 +103,10 @@ def plot_confusion_matrix(y_pred, y_label, figure_file, method_name):
     import numpy as np
 
     # Generate the confusion matrix
+
+
+    print(y_label)
+    print(y_pred)
     cm = confusion_matrix(y_label, y_pred)
 
     # Set up the plot

@@ -1,0 +1,277 @@
+Protein Function Prediction Mode...
+in total: 8420 proteins
+encoding protein...
+unique target sequence: 8383
+Done.
+Protein Function Prediction Mode...
+in total: 2811 proteins
+encoding protein...
+unique target sequence: 2807
+Done.
+Protein Function Prediction Mode...
+in total: 2773 proteins
+encoding protein...
+unique target sequence: 2768
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 2.30419. Total time 0.0075 hours
+E:\anaconda3\envs\graph\lib\site-packages\torch\autograd\graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Training at Epoch 1 iteration 100 with loss 2.13480. Total time 0.00861 hours
+Training at Epoch 1 iteration 200 with loss 1.72849. Total time 0.01 hours
+Validation at Epoch 1 , Accuracy: 0.28779 , AUPRC: 0.16521 , F1: 0.04469
+Training at Epoch 2 iteration 0 with loss 1.82201. Total time 0.02888 hours
+Training at Epoch 2 iteration 100 with loss 1.71609. Total time 0.03027 hours
+Training at Epoch 2 iteration 200 with loss 1.77968. Total time 0.03166 hours
+Validation at Epoch 2 , Accuracy: 0.35361 , AUPRC: 0.18200 , F1: 0.11608
+Training at Epoch 3 iteration 0 with loss 1.64503. Total time 0.05055 hours
+Training at Epoch 3 iteration 100 with loss 2.27779. Total time 0.05194 hours
+Training at Epoch 3 iteration 200 with loss 1.94470. Total time 0.05333 hours
+Validation at Epoch 3 , Accuracy: 0.36712 , AUPRC: 0.20461 , F1: 0.13012
+Training at Epoch 4 iteration 0 with loss 1.89737. Total time 0.07083 hours
+Training at Epoch 4 iteration 100 with loss 1.92667. Total time 0.07222 hours
+Training at Epoch 4 iteration 200 with loss 1.91429. Total time 0.07361 hours
+Validation at Epoch 4 , Accuracy: 0.36961 , AUPRC: 0.22804 , F1: 0.13421
+Training at Epoch 5 iteration 0 with loss 1.44831. Total time 0.09194 hours
+Training at Epoch 5 iteration 100 with loss 1.41553. Total time 0.09333 hours
+Training at Epoch 5 iteration 200 with loss 1.44015. Total time 0.09444 hours
+Validation at Epoch 5 , Accuracy: 0.45962 , AUPRC: 0.29137 , F1: 0.21367
+Training at Epoch 6 iteration 0 with loss 1.31068. Total time 0.1125 hours
+Training at Epoch 6 iteration 100 with loss 1.25098. Total time 0.11388 hours
+Training at Epoch 6 iteration 200 with loss 1.26328. Total time 0.11527 hours
+Validation at Epoch 6 , Accuracy: 0.46175 , AUPRC: 0.30342 , F1: 0.22774
+Training at Epoch 7 iteration 0 with loss 1.58420. Total time 0.13361 hours
+Training at Epoch 7 iteration 100 with loss 1.40827. Total time 0.13472 hours
+Training at Epoch 7 iteration 200 with loss 1.25577. Total time 0.13611 hours
+Validation at Epoch 7 , Accuracy: 0.48310 , AUPRC: 0.31194 , F1: 0.23710
+Training at Epoch 8 iteration 0 with loss 1.22946. Total time 0.155 hours
+Training at Epoch 8 iteration 100 with loss 1.53011. Total time 0.15638 hours
+Training at Epoch 8 iteration 200 with loss 1.22949. Total time 0.15777 hours
+Validation at Epoch 8 , Accuracy: 0.49057 , AUPRC: 0.32626 , F1: 0.26369
+Training at Epoch 9 iteration 0 with loss 1.68803. Total time 0.17611 hours
+Training at Epoch 9 iteration 100 with loss 1.27678. Total time 0.1775 hours
+Training at Epoch 9 iteration 200 with loss 1.08719. Total time 0.17888 hours
+Validation at Epoch 9 , Accuracy: 0.49733 , AUPRC: 0.33581 , F1: 0.28774
+Training at Epoch 10 iteration 0 with loss 1.22891. Total time 0.19694 hours
+Training at Epoch 10 iteration 100 with loss 1.27809. Total time 0.19833 hours
+Training at Epoch 10 iteration 200 with loss 1.62991. Total time 0.19972 hours
+Validation at Epoch 10 , Accuracy: 0.50266 , AUPRC: 0.34371 , F1: 0.27009
+Training at Epoch 11 iteration 0 with loss 0.97854. Total time 0.21805 hours
+Training at Epoch 11 iteration 100 with loss 1.32645. Total time 0.21916 hours
+Training at Epoch 11 iteration 200 with loss 1.27669. Total time 0.22055 hours
+Validation at Epoch 11 , Accuracy: 0.50124 , AUPRC: 0.34200 , F1: 0.29231
+Training at Epoch 12 iteration 0 with loss 0.87982. Total time 0.23888 hours
+Training at Epoch 12 iteration 100 with loss 1.12373. Total time 0.24027 hours
+Training at Epoch 12 iteration 200 with loss 1.00789. Total time 0.24138 hours
+Validation at Epoch 12 , Accuracy: 0.52116 , AUPRC: 0.35399 , F1: 0.31392
+Training at Epoch 13 iteration 0 with loss 1.14000. Total time 0.25972 hours
+Training at Epoch 13 iteration 100 with loss 1.12449. Total time 0.26111 hours
+Training at Epoch 13 iteration 200 with loss 1.27813. Total time 0.2625 hours
+Validation at Epoch 13 , Accuracy: 0.52081 , AUPRC: 0.35726 , F1: 0.30406
+Training at Epoch 14 iteration 0 with loss 1.14736. Total time 0.28055 hours
+Training at Epoch 14 iteration 100 with loss 1.02902. Total time 0.28194 hours
+Training at Epoch 14 iteration 200 with loss 1.19385. Total time 0.28305 hours
+Validation at Epoch 14 , Accuracy: 0.50978 , AUPRC: 0.35954 , F1: 0.31791
+Training at Epoch 15 iteration 0 with loss 1.02514. Total time 0.30111 hours
+Training at Epoch 15 iteration 100 with loss 0.73258. Total time 0.3025 hours
+Training at Epoch 15 iteration 200 with loss 1.28438. Total time 0.30361 hours
+Validation at Epoch 15 , Accuracy: 0.52045 , AUPRC: 0.36142 , F1: 0.28594
+Training at Epoch 16 iteration 0 with loss 1.04316. Total time 0.3225 hours
+Training at Epoch 16 iteration 100 with loss 1.01590. Total time 0.32388 hours
+Training at Epoch 16 iteration 200 with loss 0.99805. Total time 0.325 hours
+Validation at Epoch 16 , Accuracy: 0.51760 , AUPRC: 0.35920 , F1: 0.30410
+Training at Epoch 17 iteration 0 with loss 1.07779. Total time 0.34361 hours
+Training at Epoch 17 iteration 100 with loss 1.07425. Total time 0.34472 hours
+Training at Epoch 17 iteration 200 with loss 0.96934. Total time 0.34611 hours
+Validation at Epoch 17 , Accuracy: 0.49697 , AUPRC: 0.35950 , F1: 0.31661
+Training at Epoch 18 iteration 0 with loss 0.80273. Total time 0.36444 hours
+Training at Epoch 18 iteration 100 with loss 0.73939. Total time 0.36583 hours
+Training at Epoch 18 iteration 200 with loss 0.47031. Total time 0.36722 hours
+Validation at Epoch 18 , Accuracy: 0.53681 , AUPRC: 0.36805 , F1: 0.32114
+Training at Epoch 19 iteration 0 with loss 0.99364. Total time 0.38472 hours
+Training at Epoch 19 iteration 100 with loss 1.06122. Total time 0.38611 hours
+Training at Epoch 19 iteration 200 with loss 0.81499. Total time 0.38722 hours
+Validation at Epoch 19 , Accuracy: 0.53504 , AUPRC: 0.36629 , F1: 0.31433
+Training at Epoch 20 iteration 0 with loss 0.80311. Total time 0.40583 hours
+Training at Epoch 20 iteration 100 with loss 0.76121. Total time 0.40722 hours
+Training at Epoch 20 iteration 200 with loss 0.57058. Total time 0.40833 hours
+Validation at Epoch 20 , Accuracy: 0.53148 , AUPRC: 0.36413 , F1: 0.32574
+Training at Epoch 21 iteration 0 with loss 0.63760. Total time 0.42694 hours
+Training at Epoch 21 iteration 100 with loss 0.74608. Total time 0.42805 hours
+Training at Epoch 21 iteration 200 with loss 0.49076. Total time 0.42944 hours
+Validation at Epoch 21 , Accuracy: 0.52792 , AUPRC: 0.36410 , F1: 0.30547
+Training at Epoch 22 iteration 0 with loss 0.77202. Total time 0.44722 hours
+Training at Epoch 22 iteration 100 with loss 0.56510. Total time 0.44861 hours
+Training at Epoch 22 iteration 200 with loss 0.68331. Total time 0.45 hours
+Validation at Epoch 22 , Accuracy: 0.54500 , AUPRC: 0.37063 , F1: 0.33439
+Training at Epoch 23 iteration 0 with loss 0.41987. Total time 0.46833 hours
+Training at Epoch 23 iteration 100 with loss 0.38488. Total time 0.46972 hours
+Training at Epoch 23 iteration 200 with loss 1.23991. Total time 0.47111 hours
+Validation at Epoch 23 , Accuracy: 0.53006 , AUPRC: 0.36641 , F1: 0.33040
+Training at Epoch 24 iteration 0 with loss 0.39432. Total time 0.48916 hours
+Training at Epoch 24 iteration 100 with loss 0.63218. Total time 0.49055 hours
+Training at Epoch 24 iteration 200 with loss 0.58457. Total time 0.49194 hours
+Validation at Epoch 24 , Accuracy: 0.52721 , AUPRC: 0.36584 , F1: 0.33591
+Training at Epoch 25 iteration 0 with loss 0.52818. Total time 0.50972 hours
+Training at Epoch 25 iteration 100 with loss 0.96841. Total time 0.51111 hours
+Training at Epoch 25 iteration 200 with loss 0.41975. Total time 0.5125 hours
+Validation at Epoch 25 , Accuracy: 0.50373 , AUPRC: 0.35765 , F1: 0.32467
+Training at Epoch 26 iteration 0 with loss 0.69671. Total time 0.53083 hours
+Training at Epoch 26 iteration 100 with loss 0.47214. Total time 0.53222 hours
+Training at Epoch 26 iteration 200 with loss 0.59424. Total time 0.53333 hours
+Validation at Epoch 26 , Accuracy: 0.54037 , AUPRC: 0.36526 , F1: 0.32892
+Training at Epoch 27 iteration 0 with loss 0.57471. Total time 0.55138 hours
+Training at Epoch 27 iteration 100 with loss 0.49034. Total time 0.55277 hours
+Training at Epoch 27 iteration 200 with loss 0.26976. Total time 0.55388 hours
+Validation at Epoch 27 , Accuracy: 0.52258 , AUPRC: 0.35540 , F1: 0.33446
+Training at Epoch 28 iteration 0 with loss 0.40876. Total time 0.57222 hours
+Training at Epoch 28 iteration 100 with loss 0.22737. Total time 0.57361 hours
+Training at Epoch 28 iteration 200 with loss 0.24718. Total time 0.575 hours
+Validation at Epoch 28 , Accuracy: 0.52401 , AUPRC: 0.34683 , F1: 0.32369
+Training at Epoch 29 iteration 0 with loss 0.52427. Total time 0.59333 hours
+Training at Epoch 29 iteration 100 with loss 0.27578. Total time 0.59472 hours
+Training at Epoch 29 iteration 200 with loss 0.51336. Total time 0.59611 hours
+Validation at Epoch 29 , Accuracy: 0.51334 , AUPRC: 0.35590 , F1: 0.36222
+Training at Epoch 30 iteration 0 with loss 0.46861. Total time 0.61416 hours
+Training at Epoch 30 iteration 100 with loss 0.43975. Total time 0.61555 hours
+Training at Epoch 30 iteration 200 with loss 0.55264. Total time 0.61694 hours
+Validation at Epoch 30 , Accuracy: 0.49484 , AUPRC: 0.34680 , F1: 0.33564
+Training at Epoch 31 iteration 0 with loss 0.22610. Total time 0.635 hours
+Training at Epoch 31 iteration 100 with loss 0.45709. Total time 0.63638 hours
+Training at Epoch 31 iteration 200 with loss 0.26818. Total time 0.63777 hours
+Validation at Epoch 31 , Accuracy: 0.51654 , AUPRC: 0.35217 , F1: 0.34534
+Training at Epoch 32 iteration 0 with loss 0.29076. Total time 0.65583 hours
+Training at Epoch 32 iteration 100 with loss 0.24730. Total time 0.65722 hours
+Training at Epoch 32 iteration 200 with loss 0.45183. Total time 0.65861 hours
+Validation at Epoch 32 , Accuracy: 0.51191 , AUPRC: 0.34379 , F1: 0.32175
+Training at Epoch 33 iteration 0 with loss 0.67262. Total time 0.67638 hours
+Training at Epoch 33 iteration 100 with loss 0.42251. Total time 0.67777 hours
+Training at Epoch 33 iteration 200 with loss 0.32285. Total time 0.67916 hours
+Validation at Epoch 33 , Accuracy: 0.51511 , AUPRC: 0.34928 , F1: 0.34039
+Training at Epoch 34 iteration 0 with loss 0.30831. Total time 0.69722 hours
+Training at Epoch 34 iteration 100 with loss 0.16407. Total time 0.69861 hours
+Training at Epoch 34 iteration 200 with loss 0.22476. Total time 0.7 hours
+Validation at Epoch 34 , Accuracy: 0.49092 , AUPRC: 0.33628 , F1: 0.34127
+Training at Epoch 35 iteration 0 with loss 0.20094. Total time 0.71777 hours
+Training at Epoch 35 iteration 100 with loss 0.20493. Total time 0.71916 hours
+Training at Epoch 35 iteration 200 with loss 0.77222. Total time 0.72055 hours
+Validation at Epoch 35 , Accuracy: 0.50444 , AUPRC: 0.34770 , F1: 0.35659
+Training at Epoch 36 iteration 0 with loss 0.27989. Total time 0.73861 hours
+Training at Epoch 36 iteration 100 with loss 0.36997. Total time 0.74 hours
+Training at Epoch 36 iteration 200 with loss 0.31681. Total time 0.74111 hours
+Validation at Epoch 36 , Accuracy: 0.50907 , AUPRC: 0.34461 , F1: 0.34937
+Training at Epoch 37 iteration 0 with loss 0.35373. Total time 0.75944 hours
+Training at Epoch 37 iteration 100 with loss 0.34883. Total time 0.76083 hours
+Training at Epoch 37 iteration 200 with loss 0.16684. Total time 0.76222 hours
+Validation at Epoch 37 , Accuracy: 0.50266 , AUPRC: 0.34751 , F1: 0.35666
+Training at Epoch 38 iteration 0 with loss 0.16588. Total time 0.78027 hours
+Training at Epoch 38 iteration 100 with loss 0.15828. Total time 0.78166 hours
+Training at Epoch 38 iteration 200 with loss 0.12810. Total time 0.78277 hours
+Validation at Epoch 38 , Accuracy: 0.41302 , AUPRC: 0.30663 , F1: 0.29344
+Training at Epoch 39 iteration 0 with loss 1.28729. Total time 0.80083 hours
+Training at Epoch 39 iteration 100 with loss 0.13414. Total time 0.80222 hours
+Training at Epoch 39 iteration 200 with loss 0.11202. Total time 0.80361 hours
+Validation at Epoch 39 , Accuracy: 0.50551 , AUPRC: 0.34710 , F1: 0.36263
+Training at Epoch 40 iteration 0 with loss 0.18237. Total time 0.82194 hours
+Training at Epoch 40 iteration 100 with loss 0.03612. Total time 0.82333 hours
+Training at Epoch 40 iteration 200 with loss 0.06797. Total time 0.82472 hours
+Validation at Epoch 40 , Accuracy: 0.50515 , AUPRC: 0.34323 , F1: 0.35319
+Training at Epoch 41 iteration 0 with loss 0.10686. Total time 0.84277 hours
+Training at Epoch 41 iteration 100 with loss 0.08253. Total time 0.84388 hours
+Training at Epoch 41 iteration 200 with loss 0.05607. Total time 0.84527 hours
+Validation at Epoch 41 , Accuracy: 0.51334 , AUPRC: 0.34739 , F1: 0.36313
+Training at Epoch 42 iteration 0 with loss 0.21179. Total time 0.86388 hours
+Training at Epoch 42 iteration 100 with loss 0.12015. Total time 0.865 hours
+Training at Epoch 42 iteration 200 with loss 0.04208. Total time 0.86638 hours
+Validation at Epoch 42 , Accuracy: 0.50373 , AUPRC: 0.34529 , F1: 0.35290
+Training at Epoch 43 iteration 0 with loss 0.30937. Total time 0.88416 hours
+Training at Epoch 43 iteration 100 with loss 0.08852. Total time 0.88555 hours
+Training at Epoch 43 iteration 200 with loss 0.07610. Total time 0.88694 hours
+Validation at Epoch 43 , Accuracy: 0.46780 , AUPRC: 0.33175 , F1: 0.34222
+Training at Epoch 44 iteration 0 with loss 0.24397. Total time 0.905 hours
+Training at Epoch 44 iteration 100 with loss 0.13474. Total time 0.90638 hours
+Training at Epoch 44 iteration 200 with loss 0.05044. Total time 0.90777 hours
+Validation at Epoch 44 , Accuracy: 0.49306 , AUPRC: 0.34080 , F1: 0.35388
+Training at Epoch 45 iteration 0 with loss 0.13015. Total time 0.92555 hours
+Training at Epoch 45 iteration 100 with loss 0.03634. Total time 0.92694 hours
+Training at Epoch 45 iteration 200 with loss 0.05258. Total time 0.92833 hours
+Validation at Epoch 45 , Accuracy: 0.50551 , AUPRC: 0.34597 , F1: 0.35655
+Training at Epoch 46 iteration 0 with loss 0.02718. Total time 0.94666 hours
+Training at Epoch 46 iteration 100 with loss 0.06573. Total time 0.94805 hours
+Training at Epoch 46 iteration 200 with loss 0.03659. Total time 0.94916 hours
+Validation at Epoch 46 , Accuracy: 0.49697 , AUPRC: 0.34029 , F1: 0.34775
+Training at Epoch 47 iteration 0 with loss 0.07246. Total time 0.96722 hours
+Training at Epoch 47 iteration 100 with loss 0.05680. Total time 0.96861 hours
+Training at Epoch 47 iteration 200 with loss 0.01681. Total time 0.96972 hours
+Validation at Epoch 47 , Accuracy: 0.48914 , AUPRC: 0.33189 , F1: 0.33489
+Training at Epoch 48 iteration 0 with loss 0.22224. Total time 0.98805 hours
+Training at Epoch 48 iteration 100 with loss 0.19561. Total time 0.98944 hours
+Training at Epoch 48 iteration 200 with loss 0.24141. Total time 0.99083 hours
+Validation at Epoch 48 , Accuracy: 0.48950 , AUPRC: 0.34416 , F1: 0.35348
+Training at Epoch 49 iteration 0 with loss 0.21190. Total time 1.00861 hours
+Training at Epoch 49 iteration 100 with loss 0.07877. Total time 1.01 hours
+Training at Epoch 49 iteration 200 with loss 0.10166. Total time 1.01111 hours
+Validation at Epoch 49 , Accuracy: 0.49662 , AUPRC: 0.34304 , F1: 0.34696
+Training at Epoch 50 iteration 0 with loss 0.02374. Total time 1.02944 hours
+Training at Epoch 50 iteration 100 with loss 0.01955. Total time 1.03083 hours
+Training at Epoch 50 iteration 200 with loss 0.09244. Total time 1.03222 hours
+Validation at Epoch 50 , Accuracy: 0.50088 , AUPRC: 0.34176 , F1: 0.34013
+Training at Epoch 51 iteration 0 with loss 0.09007. Total time 1.04972 hours
+Training at Epoch 51 iteration 100 with loss 0.05674. Total time 1.05111 hours
+Training at Epoch 51 iteration 200 with loss 0.07416. Total time 1.05222 hours
+Validation at Epoch 51 , Accuracy: 0.48167 , AUPRC: 0.34053 , F1: 0.35207
+Training at Epoch 52 iteration 0 with loss 0.12541. Total time 1.07083 hours
+Training at Epoch 52 iteration 100 with loss 0.04893. Total time 1.07222 hours
+Training at Epoch 52 iteration 200 with loss 0.15096. Total time 1.07361 hours
+Validation at Epoch 52 , Accuracy: 0.46922 , AUPRC: 0.34066 , F1: 0.34563
+Training at Epoch 53 iteration 0 with loss 0.34526. Total time 1.09222 hours
+Training at Epoch 53 iteration 100 with loss 0.12066. Total time 1.09361 hours
+Training at Epoch 53 iteration 200 with loss 0.06871. Total time 1.095 hours
+Validation at Epoch 53 , Accuracy: 0.50373 , AUPRC: 0.35615 , F1: 0.36327
+Training at Epoch 54 iteration 0 with loss 0.02344. Total time 1.11333 hours
+Training at Epoch 54 iteration 100 with loss 0.02160. Total time 1.11472 hours
+Training at Epoch 54 iteration 200 with loss 0.06579. Total time 1.11583 hours
+Validation at Epoch 54 , Accuracy: 0.49662 , AUPRC: 0.35265 , F1: 0.37518
+Training at Epoch 55 iteration 0 with loss 0.02418. Total time 1.13388 hours
+Training at Epoch 55 iteration 100 with loss 0.26514. Total time 1.13527 hours
+Training at Epoch 55 iteration 200 with loss 0.04463. Total time 1.13666 hours
+Validation at Epoch 55 , Accuracy: 0.49804 , AUPRC: 0.35887 , F1: 0.36811
+Training at Epoch 56 iteration 0 with loss 0.01489. Total time 1.155 hours
+Training at Epoch 56 iteration 100 with loss 0.02277. Total time 1.15638 hours
+Training at Epoch 56 iteration 200 with loss 0.03119. Total time 1.15777 hours
+Validation at Epoch 56 , Accuracy: 0.48381 , AUPRC: 0.34743 , F1: 0.36415
+Training at Epoch 57 iteration 0 with loss 0.05109. Total time 1.17583 hours
+Training at Epoch 57 iteration 100 with loss 0.03129. Total time 1.17722 hours
+Training at Epoch 57 iteration 200 with loss 0.06669. Total time 1.17861 hours
+Validation at Epoch 57 , Accuracy: 0.48950 , AUPRC: 0.34912 , F1: 0.36021
+Training at Epoch 58 iteration 0 with loss 0.02573. Total time 1.19638 hours
+Training at Epoch 58 iteration 100 with loss 0.07704. Total time 1.19777 hours
+Training at Epoch 58 iteration 200 with loss 0.04776. Total time 1.19888 hours
+Validation at Epoch 58 , Accuracy: 0.49163 , AUPRC: 0.33496 , F1: 0.34380
+Training at Epoch 59 iteration 0 with loss 0.17557. Total time 1.21722 hours
+Training at Epoch 59 iteration 100 with loss 0.06204. Total time 1.21861 hours
+Training at Epoch 59 iteration 200 with loss 0.20241. Total time 1.21972 hours
+Validation at Epoch 59 , Accuracy: 0.50017 , AUPRC: 0.35566 , F1: 0.37382
+Training at Epoch 60 iteration 0 with loss 0.01749. Total time 1.23861 hours
+Training at Epoch 60 iteration 100 with loss 0.12992. Total time 1.24 hours
+Training at Epoch 60 iteration 200 with loss 0.00690. Total time 1.24138 hours
+Validation at Epoch 60 , Accuracy: 0.49911 , AUPRC: 0.35103 , F1: 0.36713
+--- Go for Testing ---
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular.py", line 88, in <module>
+    model.train(train, val, test, compute_pos_enc = compute_pos)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 482, in train
+    acc, auprc, f1, logits = self.test_(testing_generator, model_max, test=True, verbose=verbose)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 230, in test_
+    plot_confusion_matrix(multi_y_pred, y_label, roc_auc_file, self.target_encoding)
+  File "E:\DeepPurposePlusPlus\ProB\utils.py", line 106, in plot_confusion_matrix
+    cm = confusion_matrix(y_label, y_pred)
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\utils\_param_validation.py", line 211, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\metrics\_classification.py", line 326, in confusion_matrix
+    y_type, y_true, y_pred = _check_targets(y_true, y_pred)
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\metrics\_classification.py", line 93, in _check_targets
+    raise ValueError(
+ValueError: Classification metrics can't handle a mix of multiclass and continuous-multioutput targets

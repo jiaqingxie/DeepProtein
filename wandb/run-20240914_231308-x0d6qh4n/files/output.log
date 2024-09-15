@@ -32,3 +32,11 @@ Training at Epoch 3 iteration 200 with loss 1.29885. Total time 0.05416 hours
 Validation at Epoch 3 , Accuracy: 0.48808 , AUPRC: 0.32623 , F1: 0.22767
 Training at Epoch 4 iteration 0 with loss 1.39014. Total time 0.07333 hours
 Training at Epoch 4 iteration 100 with loss 1.16945. Total time 0.07472 hours
+Training at Epoch 4 iteration 200 with loss 1.26308. Total time 0.07611 hours
+Validation at Epoch 4 , Accuracy: 0.51120 , AUPRC: 0.34142 , F1: 0.27080
+Training at Epoch 5 iteration 0 with loss 1.30271. Total time 0.09583 hours
+Training at Epoch 5 iteration 100 with loss 1.42888. Total time 0.09722 hours
+Training at Epoch 5 iteration 200 with loss 1.30472. Total time 0.09861 hours
+Validation at Epoch 5 , Accuracy: 0.52579 , AUPRC: 0.35787 , F1: 0.30330
+Training at Epoch 6 iteration 0 with loss 1.07197. Total time 0.11777 hours
+Training at Epoch 6 iteration 100 with loss 1.38218. Total time 0.11916 hours

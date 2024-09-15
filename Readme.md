@@ -21,6 +21,7 @@ conda create -n prob python=3.9
 conda activate prob
 pip install git+https://github.com/bp-kelley/descriptastorus
 pip install lmdb
+pip install seaborn
 pip install DeepPurpose
 ```
 
@@ -39,7 +40,7 @@ A version of torch 2.1+  is required to installed, since dgl required a version 
 
 
 
-## Encodings
+### Encodings
 
 Thanks to DeepPurpose and dgllife, we could borrow some of the encodings from DeepPurpose. The new added encodings are PAGTN, 
 EGT and Graphormer which belong to graph transformer modules that are prevailing methods
@@ -66,7 +67,7 @@ construct a large batched edge feature matrix therefore we ignore the implementa
 This could be solved if applied to small graphs so it will be our future work. 
 
 
-### 1. Protein Function (Property) Prediction
+###  Protein Function (Property) Prediction
 
 
 Done: 
@@ -84,13 +85,6 @@ test on the GCN probing on the Fluorescence dataset
 python GCN_Fluroscence.py
 ```
 
-
-TODO: 
-1. ProtBert test on Fluorescence Dataset 
-2. ProtAlbert test on Fluorescence Dataset
-3. ESM-Gearnet test on Fluorescence Dataset
-3. Transformer test on Fluorescence Dataset
-4. Flow test on Fluorescence Datasets
 
 ```python
 python test.py

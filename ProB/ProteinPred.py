@@ -379,6 +379,7 @@ class Protein_Prediction:
 
                     loss_fct = torch.nn.NLLLoss()
                     m = torch.nn.LogSoftmax(dim=-1)
+
                     n = m(score)
                     label = torch.squeeze(label, 1).long()
                     loss = loss_fct(n, label)
