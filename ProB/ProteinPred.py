@@ -383,7 +383,11 @@ class Protein_Prediction:
                     m = torch.nn.LogSoftmax(dim=-1)
 
                     n = m(score)
-                    label = torch.squeeze(label, 1).long()
+                    label = torch.squeeze(label).long()  # This will remove all dimensions with size 1
+
+                    # Check if the tensor still has a second dimension before trying to squeeze it
+                    if label.dim() > 1:
+                        label = label.squeeze(1)
                     loss = loss_fct(n, label)
 
                 else:
