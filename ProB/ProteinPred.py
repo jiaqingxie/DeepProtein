@@ -191,9 +191,9 @@ class Protein_Prediction:
             y_pred = y_pred + logits.flatten().tolist()
             outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
 
-
-            multi_y_pred = multi_y_pred + logits.tolist()
-            multi_outputs = np.argmax(np.asarray(multi_y_pred), axis=-1)
+            if self.multi:
+                multi_y_pred = multi_y_pred + logits.tolist()
+                multi_outputs = np.argmax(np.asarray(multi_y_pred), axis=-1)
 
         if self.multi:
             y_label = np.array(y_label).astype(int)
@@ -221,13 +221,13 @@ class Protein_Prediction:
                                                                                                       outputs), y_pred
         elif self.multi:
             if repurposing_mode:
-                return multi_y_pred
+                return multi_outputs
 
             if test:
                 if verbose:
-                    roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
+                    confusion_matrix_file = os.path.join(self.result_folder, "confusion_matrix.jpg")
                     plt.figure(0)
-                    plot_confusion_matrix(multi_y_pred, y_label, roc_auc_file, self.target_encoding)
+                    plot_confusion_matrix(multi_outputs, y_label, confusion_matrix_file, self.target_encoding)
 
             return accuracy_score(y_label, multi_outputs), average_precision_score(y_label, multi_y_pred, average='macro'), f1_score(y_label,
                                                                                 multi_outputs, average='macro'), multi_y_pred
@@ -373,6 +373,8 @@ class Protein_Prediction:
                     m = torch.nn.Sigmoid()
                     n = torch.squeeze(m(score), 1)
                     # label = torch.squeeze(label, 1)
+                    if label.dim() > 1:
+                        label = torch.squeeze(label)
                     loss = loss_fct(n, label)
 
                 elif self.multi:

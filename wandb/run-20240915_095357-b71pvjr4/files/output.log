@@ -1,0 +1,30 @@
+Protein Function Prediction Mode...
+in total: 5184 proteins
+encoding protein...
+unique target sequence: 5161
+Done.
+Protein Function Prediction Mode...
+in total: 1729 proteins
+encoding protein...
+unique target sequence: 1727
+Done.
+Protein Function Prediction Mode...
+in total: 1749 proteins
+encoding protein...
+unique target sequence: 1746
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 0.69317. Total time 0.00861 hours
+E:\anaconda3\envs\graph\lib\site-packages\torch\autograd\graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Training at Epoch 1 iteration 100 with loss 0.62438. Total time 0.01 hours
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular_binary.py", line 88, in <module>
+    model.train(train, val, test, compute_pos_enc = compute_pos)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 416, in train
+    auc, auprc, f1, logits = self.test_(validation_generator, self.model)
+  File "E:\DeepPurposePlusPlus\ProB\ProteinPred.py", line 195, in test_
+    multi_y_pred = multi_y_pred + logits.tolist()
+TypeError: can only concatenate list (not "float") to list
