@@ -232,11 +232,15 @@ def collate_fn(batch, graph=False, unsqueeze=True):
     target = list(target)
     batch_len = len(target)
 
-    # Lists to store valid proteins, targets, and indices
-    valid_proteins = []
-    valid_targets = []
+    # Create index array for protein sequences (original indices)
+    protein_idx = np.array(list(range(batch_len)))
 
     if graph:
+        # Lists to store valid proteins and targets
+        valid_proteins = []
+        valid_targets = []
+
+        # Process each protein sequence
         for i in tqdm(range(batch_len)):
             # Try to convert protein sequence to a molecule and then to SMILES
             mol = Chem.MolFromSequence(protein_orig[i])
@@ -248,18 +252,18 @@ def collate_fn(batch, graph=False, unsqueeze=True):
                 # Log warning for invalid sequence
                 print(f"Warning: Failed to create molecule from sequence: {protein_orig[i]}")
 
-    # Convert target to torch tensor, based on valid targets
-    valid_targets = torch.FloatTensor(np.array(valid_targets))
+        # Use valid proteins and targets
+        protein_orig = valid_proteins
+        target = valid_targets
+
+        # Create a new protein_idx with indices from 0 to valid protein count - 1
+        protein_idx = np.array(list(range(len(valid_proteins))))
+
+    # Convert target to torch tensor
+    target = torch.FloatTensor(np.array(target))
     if unsqueeze:
         # Unsqueeze to add an extra dimension if needed
-        valid_targets = valid_targets.unsqueeze(1)
+        target = target.unsqueeze(1)
 
-    # Create a new protein_idx with indices from 0 to number of valid proteins - 1
-    protein_idx = np.array(list(range(len(valid_proteins))))
-
-    # Return valid protein sequences, valid target values, and the new indices
-    return valid_proteins, valid_targets, protein_idx
-
-
-
-#
+    # Return processed protein sequences, target values, and the protein indices
+    return protein_orig, target, protein_idx

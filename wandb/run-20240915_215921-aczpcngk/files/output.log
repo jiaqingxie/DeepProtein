@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "E:\anaconda3\envs\graph\lib\site-packages\pandas\core\indexes\base.py", line 3790, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'Target Sequence'
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\subcellular.py", line 60, in <module>
+    train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
+  File "E:\DeepPurposePlusPlus\ProB\utils.py", line 611, in data_process
+    df_data = encode_protein(df_data, target_encoding)
+  File "E:\DeepPurposePlusPlus\ProB\utils.py", line 467, in encode_protein
+    print('unique target sequence: ' + str(len(df_data[column_name].unique())))
+  File "E:\anaconda3\envs\graph\lib\site-packages\pandas\core\frame.py", line 3896, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "E:\anaconda3\envs\graph\lib\site-packages\pandas\core\indexes\base.py", line 3797, in get_loc
+    raise KeyError(key) from err
+KeyError: 'Target Sequence'
+Protein Function Prediction Mode...
+in total: 0 proteins
+encoding protein...

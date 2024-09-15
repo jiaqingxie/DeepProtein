@@ -1,0 +1,29 @@
+Protein Function Prediction Mode...
+in total: 8420 proteins
+encoding protein...
+unique target sequence: 8383
+Done.
+Protein Function Prediction Mode...
+in total: 2811 proteins
+encoding protein...
+unique target sequence: 2807
+Done.
+Protein Function Prediction Mode...
+in total: 2773 proteins
+encoding protein...
+unique target sequence: 2768
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 2.30419. Total time 0.00861 hours
+E:\anaconda3\envs\graph\lib\site-packages\torch\autograd\graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\cudnn\Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Training at Epoch 1 iteration 100 with loss 2.25778. Total time 0.01 hours
+Training at Epoch 1 iteration 200 with loss 1.93738. Total time 0.01111 hours
+Validation at Epoch 1 , Accuracy: 0.28779 , AUPRC: 0.13630 , F1: 0.04469
+--- Go for Testing ---
+[5 5 9 ... 5 0 4]
+[6 6 6 ... 6 6 6]
+Testing Accuracy: 0.29138117562206994 , AUPRC: 0.1225393965252253 , F1: 0.045127059480592015
+--- Training Finished ---
