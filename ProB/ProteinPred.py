@@ -188,12 +188,14 @@ class Protein_Prediction:
 
             label_ids = label.to('cpu').numpy()
             y_label = y_label + label_ids.flatten().tolist()
-            y_pred = y_pred + logits.flatten().tolist()
-            outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
+
 
             if self.multi:
                 multi_y_pred = multi_y_pred + logits.tolist()
                 multi_outputs = np.argmax(np.asarray(multi_y_pred), axis=-1)
+            else:
+                y_pred = y_pred + logits.flatten().tolist()
+                outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
 
         if self.multi:
             y_label = np.array(y_label).astype(int)
@@ -354,6 +356,7 @@ class Protein_Prediction:
             print('--- Go for Training ---')
         t_start = time()
 
+        model.train()
         for epo in range(train_epoch):
 
             for i, (v_p, label) in enumerate(training_generator):

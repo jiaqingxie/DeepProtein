@@ -244,6 +244,7 @@ def collate_fn(batch, graph=False, unsqueeze=True):
         for i in tqdm(range(batch_len)):
             # Try to convert protein sequence to a molecule and then to SMILES
             mol = Chem.MolFromSequence(protein_orig[i])
+
             if mol is not None:
                 # Append valid protein and target
                 valid_proteins.append(Chem.MolToSmiles(mol))
@@ -251,7 +252,6 @@ def collate_fn(batch, graph=False, unsqueeze=True):
             else:
                 # Log warning for invalid sequence
                 print(f"Warning: Failed to create molecule from sequence: {protein_orig[i]}")
-
         # Use valid proteins and targets
         protein_orig = valid_proteins
         target = valid_targets
