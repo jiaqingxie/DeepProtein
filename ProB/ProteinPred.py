@@ -356,7 +356,7 @@ class Protein_Prediction:
             print('--- Go for Training ---')
         t_start = time()
 
-        model.train()
+        self.model.train()
         for epo in range(train_epoch):
 
             for i, (v_p, label) in enumerate(training_generator):
