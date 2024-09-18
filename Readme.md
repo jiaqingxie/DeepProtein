@@ -89,3 +89,10 @@ python GCN_Fluroscence.py
 ```python
 python test.py
 ```
+
+
+### Protein Protein Interaction (PPI)
+
+```python
+python train/ppi_affinity.py --target_encoding CNN --seed 7 --wandb_proj DeepPurposePP --lr 0.0001 --epochs 60
+```
