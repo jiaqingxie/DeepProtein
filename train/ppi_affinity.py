@@ -61,12 +61,12 @@ if __name__ == '__main__':
                     target_encoding = target_encoding,
                     split_method='random', frac=[0.99998, 1e-5, 1e-5],
                     random_seed = 1)
-    _, val, _ = data_process(X_target = train_protein_1, X_target_ = train_protein_2, y = train_target,
+    _, val, _ = data_process(X_target = valid_protein_1, X_target_ = valid_protein_2, y = valid_target,
                     target_encoding = target_encoding,
                     split_method='random',frac=[1e-5, 0.99998, 1e-5],
                     random_seed = 1)
 
-    _, _, test = data_process(X_target = train_protein_1, X_target_ = train_protein_2, y = train_target,
+    _, _, test = data_process(X_target = test_protein_1, X_target_ = test_protein_2, y = test_target,
                     target_encoding = target_encoding,
                     split_method='random',frac=[1e-5, 1e-5, 0.99998],
                     random_seed = 1)
