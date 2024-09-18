@@ -225,6 +225,34 @@ class Solubility(Dataset):
         return protein_orig, target
 
 
+
+### ----------------------- PPI ------------------------------- ###
+
+class PPI_Affinity(Dataset):
+
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test']")
+
+        data_path = Path(data_path)
+        data_file = f'ppi_affinity/ppi_affinity_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+        # print(self.__getitem__(0))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        graph1 = self.data[index]['primary_1']
+        graph2 = self.data[index]['primary_2']
+        target = self.data[index]['interaction']
+        # print(protein_orig, target)
+        return graph1, graph2, target
+
 def collate_fn(batch, graph=False, unsqueeze=True):
     # Unpack batch into protein sequences and targets
     protein_orig, target = tuple(zip(*batch))
@@ -267,3 +295,51 @@ def collate_fn(batch, graph=False, unsqueeze=True):
 
     # Return processed protein sequences, target values, and the protein indices
     return protein_orig, target, protein_idx
+
+
+def collate_fn_ppi(batch, graph=False, unsqueeze=True):
+    # Unpack batch into protein sequences and targets
+    graph1, graph2, target = tuple(zip(*batch))
+    graph1 = list(graph1)
+    graph2 = list(graph2)
+    target = list(target)
+    batch_len = len(target)
+
+    # Create index array for protein sequences (original indices)
+    protein_idx = np.array(list(range(batch_len)))
+
+    if graph:
+        # Lists to store valid proteins and targets
+        valid_proteins1 = []
+        valid_proteins2 = []
+        valid_targets = []
+
+        # Process each protein sequence
+        for i in tqdm(range(batch_len)):
+            # Try to convert protein sequence to a molecule and then to SMILES
+            mol1 = Chem.MolFromSequence(graph1[i])
+            mol2 = Chem.MolFromSequence(graph2[i])
+            if mol1 is not None and mol2 is not None:
+                # Append valid protein and target
+                valid_proteins1.append(Chem.MolToSmiles(mol1))
+                valid_proteins2.append(Chem.MolToSmiles(mol2))
+                valid_targets.append(target[i])
+            else:
+                # Log warning for invalid sequence
+                print(f"Warning: Failed to create molecule from sequence")
+        # Use valid proteins and targets
+        graph1 = valid_proteins1
+        graph2 = valid_proteins2
+        target = valid_targets
+
+        # Create a new protein_idx with indices from 0 to valid protein count - 1
+        protein_idx = np.array(list(range(len(valid_proteins))))
+
+    # Convert target to torch tensor
+    target = torch.FloatTensor(np.array(target))
+    if unsqueeze:
+        # Unsqueeze to add an extra dimension if needed
+        target = target.unsqueeze(1)
+
+    # Return processed protein sequences, target values, and the protein indices
+    return graph1, graph2, target, protein_idx
