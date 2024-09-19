@@ -1,0 +1,63 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2421/2421 [00:53<00:00, 45.60it/s]
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 203/203 [00:05<00:00, 37.91it/s]
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 326/326 [00:05<00:00, 58.08it/s]
+Protein Protein Interaction Prediction Mode...
+in total: 2421 protein-protein pairs
+encoding protein...
+unique target sequence: 546
+encoding protein...
+unique target sequence: 1581
+Done.
+Protein Protein Interaction Prediction Mode...
+in total: 203 protein-protein pairs
+encoding protein...
+unique target sequence: 74
+encoding protein...
+unique target sequence: 138
+Done.
+Protein Protein Interaction Prediction Mode...
+in total: 326 protein-protein pairs
+encoding protein...
+unique target sequence: 60
+encoding protein...
+unique target sequence: 283
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\ppi_affinity.py", line 82, in <module>
+    model.train(train, val, test)
+  File "E:\DeepPurposePlusPlus\ProB\PPI.py", line 245, in train
+    v_d = v_d.float().to(self.device)
+AttributeError: 'tuple' object has no attribute 'float'

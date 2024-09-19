@@ -132,7 +132,7 @@ class PPI_Model:
 		y_label = []
 		model.eval()
 		for i, (v_d, v_p, label) in enumerate(data_generator):
-			if self.target_encoding == 'Transformer':
+			if self.target_encoding in ['Transformer', 'DGL_GCN']:
 				v_d = v_d
 				v_p = v_p
 			else:
@@ -238,7 +238,7 @@ class PPI_Model:
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				if self.target_encoding == 'Transformer':
+				if self.target_encoding in ['Transformer', 'DGL_GCN']:
 					v_d = v_d
 					v_p = v_p
 				else:

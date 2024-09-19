@@ -1,0 +1,372 @@
+2024-09-19 11:14:22,309 INFO    StreamThr :15276 [internal.py:wandb_internal():85] W&B internal server running at pid: 15276, started at: 2024-09-19 11:14:22.309004
+2024-09-19 11:14:22,310 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status
+2024-09-19 11:14:22,312 INFO    WriterThread:15276 [datastore.py:open_for_write():87] open: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\run-gscopqvl.wandb
+2024-09-19 11:14:22,313 DEBUG   SenderThread:15276 [sender.py:send():379] send: header
+2024-09-19 11:14:22,337 DEBUG   SenderThread:15276 [sender.py:send():379] send: run
+2024-09-19 11:14:22,762 INFO    SenderThread:15276 [dir_watcher.py:__init__():211] watching files in: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files
+2024-09-19 11:14:22,763 INFO    SenderThread:15276 [sender.py:_start_run_threads():1188] run started: gscopqvl with start time 1726737262.310301
+2024-09-19 11:14:22,770 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: check_version
+2024-09-19 11:14:22,770 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: check_version
+2024-09-19 11:14:22,987 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: run_start
+2024-09-19 11:14:23,483 DEBUG   HandlerThread:15276 [system_info.py:__init__():26] System info init
+2024-09-19 11:14:23,483 DEBUG   HandlerThread:15276 [system_info.py:__init__():41] System info init done
+2024-09-19 11:14:23,483 INFO    HandlerThread:15276 [system_monitor.py:start():194] Starting system monitor
+2024-09-19 11:14:23,483 INFO    SystemMonitor:15276 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-09-19 11:14:23,483 INFO    HandlerThread:15276 [system_monitor.py:probe():214] Collecting system info
+2024-09-19 11:14:23,489 INFO    SystemMonitor:15276 [interfaces.py:start():188] Started cpu monitoring
+2024-09-19 11:14:23,490 INFO    SystemMonitor:15276 [interfaces.py:start():188] Started disk monitoring
+2024-09-19 11:14:23,491 INFO    SystemMonitor:15276 [interfaces.py:start():188] Started gpu monitoring
+2024-09-19 11:14:23,500 INFO    SystemMonitor:15276 [interfaces.py:start():188] Started memory monitoring
+2024-09-19 11:14:23,509 INFO    SystemMonitor:15276 [interfaces.py:start():188] Started network monitoring
+2024-09-19 11:14:23,514 DEBUG   HandlerThread:15276 [system_info.py:probe():152] Probing system
+2024-09-19 11:14:23,514 DEBUG   HandlerThread:15276 [system_info.py:_probe_git():137] Probing git
+2024-09-19 11:14:23,570 DEBUG   HandlerThread:15276 [system_info.py:_probe_git():145] Probing git done
+2024-09-19 11:14:23,570 DEBUG   HandlerThread:15276 [system_info.py:probe():200] Probing system done
+2024-09-19 11:14:23,570 DEBUG   HandlerThread:15276 [system_monitor.py:probe():223] {'os': 'Windows-10-10.0.22631-SP0', 'python': '3.9.18', 'heartbeatAt': '2024-09-19T09:14:23.514063', 'startedAt': '2024-09-19T09:14:22.303504', 'docker': None, 'cuda': None, 'args': ('--target_encoding', 'DGL_GCN', '--seed', '7', '--wandb_proj', 'DeepPurposePP', '--lr', '0.0001', '--epochs', '1'), 'state': 'running', 'program': 'E:\\DeepPurposePlusPlus\\train\\ppi_affinity.py', 'codePathLocal': 'train\\ppi_affinity.py', 'codePath': 'train\\ppi_affinity.py', 'git': {'remote': 'https://github.com/jiaqingxie/ProB.git', 'commit': '0c2c3f76dfbf85dea0bdaa57c86be773fdc2bb50'}, 'email': 'jiaxie@student.ethz.ch', 'root': 'E:/DeepPurposePlusPlus', 'host': 'DESKTOP-E5HJ25M', 'username': '嘉庆', 'executable': 'E:\\anaconda3\\envs\\graph\\python.exe', 'cpu_count': 16, 'cpu_count_logical': 24, 'cpu_freq': {'current': 2100.0, 'min': 0.0, 'max': 2100.0}, 'cpu_freq_per_core': [{'current': 2100.0, 'min': 0.0, 'max': 2100.0}], 'disk': {'/': {'total': 214.84276962280273, 'used': 73.53430557250977}}, 'gpu': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'memory_total': 8585740288}], 'memory': {'total': 15.745964050292969}}
+2024-09-19 11:14:23,570 INFO    HandlerThread:15276 [system_monitor.py:probe():224] Finished collecting system info
+2024-09-19 11:14:23,570 INFO    HandlerThread:15276 [system_monitor.py:probe():227] Publishing system info
+2024-09-19 11:14:23,570 DEBUG   HandlerThread:15276 [system_info.py:_save_conda():209] Saving list of conda packages installed into the current environment
+2024-09-19 11:14:23,573 ERROR   HandlerThread:15276 [system_info.py:_save_conda():223] Error saving conda packages: [WinError 2] 系统找不到指定的文件。
+Traceback (most recent call last):
+  File "E:\anaconda3\envs\graph\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 216, in _save_conda
+    subprocess.call(
+  File "E:\anaconda3\envs\graph\lib\subprocess.py", line 349, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "E:\anaconda3\envs\graph\lib\subprocess.py", line 951, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "E:\anaconda3\envs\graph\lib\subprocess.py", line 1436, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+FileNotFoundError: [WinError 2] 系统找不到指定的文件。
+2024-09-19 11:14:23,574 DEBUG   HandlerThread:15276 [system_info.py:_save_conda():224] Saving conda packages done
+2024-09-19 11:14:23,575 INFO    HandlerThread:15276 [system_monitor.py:probe():229] Finished publishing system info
+2024-09-19 11:14:23,585 DEBUG   SenderThread:15276 [sender.py:send():379] send: files
+2024-09-19 11:14:23,585 INFO    SenderThread:15276 [sender.py:_save_file():1454] saving file wandb-metadata.json with policy now
+2024-09-19 11:14:23,731 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: python_packages
+2024-09-19 11:14:23,731 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: python_packages
+2024-09-19 11:14:23,731 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-19 11:14:23,731 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: stop_status
+2024-09-19 11:14:23,732 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:23,777 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\wandb-metadata.json
+2024-09-19 11:14:23,777 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\requirements.txt
+2024-09-19 11:14:23,777 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\conda-environment.yaml
+2024-09-19 11:14:24,197 DEBUG   SenderThread:15276 [sender.py:send():379] send: telemetry
+2024-09-19 11:14:24,197 DEBUG   SenderThread:15276 [sender.py:send():379] send: config
+2024-09-19 11:14:24,290 INFO    wandb-upload_0:15276 [upload_job.py:push():130] Uploaded file C:\Users\嘉庆\AppData\Local\Temp\tmpudr4eomgwandb\1xv89k63-wandb-metadata.json
+2024-09-19 11:14:24,757 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:24,784 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:25,525 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:25,525 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:25,786 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:26,801 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:26,817 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:27,388 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:14:27,906 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:27,906 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:27,908 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:28,808 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:28,929 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:29,962 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:30,298 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:30,298 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:30,822 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:31,025 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:31,983 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:32,489 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:14:32,679 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:32,680 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:32,842 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:33,067 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:34,088 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:34,850 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:35,137 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:36,130 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:36,861 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:37,154 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:37,591 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:14:38,178 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:38,756 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-19 11:14:38,756 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: stop_status
+2024-09-19 11:14:38,864 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:39,224 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:40,269 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:40,877 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:41,270 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:42,319 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:42,676 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:14:42,894 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:43,356 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:44,366 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:44,897 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:45,115 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:45,115 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:45,398 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:46,456 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:46,921 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:47,486 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:47,514 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:47,514 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:47,751 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:14:48,480 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:48,930 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:49,509 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:49,900 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:49,900 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:50,556 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:50,943 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:51,548 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:52,587 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:52,801 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:14:52,958 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:53,630 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:53,774 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-19 11:14:53,774 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: stop_status
+2024-09-19 11:14:53,972 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\config.yaml
+2024-09-19 11:14:54,657 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:54,987 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:55,674 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:56,707 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:57,012 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:57,737 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:58,059 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:14:58,635 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:58,635 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:14:58,761 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:14:59,028 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:14:59,792 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:00,828 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:01,052 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:01,873 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:02,924 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:03,079 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:03,138 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:03,926 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:04,955 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:05,093 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:05,203 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:05,203 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:05,995 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:07,051 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:07,102 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:08,078 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:08,157 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:08,801 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-19 11:15:08,801 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: stop_status
+2024-09-19 11:15:09,128 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:09,130 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:09,595 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:09,595 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:10,197 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:11,153 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:11,173 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:11,980 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:11,980 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:12,197 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:13,169 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:13,191 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:13,222 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:14,275 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:14,369 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:14,369 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:15,185 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:15,248 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:16,295 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:16,760 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:16,760 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:17,213 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:17,292 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:18,247 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:18,357 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:19,215 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:19,358 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:20,385 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:21,161 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:21,161 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:21,238 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:21,452 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:22,496 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:23,258 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:23,292 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:23,523 DEBUG   SystemMonitor:15276 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-09-19 11:15:23,523 DEBUG   SenderThread:15276 [sender.py:send():379] send: stats
+2024-09-19 11:15:23,527 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:23,538 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:23,538 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:23,826 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-19 11:15:23,826 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: stop_status
+2024-09-19 11:15:24,554 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:25,272 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:25,553 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:25,931 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:25,932 ERROR   gpu       :15276 [interfaces.py:monitor():142] Failed to sample metric: Unknown Error
+2024-09-19 11:15:26,633 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:27,287 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:27,586 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:28,556 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:28,603 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:29,034 DEBUG   SenderThread:15276 [sender.py:send():379] send: telemetry
+2024-09-19 11:15:29,244 DEBUG   SenderThread:15276 [sender.py:send():379] send: telemetry
+2024-09-19 11:15:29,302 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:29,619 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:30,303 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:30,632 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:31,645 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:32,331 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:32,660 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:33,670 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:33,670 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:34,684 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:35,698 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:36,703 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:37,718 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:38,728 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:38,853 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-19 11:15:38,853 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: stop_status
+2024-09-19 11:15:39,078 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:39,742 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:40,758 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:41,759 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:42,772 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:43,649 DEBUG   SenderThread:15276 [sender.py:send():379] send: exit
+2024-09-19 11:15:43,649 INFO    SenderThread:15276 [sender.py:send_exit():586] handling exit code: 1
+2024-09-19 11:15:43,649 INFO    SenderThread:15276 [sender.py:send_exit():588] handling runtime: 80
+2024-09-19 11:15:43,650 INFO    SenderThread:15276 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-09-19 11:15:43,650 INFO    SenderThread:15276 [sender.py:send_exit():594] send defer
+2024-09-19 11:15:43,651 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,651 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 0
+2024-09-19 11:15:43,651 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,651 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 0
+2024-09-19 11:15:43,651 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 1
+2024-09-19 11:15:43,651 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,651 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 1
+2024-09-19 11:15:43,651 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,651 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 1
+2024-09-19 11:15:43,651 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 2
+2024-09-19 11:15:43,651 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,651 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 2
+2024-09-19 11:15:43,651 INFO    HandlerThread:15276 [system_monitor.py:finish():203] Stopping system monitor
+2024-09-19 11:15:43,651 DEBUG   SystemMonitor:15276 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-09-19 11:15:43,651 INFO    HandlerThread:15276 [interfaces.py:finish():200] Joined cpu monitor
+2024-09-19 11:15:43,651 DEBUG   SystemMonitor:15276 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-09-19 11:15:43,658 INFO    HandlerThread:15276 [interfaces.py:finish():200] Joined disk monitor
+2024-09-19 11:15:43,693 INFO    HandlerThread:15276 [interfaces.py:finish():200] Joined gpu monitor
+2024-09-19 11:15:43,693 INFO    HandlerThread:15276 [interfaces.py:finish():200] Joined memory monitor
+2024-09-19 11:15:43,693 INFO    HandlerThread:15276 [interfaces.py:finish():200] Joined network monitor
+2024-09-19 11:15:43,694 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,694 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 2
+2024-09-19 11:15:43,694 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 3
+2024-09-19 11:15:43,694 DEBUG   SenderThread:15276 [sender.py:send():379] send: stats
+2024-09-19 11:15:43,694 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,694 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 3
+2024-09-19 11:15:43,694 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,694 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 3
+2024-09-19 11:15:43,694 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 4
+2024-09-19 11:15:43,694 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,694 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 4
+2024-09-19 11:15:43,694 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,694 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 4
+2024-09-19 11:15:43,694 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 5
+2024-09-19 11:15:43,694 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,694 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 5
+2024-09-19 11:15:43,696 DEBUG   SenderThread:15276 [sender.py:send():379] send: summary
+2024-09-19 11:15:43,696 INFO    SenderThread:15276 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-09-19 11:15:43,696 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,696 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 5
+2024-09-19 11:15:43,696 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 6
+2024-09-19 11:15:43,696 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,696 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 6
+2024-09-19 11:15:43,696 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,696 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 6
+2024-09-19 11:15:43,698 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: status_report
+2024-09-19 11:15:43,853 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 7
+2024-09-19 11:15:43,853 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:43,854 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 7
+2024-09-19 11:15:43,854 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:43,854 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 7
+2024-09-19 11:15:44,456 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\config.yaml
+2024-09-19 11:15:44,457 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\wandb-summary.json
+2024-09-19 11:15:44,659 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-19 11:15:45,466 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:45,904 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 8
+2024-09-19 11:15:45,906 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: poll_exit
+2024-09-19 11:15:45,906 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:45,906 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 8
+2024-09-19 11:15:45,907 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:45,907 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 8
+2024-09-19 11:15:45,907 INFO    SenderThread:15276 [job_builder.py:build():440] Attempting to build job artifact
+2024-09-19 11:15:45,908 INFO    SenderThread:15276 [job_builder.py:_get_source_type():569] is repo sourced job
+2024-09-19 11:15:45,974 INFO    SenderThread:15276 [job_builder.py:build():545] adding wandb-job metadata file
+2024-09-19 11:15:45,978 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 9
+2024-09-19 11:15:45,978 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:45,978 DEBUG   SenderThread:15276 [sender.py:send():379] send: artifact
+2024-09-19 11:15:45,978 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 9
+2024-09-19 11:15:46,478 INFO    Thread-16 :15276 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:46,679 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-19 11:15:46,704 INFO    SenderThread:15276 [sender.py:send_artifact():1530] sent artifact job-https___github.com_jiaqingxie_ProB.git_train_ppi_affinity.py - {'id': 'QXJ0aWZhY3Q6MTIzNTkxNDA2OQ==', 'state': 'COMMITTED', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjQ1NzkwNDc1Mg==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6MTIzNTkxNDA2OQ==', 'versionIndex': 6}}}
+2024-09-19 11:15:46,705 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:46,705 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 9
+2024-09-19 11:15:46,705 INFO    SenderThread:15276 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-09-19 11:15:47,489 INFO    SenderThread:15276 [dir_watcher.py:finish():388] scan: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files
+2024-09-19 11:15:47,489 INFO    SenderThread:15276 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\conda-environment.yaml conda-environment.yaml
+2024-09-19 11:15:47,490 INFO    SenderThread:15276 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\config.yaml config.yaml
+2024-09-19 11:15:47,490 INFO    SenderThread:15276 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log output.log
+2024-09-19 11:15:47,491 INFO    SenderThread:15276 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\requirements.txt requirements.txt
+2024-09-19 11:15:47,495 INFO    SenderThread:15276 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\wandb-metadata.json wandb-metadata.json
+2024-09-19 11:15:47,495 INFO    SenderThread:15276 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\wandb-summary.json wandb-summary.json
+2024-09-19 11:15:47,503 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 10
+2024-09-19 11:15:47,503 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: poll_exit
+2024-09-19 11:15:47,503 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:47,503 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 10
+2024-09-19 11:15:47,503 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:47,503 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 10
+2024-09-19 11:15:47,503 INFO    SenderThread:15276 [file_pusher.py:finish():169] shutting down file pusher
+2024-09-19 11:15:47,704 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-19 11:15:47,704 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: poll_exit
+2024-09-19 11:15:47,864 INFO    wandb-upload_1:15276 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\output.log
+2024-09-19 11:15:47,886 INFO    wandb-upload_0:15276 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\config.yaml
+2024-09-19 11:15:47,923 INFO    wandb-upload_3:15276 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\wandb-summary.json
+2024-09-19 11:15:47,941 INFO    wandb-upload_2:15276 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\files\requirements.txt
+2024-09-19 11:15:48,155 INFO    Thread-15 :15276 [sender.py:transition_state():614] send defer: 11
+2024-09-19 11:15:48,156 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:48,156 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 11
+2024-09-19 11:15:48,158 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:48,158 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 11
+2024-09-19 11:15:48,158 INFO    SenderThread:15276 [file_pusher.py:join():175] waiting for file pusher
+2024-09-19 11:15:48,159 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 12
+2024-09-19 11:15:48,159 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:48,160 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 12
+2024-09-19 11:15:48,160 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:48,160 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 12
+2024-09-19 11:15:48,160 INFO    SenderThread:15276 [file_stream.py:finish():601] file stream finish called
+2024-09-19 11:15:48,719 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-19 11:15:50,055 INFO    SenderThread:15276 [file_stream.py:finish():605] file stream finish is done
+2024-09-19 11:15:50,055 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 13
+2024-09-19 11:15:50,055 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: poll_exit
+2024-09-19 11:15:50,056 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:50,056 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 13
+2024-09-19 11:15:50,056 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:50,056 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 13
+2024-09-19 11:15:50,056 INFO    SenderThread:15276 [sender.py:transition_state():614] send defer: 14
+2024-09-19 11:15:50,056 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: defer
+2024-09-19 11:15:50,056 INFO    HandlerThread:15276 [handler.py:handle_request_defer():184] handle defer: 14
+2024-09-19 11:15:50,056 DEBUG   SenderThread:15276 [sender.py:send():379] send: final
+2024-09-19 11:15:50,056 DEBUG   SenderThread:15276 [sender.py:send():379] send: footer
+2024-09-19 11:15:50,056 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: defer
+2024-09-19 11:15:50,056 INFO    SenderThread:15276 [sender.py:send_request_defer():610] handle sender defer: 14
+2024-09-19 11:15:50,057 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-19 11:15:50,057 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: server_info
+2024-09-19 11:15:50,057 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-19 11:15:50,057 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: get_summary
+2024-09-19 11:15:50,057 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: sampled_history
+2024-09-19 11:15:50,057 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-19 11:15:50,057 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: poll_exit
+2024-09-19 11:15:50,057 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: server_info
+2024-09-19 11:15:50,201 DEBUG   SenderThread:15276 [sender.py:send_request():406] send_request: poll_exit
+2024-09-19 11:15:50,201 INFO    MainThread:15276 [wandb_run.py:_footer_history_summary_info():3991] rendering history
+2024-09-19 11:15:50,201 INFO    MainThread:15276 [wandb_run.py:_footer_history_summary_info():4023] rendering summary
+2024-09-19 11:15:50,202 INFO    MainThread:15276 [wandb_run.py:_footer_sync_info():3950] logging synced files
+2024-09-19 11:15:50,202 DEBUG   HandlerThread:15276 [handler.py:handle_request():158] handle_request: shutdown
+2024-09-19 11:15:50,202 INFO    HandlerThread:15276 [handler.py:finish():882] shutting down handler
+2024-09-19 11:15:51,069 INFO    WriterThread:15276 [datastore.py:close():296] close: E:\DeepPurposePlusPlus\wandb\run-20240919_111422-gscopqvl\run-gscopqvl.wandb
+2024-09-19 11:15:51,208 INFO    SenderThread:15276 [sender.py:finish():1608] shutting down sender
+2024-09-19 11:15:51,208 INFO    SenderThread:15276 [file_pusher.py:finish():169] shutting down file pusher
+2024-09-19 11:15:51,208 INFO    SenderThread:15276 [file_pusher.py:join():175] waiting for file pusher
