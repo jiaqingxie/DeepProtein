@@ -23,7 +23,7 @@ import os
 
 from DeepPurpose.utils import *
 from DeepPurpose.model_helper import Encoder_MultipleLayers, Embeddings        
-from DeepPurpose.encoders import *
+from ProB.encoders import *
 
 class Classifier(nn.Sequential):
 	def __init__(self, model_protein, **config):
@@ -105,6 +105,11 @@ class PPI_Model:
 			self.model_protein = CNN_RNN('protein', **config)
 		elif target_encoding == 'Transformer':
 			self.model_protein = transformer('protein', **config)
+		elif target_encoding == 'DGL_GCN':
+			self.model_protein = DGL_GCN(in_feats=74,
+										 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+										 activation=[config['gnn_activation']] * config['gnn_num_layers'],
+										 predictor_dim=config['hidden_dim_drug'])
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
