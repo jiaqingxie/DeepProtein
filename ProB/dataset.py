@@ -386,7 +386,7 @@ def collate_fn_ppi(batch, graph=False, unsqueeze=True):
         target = valid_targets
 
         # Create a new protein_idx with indices from 0 to valid protein count - 1
-        protein_idx = np.array(list(range(len(valid_proteins))))
+        protein_idx = np.array(list(range(len(valid_proteins1))))
 
     # Convert target to torch tensor
     target = torch.FloatTensor(np.array(target))
