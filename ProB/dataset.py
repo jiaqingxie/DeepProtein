@@ -253,6 +253,59 @@ class PPI_Affinity(Dataset):
         # print(protein_orig, target)
         return graph1, graph2, target
 
+class HUMAN_PPI(Dataset):
+
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test']")
+
+        data_path = Path(data_path)
+        data_file = f'human_ppi/human_ppi_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+        # print(self.__getitem__(0))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        graph1 = self.data[index]['primary_1']
+        graph2 = self.data[index]['primary_2']
+        target = self.data[index]['interaction']
+        # print(protein_orig, target)
+        return graph1, graph2, target
+
+class Yeast_PPI(Dataset):
+
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test']")
+
+        data_path = Path(data_path)
+        data_file = f'yeast_ppi/yeast_ppi_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+        # print(self.__getitem__(0))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        graph1 = self.data[index]['primary_1']
+        graph2 = self.data[index]['primary_2']
+        target = self.data[index]['interaction']
+        # print(protein_orig, target)
+        return graph1, graph2, target
+
+
+
+
 def collate_fn(batch, graph=False, unsqueeze=True):
     # Unpack batch into protein sequences and targets
     protein_orig, target = tuple(zip(*batch))
