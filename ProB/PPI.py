@@ -119,6 +119,19 @@ class PPI_Model:
 										 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
 										 activation=[config['gnn_activation']] * config['gnn_num_layers'],
 										 predictor_dim=config['hidden_dim_drug'])
+		elif target_encoding == 'DGL_GAT':
+			self.model_protein = DGL_GAT(in_feats=74,
+										 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+										 activation=[config['gnn_activation']] * config['gnn_num_layers'],
+										 predictor_dim=config['hidden_dim_drug'])
+		elif target_encoding == 'DGL_NeuralFP':
+			self.model_protein = DGL_NeuralFP(in_feats=74,
+											  hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+											  max_degree=config['neuralfp_max_degree'],
+											  activation=[config['gnn_activation']] * config['gnn_num_layers'],
+											  predictor_hidden_size=config['neuralfp_predictor_hid_dim'],
+											  predictor_dim=config['hidden_dim_drug'],
+											  predictor_activation=config['neuralfp_predictor_activation'])
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
@@ -141,7 +154,7 @@ class PPI_Model:
 		y_label = []
 		model.eval()
 		for i, (v_d, v_p, label) in enumerate(data_generator):
-			if self.target_encoding in ['Transformer', 'DGL_GCN']:
+			if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
 				v_d = v_d
 				v_p = v_p
 			else:
@@ -253,7 +266,7 @@ class PPI_Model:
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				if self.target_encoding in ['Transformer', 'DGL_GCN']:
+				if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
 					v_d = v_d
 					v_p = v_p
 				else:
