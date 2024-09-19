@@ -21,8 +21,8 @@ from prettytable import PrettyTable
 import wandb
 import os
 
-from DeepPurpose.utils import *
-from DeepPurpose.model_helper import Encoder_MultipleLayers, Embeddings        
+from ProB.utils import *
+from ProB.model_helper import Encoder_MultipleLayers, Embeddings
 from ProB.encoders import *
 
 class Classifier(nn.Sequential):
@@ -54,6 +54,15 @@ class Classifier(nn.Sequential):
 def model_initialize(**config):
 	model = PPI_Model(**config)
 	return model
+
+
+
+def dgl_collate_func(x):
+	x1, x2, y = zip(*x)
+	import dgl
+	x1 = dgl.batch(x1)
+	x2 = dgl.batch(x2)
+	return x1, x2, torch.tensor(y)
 
 def model_pretrained(path_dir = None, model = None):
 	if model is not None:
@@ -205,6 +214,10 @@ class PPI_Model:
 	    		'num_workers': self.config['num_workers'],
 	    		'drop_last': False}
 
+		if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
+									'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+			params['collate_fn'] = dgl_collate_func
+		# print(data_process_PPI_loader(train.index.values, train.Label.values, train, **self.config).__getitem__(0))
 		training_generator = data.DataLoader(data_process_PPI_loader(train.index.values, train.Label.values, train, **self.config), **params)
 		validation_generator = data.DataLoader(data_process_PPI_loader(val.index.values, val.Label.values, val, **self.config), **params)
 		
@@ -215,7 +228,9 @@ class PPI_Model:
 					'num_workers': self.config['num_workers'],
 					'drop_last': False,
 					'sampler':SequentialSampler(info)}
-        
+			if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
+										'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+				params_test['collate_fn'] = dgl_collate_func
 			testing_generator = data.DataLoader(data_process_PPI_loader(test.index.values, test.Label.values, test, **self.config), **params_test)
 
 		# early stopping
@@ -372,6 +387,10 @@ class PPI_Model:
 				'num_workers': self.config['num_workers'],
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
+
+		if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
+									'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+			params['collate_fn'] = dgl_collate_func
 		generator = data.DataLoader(info, **params)
 
 		score = self.test_(generator, self.model, repurposing_mode = True)

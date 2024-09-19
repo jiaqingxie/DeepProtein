@@ -793,6 +793,13 @@ class data_process_PPI_loader(data.Dataset):
         self.df = df
         self.config = config
 
+        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
+            self.node_featurizer = CanonicalAtomFeaturizer()
+            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
+            from functools import partial
+            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
     def __len__(self):
         'Denotes the total number of samples'
         return len(self.list_IDs)
@@ -803,9 +810,15 @@ class data_process_PPI_loader(data.Dataset):
         v_d = self.df.iloc[index]['target_encoding_1']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_d = protein_2_embed(v_d)
+        elif self.config['target_encoding'] in ['DGL_GCN']:
+            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+
         v_p = self.df.iloc[index]['target_encoding_2']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
+        elif self.config['target_encoding'] in ['DGL_GCN']:
+            v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+            # v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
         return v_d, v_p, y
 
