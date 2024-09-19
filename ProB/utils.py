@@ -810,13 +810,13 @@ class data_process_PPI_loader(data.Dataset):
         v_d = self.df.iloc[index]['target_encoding_1']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_d = protein_2_embed(v_d)
-        elif self.config['target_encoding'] in ['DGL_GCN']:
+        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
             v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
 
         v_p = self.df.iloc[index]['target_encoding_2']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] in ['DGL_GCN']:
+        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
             v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
             # v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
