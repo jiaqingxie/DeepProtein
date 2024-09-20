@@ -1613,22 +1613,25 @@ def download_url(url, save_path, chunk_size=128):
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)
 
-def split_antibody(sequence_str):
+def split_antibody(sequence_str, sep = "\\n"):
     cleaned_str = sequence_str.strip("[]")
-    sequences = cleaned_str.split("\\n")
+    if sep == "\\n":
+        sequences = cleaned_str.split("\\n")
+    elif sep == ",":
+        sequences = cleaned_str.split(",")
     first_sequence = sequences[0].strip("['")
     second_sequence = sequences[1].strip("]'")
     return first_sequence, second_sequence
 
 
-def to_two_seq(split, part, input_type):
+def to_two_seq(split, part, input_type, sep = "\\n"):
     first_sequence_list = []
     second_sequence_list = []
 
     # print(split)
     for i in range(len(split[part]['Y'])):
         sequence_str = split[part][input_type][i]
-        first_sequence, second_sequence = split_antibody(sequence_str)
+        first_sequence, second_sequence = split_antibody(sequence_str, sep)
         first_sequence_list.append(first_sequence)
         second_sequence_list.append(second_sequence)
     return first_sequence_list, second_sequence_list

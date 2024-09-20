@@ -38,20 +38,18 @@ if __name__ == "__main__":
     compute_pos = args.compute_pos_enc
     batch_size = args.batch_size
 
-    job_name = f"TAP + {target_encoding}"
+    job_name = f"SAbDab_Chen + {target_encoding}"
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 
     path = os.getcwd()
 
-    label_list = retrieve_label_name_list('TAP')
-
-    data = Develop(name='TAP', label_name=label_list[0])
+    data = Develop(name='SAbDab_Chen')
     split = data.get_split()
 
-    train_antibody_1, train_antibody_2 = to_two_seq(split, 'train', 'Antibody')
-    valid_antibody_1, valid_antibody_2 = to_two_seq(split, 'valid', 'Antibody')
-    test_antibody_1, test_antibody_2 = to_two_seq(split, 'test', 'Antibody')
+    train_antibody_1, train_antibody_2 = to_two_seq(split, 'train', 'Antibody', sep=",")
+    valid_antibody_1, valid_antibody_2 = to_two_seq(split, 'valid', 'Antibody', sep=",")
+    test_antibody_1, test_antibody_2 = to_two_seq(split, 'test', 'Antibody', sep=",")
 
     y_train, y_valid, y_test = split['train']['Y'], split['valid']['Y'], split['test']['Y']
 
