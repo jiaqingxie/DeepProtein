@@ -69,3 +69,32 @@ FileNotFoundError: [WinError 2] 系统找不到指定的文件。
 2024-09-20 21:10:06,549 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: status_report
 2024-09-20 21:10:06,595 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
 2024-09-20 21:10:07,608 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:08,612 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:09,625 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:10,640 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:11,546 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-20 21:10:11,546 DEBUG   SenderThread:27392 [sender.py:send_request():406] send_request: stop_status
+2024-09-20 21:10:11,640 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:11,748 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: status_report
+2024-09-20 21:10:12,654 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:13,662 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:14,669 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:15,048 INFO    Thread-16 :27392 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240920_210955-r9a0sq5y\files\output.log
+2024-09-20 21:10:15,671 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:16,684 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:16,774 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: partial_history
+2024-09-20 21:10:16,774 DEBUG   SenderThread:27392 [sender.py:send():379] send: history
+2024-09-20 21:10:16,774 DEBUG   SenderThread:27392 [sender.py:send_request():406] send_request: summary_record
+2024-09-20 21:10:16,775 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: status_report
+2024-09-20 21:10:16,775 INFO    SenderThread:27392 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-09-20 21:10:17,071 INFO    Thread-16 :27392 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240920_210955-r9a0sq5y\files\wandb-summary.json
+2024-09-20 21:10:17,692 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:18,702 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:19,710 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:20,722 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:21,736 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:22,589 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: status_report
+2024-09-20 21:10:22,741 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:23,749 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:24,759 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-20 21:10:25,774 DEBUG   HandlerThread:27392 [handler.py:handle_request():158] handle_request: internal_messages

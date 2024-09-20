@@ -573,7 +573,7 @@ class Protein_Prediction:
             state_dict = torch.load(path)
         else:
             state_dict = torch.load(path, map_location=torch.device('cpu'))
-        # to support training from multi-gpus data-parallel:
+        # to support training from multi-gpus data-parallel: 
 
         if next(iter(state_dict))[:7] == 'module.':
             # the pretrained model is from data-parallel module
