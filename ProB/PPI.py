@@ -24,6 +24,7 @@ import os
 from ProB.utils import *
 from ProB.model_helper import Encoder_MultipleLayers, Embeddings
 from ProB.encoders import *
+from sklearn.metrics import mean_absolute_error
 
 class Classifier(nn.Sequential):
 	def __init__(self, model_protein, **config):
@@ -187,7 +188,7 @@ class PPI_Model:
 		else:
 			if repurposing_mode:
 				return y_pred
-			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+			return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None, verbose = True):
 		if len(train.Label.unique()) == 2:
@@ -258,7 +259,7 @@ class PPI_Model:
 		if self.binary:
 			valid_metric_header.extend(["AUROC", "AUPRC", "F1"])
 		else:
-			valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+			valid_metric_header.extend(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 		table = PrettyTable(valid_metric_header)
 		float2str = lambda x:'%0.4f'%x
 		if verbose:
@@ -317,16 +318,16 @@ class PPI_Model:
 						  str(loss)[:7])
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
-					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
-					lst = ["epoch " + str(epo)] + list(map(float2str,[mse, r2, p_val, CI]))
+					mae, mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
+					lst = ["epoch " + str(epo)] + list(map(float2str, [mae, mse, r2, p_val, CI]))
 					valid_metric_record.append(lst)
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
-					wandb.log({"epoch": epo + 1, "MSE": mse, "R2": r2, "p_val": p_val, "Concordance Index": CI})
+					wandb.log({"epoch": epo + 1, "MAE": mae, "MSE": mse, "R2": r2, "p_val": p_val, "Concordance Index": CI})
 
 					if verbose:
-						print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
+						print('Validation at Epoch '+ str(epo + 1) +  ' , MAE: ' + str(mae)[:7] + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
 						 + str(r2)[:7] + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI)[:7])
 			table.add_row(lst)
 
@@ -353,12 +354,12 @@ class PPI_Model:
 					  str(loss)[:7])
 
 			else:
-				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
+				mae, mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
-				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
-				wandb.log({"TEST MSE": mse, "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
+				test_table.add_row(list(map(float2str, [mae, mse, r2, p_val, CI])))
+				wandb.log({"TEST MSE": mse, "TEST MAE": mae, "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
 				if verbose:
-					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
+					print('Testing MSE: ' + str(mse) + ' , MAE: ' + str(mae) + ' , Pearson Correlation: ' + str(r2)
 					  + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.target_encoding)
 				     + '_logits.npy'), np.array(logits))                
