@@ -355,7 +355,7 @@ class PPI_Model:
 
 			else:
 				mae, mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
-				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+				test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mae, mse, r2, p_val, CI])))
 				wandb.log({"TEST MSE": mse, "TEST MAE": mae, "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
 				if verbose:
