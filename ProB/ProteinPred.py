@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 from time import time
 from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score, accuracy_score
+from sklearn.metrics import mean_absolute_error
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr, spearmanr
 import pickle
@@ -239,11 +240,11 @@ class Protein_Prediction:
             if repurposing_mode:
                 return y_pred
             elif self.config['use_spearmanr']:
-                return mean_squared_error(y_label, y_pred), \
+                return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), \
                     spearmanr(y_label, y_pred)[0], \
                     spearmanr(y_label, y_pred)[1], \
                     concordance_index(y_label, y_pred), y_pred
-            return mean_squared_error(y_label, y_pred), \
+            return  mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), \
                 pearsonr(y_label, y_pred)[0], \
                 pearsonr(y_label, y_pred)[1], \
                 concordance_index(y_label, y_pred), y_pred
@@ -348,7 +349,7 @@ class Protein_Prediction:
         elif self.multi:
             valid_metric_header.extend(["ACC", "AUPRC", "F1"])
         else:
-            valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+            valid_metric_header.extend(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
         table = PrettyTable(valid_metric_header)
         float2str = lambda x: '%0.4f' % x
 
@@ -447,23 +448,21 @@ class Protein_Prediction:
                 else:
                     ### regression: MSE, Pearson Correlation, with p-value, Concordance Index
 
-                    mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
+                    mae, mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
 
-                    lst = ["epoch " + str(epo)] + list(map(float2str, [mse, r2, p_val, CI]))
+                    lst = ["epoch " + str(epo)] + list(map(float2str, [mae, mse, r2, p_val, CI]))
                     valid_metric_record.append(lst)
                     if mse < max_MSE:
                         model_max = copy.deepcopy(self.model)
                         max_MSE = mse
-                    wandb.log({"epoch": epo + 1, "MSE": mse, "R2": r2, "p_val": p_val, "Concordance Index": CI})
+                    wandb.log({"epoch": epo + 1, "MAE": mae, "MSE": mse, "R2": r2, "p_val": p_val, "Concordance Index": CI})
                     if verbose:
                         if self.config['use_spearmanr']:
-                            print('Validation at Epoch ' + str(epo + 1) + ' , MSE: ' + str(mse)[
-                                                                                       :7] + ' , Spearman Correlation: ' \
+                            print('Validation at Epoch ' + str(epo + 1) + ' , MAE: ' + str(mae)[:7] + ' , MSE: ' + str(mse)[:7] + ' , Spearman Correlation: ' \
                                   + str(r2)[:7] + ' with p-value: ' + str(
                                 f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI)[:7])
                         else:
-                            print('Validation at Epoch ' + str(epo + 1) + ' , MSE: ' + str(mse)[
-                                                                                       :7] + ' , Pearson Correlation: ' \
+                            print('Validation at Epoch ' + str(epo + 1) + ' , MAE: ' + str(mae)[:7] + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: ' \
                                   + str(r2)[:7] + ' with p-value: ' + str(
                                 f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI)[:7])
             table.add_row(lst)
@@ -496,16 +495,16 @@ class Protein_Prediction:
                     print('Testing Accuracy: ' + str(acc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
 
             else:
-                mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max, test=True, verbose=verbose)
-                test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
-                test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
-                wandb.log({"TEST MSE": mse, "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
+                mae, mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max, test=True, verbose=verbose)
+                test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+                test_table.add_row(list(map(float2str, [mae, mse, r2, p_val, CI])))
+                wandb.log({"TEST MSE": mse, "MAE": mae,  "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
                 if verbose:
                     if self.config['use_spearmanr']:
-                        print('Testing MSE: ' + str(mse) + ' , Spearman Correlation: ' + str(r2)
+                        print('Testing MSE: ' + str(mse) + ' , MAE: ' + str(mae) + ' , Spearman Correlation: ' + str(r2)
                               + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI))
                     else:
-                        print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2)
+                        print('Testing MSE: ' + str(mse) + ' , MAE: ' + str(mae) + ' , Pearson Correlation: ' + str(r2)
                               + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI))
             np.save(os.path.join(self.result_folder, str(self.target_encoding)
                                  + '_logits.npy'), np.array(logits))
