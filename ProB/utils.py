@@ -823,6 +823,7 @@ class data_process_PPI_loader(data.Dataset):
         return v_d, v_p, y
 
 
+
 class data_process_loader_Property_Prediction(data.Dataset):
 
     def __init__(self, list_IDs, labels, df, **config):
@@ -1611,6 +1612,26 @@ def download_url(url, save_path, chunk_size=128):
     with open(save_path, 'wb') as fd:
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)
+
+def split_antibody(sequence_str):
+    cleaned_str = sequence_str.strip("[]")
+    sequences = cleaned_str.split("\\n")
+    first_sequence = sequences[0].strip("['")
+    second_sequence = sequences[1].strip("]'")
+    return first_sequence, second_sequence
+
+
+def to_two_seq(split, part, input_type):
+    first_sequence_list = []
+    second_sequence_list = []
+
+    # print(split)
+    for i in range(len(split[part]['Y'])):
+        sequence_str = split[part][input_type][i]
+        first_sequence, second_sequence = split_antibody(sequence_str)
+        first_sequence_list.append(first_sequence)
+        second_sequence_list.append(second_sequence)
+    return first_sequence_list, second_sequence_list
 
 
 def download_pretrained_model_S3(model_name, save_dir='./save_folder'):
