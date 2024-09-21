@@ -54,11 +54,6 @@ class transformer(nn.Sequential):
         encoded_layers = self.encoder(emb.float(), ex_e_mask.float())
         return encoded_layers[:, 0]
 
-
-import torch
-from torch import nn
-
-
 class Token_Transformer(nn.Module):
     def __init__(self, encoding, **config):
         super(Token_Transformer, self).__init__()
