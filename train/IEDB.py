@@ -68,31 +68,7 @@ if __name__ == "__main__":
     train_set = data_process_loader_Token_Protein_Prediction(train_data)
     valid_set = data_process_loader_Token_Protein_Prediction(valid_data)
     test_set = data_process_loader_Token_Protein_Prediction(test_data)
-    #
-    # if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP',  'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-    #     train_protein_processed, train_target, train_protein_idx = collate_fn(train_IMDB, graph=True)
-    #     valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_IMDB, graph=True)
-    #     test_protein_processed, test_target, test_protein_idx = collate_fn(test_IMDB, graph=True)
-    #
-    # else:
-    #     train_protein_processed, train_target, train_protein_idx = collate_fn(train_IMDB)
-    #     valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_IMDB)
-    #     test_protein_processed, test_target, test_protein_idx = collate_fn(test_IMDB)
-    #
-    # train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
-    #                                  # drug_encoding= drug_encoding,
-    #                                  split_method='random', frac=[0.99998, 1e-5, 1e-5],
-    #                                  random_seed=1)
-    #
-    # _, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target, target_encoding=target_encoding,
-    #                                # drug_encoding= drug_encoding,
-    #                                split_method='random', frac=[1e-5, 0.99998, 1e-5],
-    #                                random_seed=1)
-    #
-    # _, _, test = utils.data_process(X_target=test_protein_processed, y=test_target, target_encoding=target_encoding,
-    #                                 # drug_encoding= drug_encoding,
-    #                                 split_method='random', frac=[1e-5, 1e-5, 0.99998],
-    #                                 random_seed=1)
+
 
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
