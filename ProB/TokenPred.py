@@ -102,6 +102,8 @@ class Protein_Prediction:
             self.model_protein = Token_CNN('protein', **config)
         elif target_encoding == 'CNN_RNN':
             self.model_protein = CNN_RNN('protein', **config)
+        elif target_encoding == 'Token_CNN_RNN':
+            self.model_protein = Token_CNN_RNN('protein', **config)
         elif target_encoding == 'Transformer':
             self.model_protein = transformer('protein', **config)
 

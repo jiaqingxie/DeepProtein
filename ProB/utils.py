@@ -1154,6 +1154,13 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['rnn_target_bidirectional'] = rnn_target_bidirectional
         base_config['cnn_target_filters'] = cnn_target_filters
         base_config['cnn_target_kernels'] = cnn_target_kernels
+    elif target_encoding == 'Token_CNN_RNN':
+        base_config['rnn_Use_GRU_LSTM_target'] = rnn_Use_GRU_LSTM_target
+        base_config['rnn_target_hid_dim'] = rnn_target_hid_dim
+        base_config['rnn_target_n_layers'] = rnn_target_n_layers
+        base_config['rnn_target_bidirectional'] = rnn_target_bidirectional
+        base_config['cnn_target_filters'] = cnn_target_filters
+        base_config['cnn_target_kernels'] = cnn_target_kernels
     elif target_encoding == 'Transformer':
         base_config['input_dim_protein'] = 4114
         base_config['transformer_emb_size_target'] = transformer_emb_size_target

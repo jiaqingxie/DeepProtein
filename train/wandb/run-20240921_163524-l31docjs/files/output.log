@@ -1,9 +1,0 @@
-Found local copy...
-Loading...
-Done!
-Traceback (most recent call last):
-  File "E:\DeepPurposePlusPlus\train\SAbDab_Liberis.py", line 95, in <module>
-    config = generate_config(target_encoding=target_encoding,
-  File "E:\DeepPurposePlusPlus\ProB\utils.py", line 1197, in generate_config
-    raise AttributeError("Please use the correct protein encoding available!")
-AttributeError: Please use the correct protein encoding available!

@@ -17,7 +17,7 @@ from tdc.single_pred import Epitope, Paratope
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with ProB")
-    parser.add_argument('--target_encoding', type=str, default='Token_CNN', help='Encoding method for target proteins')
+    parser.add_argument('--target_encoding', type=str, default='Token_CNN_RNN', help='Encoding method for target proteins')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
     parser.add_argument('--lr', type=float, default=0.0001, help='0.0001/0.00001')

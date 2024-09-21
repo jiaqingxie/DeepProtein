@@ -145,6 +145,8 @@ class Token_CNN(nn.Module):
         return x
 
 
+
+
 class CNN_RNN(nn.Sequential):
     def __init__(self, encoding, **config):
         super(CNN_RNN, self).__init__()
@@ -259,6 +261,109 @@ class CNN_RNN(nn.Sequential):
         v = torch.flatten(v, 1)
         v = self.fc1(v.float())
         return v
+
+class Token_CNN_RNN(nn.Module):
+    def __init__(self, encoding, **config):
+        super(Token_CNN_RNN, self).__init__()
+        if encoding == 'protein':
+            self.sequence_length = config.get('sequence_length', 300)  # Default sequence length
+
+            # Input dimension (number of features per token)
+            input_dim = config['in_channels']
+
+            # CNN parameters
+            num_filters = config.get('num_filters', [32])  # List of output channels for each conv layer
+            kernel_sizes = config.get('kernel_sizes', [5])  # List of kernel sizes
+            layers = []
+
+            in_channels = input_dim  # Set initial in_channels to input_dim
+
+            for i in range(len(num_filters)):
+                layers.append(
+                    nn.Conv1d(
+                        in_channels=in_channels,
+                        out_channels=num_filters[i],
+                        kernel_size=kernel_sizes[i],
+                        padding=kernel_sizes[i] // 2  # Use padding to keep sequence length same
+                    )
+                )
+                layers.append(nn.ReLU())
+                in_channels = num_filters[i]  # Update in_channels for next layer
+
+            self.conv = nn.Sequential(*layers)
+
+            # RNN parameters
+            rnn_hidden_size = config.get('rnn_hidden_size', 64)
+            rnn_num_layers = config.get('rnn_num_layers', 1)
+            rnn_bidirectional = config.get('rnn_bidirectional', False)
+            rnn_type = config.get('rnn_type', 'LSTM')
+
+            if rnn_type == 'LSTM':
+                self.rnn = nn.LSTM(
+                    input_size=in_channels,  # in_channels from CNN output
+                    hidden_size=rnn_hidden_size,
+                    num_layers=rnn_num_layers,
+                    batch_first=True,
+                    bidirectional=rnn_bidirectional
+                )
+            elif rnn_type == 'GRU':
+                self.rnn = nn.GRU(
+                    input_size=in_channels,
+                    hidden_size=rnn_hidden_size,
+                    num_layers=rnn_num_layers,
+                    batch_first=True,
+                    bidirectional=rnn_bidirectional
+                )
+            else:
+                raise ValueError("Unsupported RNN type")
+
+            # Determine the number of directions in RNN
+            direction = 2 if rnn_bidirectional else 1
+
+            # Fully connected layer
+            self.fc1 = nn.Linear(rnn_hidden_size * direction, config['hidden_dim_protein'])
+
+        else:
+            pass  # Implement for other encodings if necessary
+
+    def forward(self, v):
+        # print(v.shape)
+        # Input shape: (batch_size, sequence_length, input_dim)
+        # print("Initial input shape:", v.shape)
+        # Permute to (batch_size, input_dim, sequence_length)
+        v = v.permute(0, 2, 1)
+        # print("After permutation for Conv1d:", v.shape)
+
+        # Pass through CNN
+        x = self.conv(v)
+        # print("After Conv1d:", x.shape)
+        # x shape: (batch_size, num_filters[-1], sequence_length)
+
+        # Permute back to (batch_size, sequence_length, num_filters[-1]) for RNN
+        x = x.permute(0, 2, 1)
+        # print("After permutation for RNN:", x.shape)
+
+        # Pass through RNN
+        # x shape: (batch_size, sequence_length, input_size)
+        x, _ = self.rnn(x)
+        # print("After RNN:", x.shape)
+        # x shape: (batch_size, sequence_length, rnn_hidden_size * num_directions)
+
+        # Apply fully connected layer to each time step
+        # Reshape x to (batch_size * sequence_length, rnn_hidden_size * num_directions)
+        x = x.contiguous().view(-1, x.shape[2])
+
+        # Pass through fully connected layer
+        x = self.fc1(x)
+        # x shape: (batch_size * sequence_length, hidden_dim_protein)
+
+        # Reshape back to (batch_size, sequence_length, hidden_dim_protein)
+        x = x.view(-1, self.sequence_length, self.fc1.out_features)
+        # x shape: (batch_size, sequence_length, hidden_dim_protein)
+
+        # print("Final output shape:", x.shape)
+        return x
+
 
 
 class MLP(nn.Sequential):
