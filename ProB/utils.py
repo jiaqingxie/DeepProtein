@@ -515,28 +515,32 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
 
 def data_process(X_drug=None, X_target=None, y=None, drug_encoding=None, target_encoding=None,
                  split_method='random', frac=[0.7, 0.1, 0.2], random_seed=1, sample_frac=1, mode='DTI', X_drug_=None,
-                 X_target_=None):
+                 X_target_=None, multi_y = False):
     if random_seed == 'TDC':
         random_seed = 1234
     # property_prediction_flag = X_target is None
     property_prediction_flag, function_prediction_flag, DDI_flag, PPI_flag, DTI_flag = False, False, False, False, False
+    token_prediction_flag = False
 
-    if (X_target is None) and (X_drug is not None) and (X_drug_ is None):
+
+    if (X_target is None) and (X_drug is not None) and (X_drug_ is None) and (not multi_y):
         property_prediction_flag = True
-    elif (X_target is not None) and (X_drug is None) and (X_target_ is None):
+    elif (X_target is not None) and (X_drug is None) and (X_target_ is None) and (not multi_y):
         function_prediction_flag = True
-    elif (X_drug is not None) and (X_drug_ is not None):
+    elif (X_drug is not None) and (X_drug_ is not None) and (not multi_y):
         DDI_flag = True
         if (X_drug is None) or (X_drug_ is None):
             raise AttributeError("Drug pair sequence should be in X_drug, X_drug_")
-    elif (X_target is not None) and (X_target_ is not None):
+    elif (X_target is not None) and (X_target_ is not None) and (not multi_y):
         PPI_flag = True
         if (X_target is None) or (X_target_ is None):
             raise AttributeError("Target pair sequence should be in X_target, X_target_")
-    elif (X_drug is not None) and (X_target is not None):
+    elif (X_drug is not None) and (X_target is not None) and (not multi_y):
         DTI_flag = True
         if (X_drug is None) or (X_target is None):
             raise AttributeError("Target pair sequence should be in X_target, X_drug")
+    elif (X_target is not None) and (X_drug is None) and (X_target_ is None) and multi_y:
+        token_prediction_flag = True
     else:
         raise AttributeError(
             "Please use the correct mode. Currently, we support DTI, DDI, PPI, Drug Property Prediction and Protein Function Prediction...")
@@ -568,6 +572,13 @@ def data_process(X_drug=None, X_target=None, y=None, drug_encoding=None, target_
         print('in total: ' + str(len(df_data)) + ' drugs')
     elif function_prediction_flag:
         print('Protein Function Prediction Mode...')
+        df_data = pd.DataFrame(zip(X_target, y))
+        df_data.rename(columns={0: 'Target Sequence',
+                                1: 'Label'},
+                       inplace=True)
+        print('in total: ' + str(len(df_data)) + ' proteins')
+    elif token_prediction_flag:
+        print('Token Level Protein Prediction Mode...')
         df_data = pd.DataFrame(zip(X_target, y))
         df_data.rename(columns={0: 'Target Sequence',
                                 1: 'Label'},
@@ -607,7 +618,7 @@ def data_process(X_drug=None, X_target=None, y=None, drug_encoding=None, target_
         df_data = encode_protein(df_data, target_encoding, 'Target Sequence 2', 'target_encoding_2')
     elif property_prediction_flag:
         df_data = encode_drug(df_data, drug_encoding)
-    elif function_prediction_flag:
+    elif function_prediction_flag or token_prediction_flag:
         df_data = encode_protein(df_data, target_encoding)
 
     # dti split
@@ -646,7 +657,7 @@ def data_process(X_drug=None, X_target=None, y=None, drug_encoding=None, target_
             train, val, test = create_fold(df_data, random_seed, frac)
         elif split_method == 'no_split':
             return df_data.reset_index(drop=True)
-    elif function_prediction_flag:
+    elif function_prediction_flag or token_prediction_flag:
         if split_method == 'random':
             train, val, test = create_fold(df_data, random_seed, frac)
         elif split_method == 'no_split':
@@ -914,6 +925,61 @@ class data_process_loader_Protein_Prediction(data.Dataset):
         y = self.labels[index]
 
         return v_p, y
+
+
+class data_process_loader_Token_Protein_Prediction(Dataset):
+	def __init__(self, data):
+		self.sequences = [i[0] for i in data]
+		self.labels = [i[1] for i in data]
+		self.mask = [i[2] for i in data]
+	def __len__(self):
+		return len(self.labels)
+	def __getitem__(self, index):
+		return self.sequences[index], self.labels[index], self.mask[index]
+
+
+
+
+def data2vocab(data):
+	length = len(data)
+	vocab_set = set()
+	total_length, positive_num = 0, 0
+	for i in range(length):
+		antigen = train_data[X][i]
+		vocab_set = vocab_set.union(set(antigen))
+		Y = train_data['Y'][i]
+		assert len(antigen) > max(Y)
+		total_length += len(antigen)
+		positive_num += len(Y)
+	return vocab_set, positive_num / total_length
+
+def onehot(idx, length):
+	lst = [0 for i in range(length)]
+	lst[idx] = 1
+	return lst
+
+def zerohot(length):
+	return [0 for i in range(length)]
+
+def standardize_data(data, vocab_lst, maxlength = 300):
+	length = len(data)
+	standard_data = []
+	for i in range(length):
+		antigen = data[X][i]
+		Y = data['Y'][i]
+		sequence = [onehot(vocab_lst.index(s), len(vocab_lst)) for s in antigen]
+		labels = [0 for i in range(len(antigen))]
+		mask = [True for i in range(len(labels))]
+		sequence += (maxlength-len(sequence)) * [zerohot(len(vocab_lst))]
+		labels += (maxlength-len(labels)) * [0]
+		mask += (maxlength-len(mask)) * [False]
+		for y in Y:
+			labels[y] = 1
+		sequence, labels, mask = sequence[:maxlength], labels[:maxlength], mask[:maxlength]
+		sequence, labels, mask = torch.FloatTensor(sequence), torch.FloatTensor(labels), torch.BoolTensor(mask)
+		# print(sequence.shape, labels.shape, mask.shape)
+		standard_data.append((sequence, labels, mask))
+	return standard_data
 
 
 def generate_config(drug_encoding=None, target_encoding=None,

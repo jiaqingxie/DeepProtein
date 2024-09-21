@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import roc_auc_score, precision_recall_curve
 from sklearn.metrics import roc_auc_score, f1_score, average_precision_score, precision_score, recall_score, accuracy_score
@@ -24,7 +25,6 @@ from sklearn import metrics
 import matplotlib.pyplot as plt
 
 from sklearn.metrics import roc_curve, auc
-from scipy import interp
 from sklearn.metrics import roc_auc_score
 
 
@@ -147,10 +147,12 @@ class RNN(nn.Module):
         # h_n shape (n_layers, batch, hidden_size)
         # h_c shape (n_layers, batch, hidden_size)
         r_out, (h_n, h_c) = self.rnn(x, None)   # None represents zero initial hidden state
+        print(r_out.shape) # 16 * 300 * 100
 
         # choose r_out at the last time step
         out = self.out(r_out)
-        out = out.squeeze(-1)
+        out = out.squeeze(-1) # 16 * 300
+        # print(out.shape)
         return out
 
     def learn(self, sequence, labels, mask):
@@ -184,13 +186,92 @@ class RNN(nn.Module):
     		  'prauc', average_precision_score(label_lst, binary_pred_lst))
 
 
+class CNN(nn.Module):
+    def __init__(self, name, input_channels, num_filters, kernel_size, hidden_dim=128, output_size=1):
+        super(CNN, self).__init__()
+        self.name = name
 
+        # CNN layer
+        self.conv1 = nn.Conv1d(in_channels=input_channels, out_channels=num_filters, kernel_size=kernel_size,
+                               padding='same')
+
+        # Pooling layer
+        self.pool = nn.MaxPool1d(kernel_size=2, padding=0)
+
+        # Fully connected layer
+        self.fc1 = nn.Linear(num_filters, hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim, output_size)
+
+        # Optimizer and loss function
+        self.opt = torch.optim.Adam(self.parameters(), lr=1e-3)
+        self.criterion = torch.nn.BCEWithLogitsLoss()
+
+    def forward(self, x):
+        # x should have shape (batch_size, sequence_length, input_channels)
+        # We need to transpose it to (batch_size, input_channels, sequence_length) for Conv1d
+        x = x.permute(0, 2, 1)  # Reshape x to (batch_size, input_channels, sequence_length)
+
+        # Pass through the convolutional layer
+        x = self.conv1(x)
+        x = F.relu(x)
+
+        # Pass through the pooling layer
+        x = self.pool(x)  # x now has shape (batch_size, num_filters, sequence_length // 2)
+
+        # Transpose back for compatibility with the fully connected layers
+        x = x.permute(0, 2, 1)  # Reshape to (batch_size, sequence_length // 2, num_filters)
+
+        # Pass through the fully connected layers
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+
+        # Squeeze the output channel if needed (batch_size, sequence_length // 2, output_size)
+        x = x.squeeze(-1)
+
+        return x
+
+    def learn(self, sequence, labels, mask):
+        prediction = self.forward(sequence)
+
+        # Adjust mask and labels to match the output shape
+        mask = mask[:, :prediction.shape[1]]
+        labels = labels[:, :prediction.shape[1]]
+
+        loss = self.criterion(prediction, labels)
+        self.opt.zero_grad()
+        loss.backward()
+        self.opt.step()
+
+    def test(self, test_loader, name):
+        label_lst, prediction_lst = [], []
+        for sequence, labels, mask in test_loader:
+            prediction = self.forward(sequence)
+            prediction = torch.sigmoid(prediction)
+            for pred, label, msk in zip(prediction, labels, mask):
+                num = sum(msk.tolist())
+                pred = pred.tolist()[:num]
+                label = label.tolist()[:num]
+                label_lst.extend(label)
+                prediction_lst.extend(pred)
+
+        sort_pred = deepcopy(prediction_lst)
+        sort_pred.sort()
+        threshold = sort_pred[int(len(sort_pred) * 0.9)]
+        float2binary = lambda x: 0 if x < threshold else 1
+        binary_pred_lst = list(map(float2binary, prediction_lst))
+        plot(label_lst, prediction_lst, name)
+        print('roc_auc', roc_auc_score(label_lst, prediction_lst),
+              'F1', f1_score(label_lst, binary_pred_lst),
+              'prauc', average_precision_score(label_lst, binary_pred_lst))
 
 #################################################################
 ############################# learn #############################
 #################################################################
 
 model = RNN(name = 'Epitope', hidden_size=100, input_size = len(vocab_lst))
+
+# input_channels = len(vocab_lst)  # Number of unique characters in your vocabulary
+# model = CNN(name='Epitope', input_channels=input_channels, num_filters=32, kernel_size=5, hidden_dim=128)
 epoch = 10
 for ep in range(epoch):
 	for sequence, labels, mask in train_loader:
