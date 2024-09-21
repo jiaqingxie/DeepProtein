@@ -1,0 +1,30 @@
+2024-09-21 16:28:21,052 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Current SDK version is 0.17.4
+2024-09-21 16:28:21,052 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Configure stats pid to 8936
+2024-09-21 16:28:21,053 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Loading settings from C:\Users\¼ÎÇì\.config\wandb\settings
+2024-09-21 16:28:21,053 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Loading settings from E:\DeepPurposePlusPlus\train\wandb\settings
+2024-09-21 16:28:21,053 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-09-21 16:28:21,053 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-09-21 16:28:21,053 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'train\\IEDB.py', 'program_abspath': 'E:\\DeepPurposePlusPlus\\train\\IEDB.py', 'program': 'E:\\DeepPurposePlusPlus\\train\\IEDB.py'}
+2024-09-21 16:28:21,053 INFO    MainThread:8936 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-09-21 16:28:21,054 INFO    MainThread:8936 [wandb_init.py:_log_setup():529] Logging user logs to E:\DeepPurposePlusPlus\train\wandb\run-20240921_162821-9u9qefmg\logs\debug.log
+2024-09-21 16:28:21,054 INFO    MainThread:8936 [wandb_init.py:_log_setup():530] Logging internal logs to E:\DeepPurposePlusPlus\train\wandb\run-20240921_162821-9u9qefmg\logs\debug-internal.log
+2024-09-21 16:28:21,054 INFO    MainThread:8936 [wandb_init.py:init():569] calling init triggers
+2024-09-21 16:28:21,054 INFO    MainThread:8936 [wandb_init.py:init():576] wandb.init called with sweep_config: {}
+config: {}
+2024-09-21 16:28:21,054 INFO    MainThread:8936 [wandb_init.py:init():619] starting backend
+2024-09-21 16:28:21,054 INFO    MainThread:8936 [wandb_init.py:init():623] setting up manager
+2024-09-21 16:28:21,056 INFO    MainThread:8936 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=spawn, using: spawn
+2024-09-21 16:28:21,060 INFO    MainThread:8936 [wandb_init.py:init():631] backend started and connected
+2024-09-21 16:28:21,062 INFO    MainThread:8936 [wandb_init.py:init():720] updated telemetry
+2024-09-21 16:28:21,090 INFO    MainThread:8936 [wandb_init.py:init():753] communicating run to backend with 90.0 second timeout
+2024-09-21 16:28:21,588 INFO    MainThread:8936 [wandb_run.py:_on_init():2402] communicating current version
+2024-09-21 16:28:21,808 INFO    MainThread:8936 [wandb_run.py:_on_init():2411] got version response upgrade_message: "wandb version 0.18.1 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-09-21 16:28:21,809 INFO    MainThread:8936 [wandb_init.py:init():804] starting run threads in backend
+2024-09-21 16:28:22,561 INFO    MainThread:8936 [wandb_run.py:_console_start():2380] atexit reg
+2024-09-21 16:28:22,561 INFO    MainThread:8936 [wandb_run.py:_redirect():2235] redirect: wrap_raw
+2024-09-21 16:28:22,562 INFO    MainThread:8936 [wandb_run.py:_redirect():2300] Wrapping output streams.
+2024-09-21 16:28:22,562 INFO    MainThread:8936 [wandb_run.py:_redirect():2325] Redirects installed.
+2024-09-21 16:28:22,564 INFO    MainThread:8936 [wandb_init.py:init():847] run started, returning control to user process
+2024-09-21 16:28:22,564 INFO    MainThread:8936 [wandb_run.py:_config_callback():1382] config_cb None None {'target_encoding': 'CNN', 'seed': 42, 'wandb_proj': 'your_project_name', 'lr': 0.0001, 'epochs': 100, 'compute_pos_enc': False, 'batch_size': 32}
+2024-09-21 16:28:41,959 WARNING MsgRouterThr:8936 [router.py:message_loop():77] message_loop has been closed

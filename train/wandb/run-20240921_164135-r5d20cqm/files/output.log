@@ -1,0 +1,33 @@
+Found local copy...
+Loading...
+Done!
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 0.26861. Total time 0.0 hours
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\SAbDab_Liberis.py", line 107, in <module>
+    model.train(train_set, valid_set, test_set)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 338, in train
+    auc, auprc, f1, logits = self.test_(testing_generator, model_max, test=True, verbose=verbose)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 165, in test_
+    roc_curve(label_lst, prediction_lst, roc_auc_file, self.target_encoding)
+  File "E:\DeepPurposePlusPlus\ProB\utils.py", line 80, in roc_curve
+    fpr[0], tpr[0], _ = roc_curve(y_label, y_pred)
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\utils\_param_validation.py", line 213, in wrapper
+    return func(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\metrics\_ranking.py", line 1145, in roc_curve
+    fps, tps, thresholds = _binary_clf_curve(
+  File "E:\anaconda3\envs\graph\lib\site-packages\sklearn\metrics\_ranking.py", line 817, in _binary_clf_curve
+    raise ValueError("{0} format is not supported".format(y_type))
+ValueError: continuous format is not supported
+Validation at Epoch 1 , AUROC: 0.52433 , AUPRC: 0.06293 , F1: 0.10171
+--- Go for Testing ---
+[[-1.26491642]
+ [-1.3735621 ]
+ [-1.39912796]
+ ...
+ [-1.35739112]
+ [-1.35612094]
+ [-1.28202462]]
+[0. 0. 0. ... 0. 0. 0.]

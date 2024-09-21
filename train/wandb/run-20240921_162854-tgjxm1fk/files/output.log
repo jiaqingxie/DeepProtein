@@ -1,0 +1,39 @@
+Downloading...
+100%|██████████| 135k/135k [00:00<00:00, 561kiB/s]
+Loading...
+Done!
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\IEDB.py", line 108, in <module>
+    model.train(train_set, valid_set, test_set)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 264, in train
+    score = self.model(sequence)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 53, in forward
+    v_f = self.model_protein(v_P)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\DeepPurposePlusPlus\ProB\encoders.py", line 149, in forward
+    x = self.conv(v)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\container.py", line 217, in forward
+    input = module(input)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\conv.py", line 310, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\conv.py", line 306, in _conv_forward
+    return F.conv1d(input, weight, bias, self.stride,
+RuntimeError: Given groups=1, weight of size [32, 24, 5], expected input[32, 20, 300] to have 24 channels, but got 20 channels instead

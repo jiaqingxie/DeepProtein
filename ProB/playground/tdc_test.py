@@ -8,9 +8,9 @@ from copy import deepcopy
 torch.manual_seed(1)
 from tdc.single_pred import Epitope, Paratope
 
-# data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
+data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
 # data_class, name, X = Epitope, 'PDB_Jespersen', 'Antigen'
-data_class, name, X = Paratope, 'SAbDab_Liberis', 'Antibody'
+# data_class, name, X = Paratope, 'SAbDab_Liberis', 'Antibody'
 
 data = data_class(name = name)
 split = data.get_split()
@@ -48,7 +48,7 @@ def plot(label_lst, predict_lst, name):
 
 
 ############################# vocab #############################
-def data2vocab(data, train_data):
+def data2vocab(data):
     vocab_set = set()
     total_length, positive_num = 0, 0
     for i in range(len(data)):
@@ -146,7 +146,7 @@ class RNN(nn.Module):
         # h_n shape (n_layers, batch, hidden_size)
         # h_c shape (n_layers, batch, hidden_size)
         r_out, (h_n, h_c) = self.rnn(x, None)   # None represents zero initial hidden state
-        print(r_out.shape) # 16 * 300 * 100
+        # print(r_out.shape) # 16 * 300 * 100
 
         # choose r_out at the last time step
         out = self.out(r_out)
@@ -184,20 +184,16 @@ class RNN(nn.Module):
               'F1', f1_score(label_lst, binary_pred_lst),
               'prauc', average_precision_score(label_lst, binary_pred_lst))
 
-
 class CNN(nn.Module):
     def __init__(self, name, input_channels, num_filters, kernel_size, hidden_dim=128, output_size=1):
         super(CNN, self).__init__()
         self.name = name
 
-        # CNN layer
+        # CNN layer with padding set to maintain sequence length
         self.conv1 = nn.Conv1d(in_channels=input_channels, out_channels=num_filters, kernel_size=kernel_size,
-                               padding='same')
+                               padding=kernel_size // 2)
 
-        # Pooling layer
-        self.pool = nn.MaxPool1d(kernel_size=2, padding=0)
-
-        # Fully connected layer
+        # Fully connected layer to match the output dimension
         self.fc1 = nn.Linear(num_filters, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, output_size)
 
@@ -214,29 +210,20 @@ class CNN(nn.Module):
         x = self.conv1(x)
         x = F.relu(x)
 
-        # Pass through the pooling layer
-        x = self.pool(x)  # x now has shape (batch_size, num_filters, sequence_length // 2)
-
-        # Transpose back for compatibility with the fully connected layers
-        x = x.permute(0, 2, 1)  # Reshape to (batch_size, sequence_length // 2, num_filters)
+        # Transpose back for compatibility with fully connected layers
+        x = x.permute(0, 2, 1)  # Reshape to (batch_size, sequence_length, num_filters)
 
         # Pass through the fully connected layers
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
 
-        # Squeeze the output channel if needed (batch_size, sequence_length // 2, output_size)
-        x = x.squeeze(-1)
-
-        return x
+        return x  # Shape should be (batch_size, sequence_length, 1)
 
     def learn(self, sequence, labels, mask):
         prediction = self.forward(sequence)
 
         # Adjust mask and labels to match the output shape
-        mask = mask[:, :prediction.shape[1]]
-        labels = labels[:, :prediction.shape[1]]
-
-        loss = self.criterion(prediction, labels)
+        loss = self.criterion(prediction.squeeze(-1), labels)  # Remove the last dimension for BCEWithLogitsLoss
         self.opt.zero_grad()
         loss.backward()
         self.opt.step()
@@ -245,7 +232,8 @@ class CNN(nn.Module):
         label_lst, prediction_lst = [], []
         for sequence, labels, mask in test_loader:
             prediction = self.forward(sequence)
-            prediction = torch.sigmoid(prediction)
+            prediction = torch.sigmoid(prediction).squeeze(-1)  # Squeeze to match the original label dimensions
+
             for pred, label, msk in zip(prediction, labels, mask):
                 num = sum(msk.tolist())
                 pred = pred.tolist()[:num]
@@ -269,8 +257,9 @@ class CNN(nn.Module):
 
 model = RNN(name = 'Epitope', hidden_size=100, input_size = len(vocab_lst))
 
-# input_channels = len(vocab_lst)  # Number of unique characters in your vocabulary
-# model = CNN(name='Epitope', input_channels=input_channels, num_filters=32, kernel_size=5, hidden_dim=128)
+input_channels = len(vocab_lst)  # Number of unique characters in your vocabulary
+print(input_channels)
+model = CNN(name='Epitope', input_channels=input_channels, num_filters=32, kernel_size=5, hidden_dim=128)
 epoch = 10
 for ep in range(epoch):
     for sequence, labels, mask in train_loader:

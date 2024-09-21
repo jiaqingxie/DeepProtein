@@ -1,0 +1,89 @@
+Found local copy...
+Loading...
+Done!
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 0.59712. Total time 0.0 hours
+Validation at Epoch 1 , AUROC: 0.50777 , AUPRC: 0.04116 , F1: 0.06158
+Training at Epoch 2 iteration 0 with loss 0.13405. Total time 0.00027 hours
+Validation at Epoch 2 , AUROC: 0.51354 , AUPRC: 0.04136 , F1: 0.06394
+Training at Epoch 3 iteration 0 with loss 0.13409. Total time 0.00055 hours
+Validation at Epoch 3 , AUROC: 0.52065 , AUPRC: 0.04176 , F1: 0.06847
+Training at Epoch 4 iteration 0 with loss 0.13380. Total time 0.00083 hours
+Validation at Epoch 4 , AUROC: 0.52789 , AUPRC: 0.04178 , F1: 0.06865
+Training at Epoch 5 iteration 0 with loss 0.13378. Total time 0.00111 hours
+Validation at Epoch 5 , AUROC: 0.53386 , AUPRC: 0.04183 , F1: 0.06919
+Training at Epoch 6 iteration 0 with loss 0.13359. Total time 0.00166 hours
+Validation at Epoch 6 , AUROC: 0.53815 , AUPRC: 0.04205 , F1: 0.07137
+Training at Epoch 7 iteration 0 with loss 0.13353. Total time 0.00194 hours
+Validation at Epoch 7 , AUROC: 0.54129 , AUPRC: 0.04198 , F1: 0.07064
+Training at Epoch 8 iteration 0 with loss 0.13356. Total time 0.00222 hours
+Validation at Epoch 8 , AUROC: 0.54384 , AUPRC: 0.04203 , F1: 0.07118
+Training at Epoch 9 iteration 0 with loss 0.13359. Total time 0.0025 hours
+Validation at Epoch 9 , AUROC: 0.54601 , AUPRC: 0.04205 , F1: 0.07137
+Training at Epoch 10 iteration 0 with loss 0.13329. Total time 0.00277 hours
+Validation at Epoch 10 , AUROC: 0.54784 , AUPRC: 0.04200 , F1: 0.07082
+Training at Epoch 11 iteration 0 with loss 0.13338. Total time 0.00333 hours
+Validation at Epoch 11 , AUROC: 0.54938 , AUPRC: 0.04200 , F1: 0.07082
+Training at Epoch 12 iteration 0 with loss 0.13336. Total time 0.00361 hours
+Validation at Epoch 12 , AUROC: 0.55057 , AUPRC: 0.04211 , F1: 0.07191
+Training at Epoch 13 iteration 0 with loss 0.13331. Total time 0.00388 hours
+Validation at Epoch 13 , AUROC: 0.55152 , AUPRC: 0.04222 , F1: 0.07300
+Training at Epoch 14 iteration 0 with loss 0.13318. Total time 0.00416 hours
+Validation at Epoch 14 , AUROC: 0.55238 , AUPRC: 0.04224 , F1: 0.07318
+Training at Epoch 15 iteration 0 with loss 0.13301. Total time 0.00444 hours
+Validation at Epoch 15 , AUROC: 0.55313 , AUPRC: 0.04224 , F1: 0.07318
+Training at Epoch 16 iteration 0 with loss 0.13319. Total time 0.005 hours
+Validation at Epoch 16 , AUROC: 0.55371 , AUPRC: 0.04224 , F1: 0.07318
+Training at Epoch 17 iteration 0 with loss 0.13318. Total time 0.00527 hours
+Validation at Epoch 17 , AUROC: 0.55420 , AUPRC: 0.04230 , F1: 0.07372
+Training at Epoch 18 iteration 0 with loss 0.13309. Total time 0.00555 hours
+Validation at Epoch 18 , AUROC: 0.55464 , AUPRC: 0.04240 , F1: 0.07463
+Training at Epoch 19 iteration 0 with loss 0.13305. Total time 0.00583 hours
+Validation at Epoch 19 , AUROC: 0.55495 , AUPRC: 0.04238 , F1: 0.07444
+Training at Epoch 20 iteration 0 with loss 0.13287. Total time 0.00638 hours
+Validation at Epoch 20 , AUROC: 0.55527 , AUPRC: 0.04236 , F1: 0.07426
+Training at Epoch 21 iteration 0 with loss 0.13312. Total time 0.00666 hours
+Validation at Epoch 21 , AUROC: 0.55552 , AUPRC: 0.04236 , F1: 0.07426
+Training at Epoch 22 iteration 0 with loss 0.13299. Total time 0.00694 hours
+Validation at Epoch 22 , AUROC: 0.55576 , AUPRC: 0.04234 , F1: 0.07408
+Training at Epoch 23 iteration 0 with loss 0.13324. Total time 0.00722 hours
+Validation at Epoch 23 , AUROC: 0.55598 , AUPRC: 0.04222 , F1: 0.07300
+Training at Epoch 24 iteration 0 with loss 0.13342. Total time 0.0075 hours
+Validation at Epoch 24 , AUROC: 0.55612 , AUPRC: 0.04220 , F1: 0.07281
+Training at Epoch 25 iteration 0 with loss 0.13298. Total time 0.00777 hours
+Validation at Epoch 25 , AUROC: 0.55622 , AUPRC: 0.04222 , F1: 0.07300
+Training at Epoch 26 iteration 0 with loss 0.13330. Total time 0.00833 hours
+Validation at Epoch 26 , AUROC: 0.55638 , AUPRC: 0.04218 , F1: 0.07263
+Training at Epoch 27 iteration 0 with loss 0.13330. Total time 0.00861 hours
+Validation at Epoch 27 , AUROC: 0.55642 , AUPRC: 0.04213 , F1: 0.07209
+Training at Epoch 28 iteration 0 with loss 0.13316. Total time 0.00888 hours
+Validation at Epoch 28 , AUROC: 0.55648 , AUPRC: 0.04226 , F1: 0.07336
+Training at Epoch 29 iteration 0 with loss 0.13298. Total time 0.00916 hours
+Validation at Epoch 29 , AUROC: 0.55647 , AUPRC: 0.04222 , F1: 0.07299
+Training at Epoch 30 iteration 0 with loss 0.13308. Total time 0.00972 hours
+Validation at Epoch 30 , AUROC: 0.55642 , AUPRC: 0.04215 , F1: 0.07227
+Training at Epoch 31 iteration 0 with loss 0.13319. Total time 0.01 hours
+Validation at Epoch 31 , AUROC: 0.55636 , AUPRC: 0.04228 , F1: 0.07354
+Training at Epoch 32 iteration 0 with loss 0.13313. Total time 0.01027 hours
+Validation at Epoch 32 , AUROC: 0.55625 , AUPRC: 0.04230 , F1: 0.07372
+Training at Epoch 33 iteration 0 with loss 0.13344. Total time 0.01055 hours
+Validation at Epoch 33 , AUROC: 0.55616 , AUPRC: 0.04242 , F1: 0.07481
+Training at Epoch 34 iteration 0 with loss 0.13321. Total time 0.01083 hours
+Validation at Epoch 34 , AUROC: 0.55605 , AUPRC: 0.04234 , F1: 0.07408
+Training at Epoch 35 iteration 0 with loss 0.13336. Total time 0.01138 hours
+Validation at Epoch 35 , AUROC: 0.55598 , AUPRC: 0.04230 , F1: 0.07372
+Training at Epoch 36 iteration 0 with loss 0.13327. Total time 0.01166 hours
+Validation at Epoch 36 , AUROC: 0.55571 , AUPRC: 0.04236 , F1: 0.07426
+Training at Epoch 37 iteration 0 with loss 0.13341. Total time 0.01194 hours
+Validation at Epoch 37 , AUROC: 0.55556 , AUPRC: 0.04228 , F1: 0.07354
+Training at Epoch 38 iteration 0 with loss 0.13327. Total time 0.01222 hours
+Validation at Epoch 38 , AUROC: 0.55550 , AUPRC: 0.04230 , F1: 0.07372
+Training at Epoch 39 iteration 0 with loss 0.13325. Total time 0.01277 hours
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\IEDB.py", line 106, in <module>
+    model.train(train_set, valid_set, test_set)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 261, in train
+    sequence = sequence.float().to(self.device)
+KeyboardInterrupt

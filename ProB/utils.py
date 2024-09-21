@@ -75,6 +75,8 @@ def roc_curve(y_pred, y_label, figure_file, method_name):
     fpr = dict()
     tpr = dict()
     roc_auc = dict()
+    print(y_label)
+    print(y_pred)
     fpr[0], tpr[0], _ = roc_curve(y_label, y_pred)
     roc_auc[0] = auc(fpr[0], tpr[0])
     lw = 2
@@ -1140,6 +1142,9 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['input_dim_protein'] = len(idx2word_p)
         base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target  # MLP classifier dim 1
     elif target_encoding == 'CNN':
+        base_config['cnn_target_filters'] = cnn_target_filters
+        base_config['cnn_target_kernels'] = cnn_target_kernels
+    elif target_encoding == 'Token_CNN':
         base_config['cnn_target_filters'] = cnn_target_filters
         base_config['cnn_target_kernels'] = cnn_target_kernels
     elif target_encoding == 'CNN_RNN':

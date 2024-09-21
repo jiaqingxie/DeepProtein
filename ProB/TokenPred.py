@@ -49,13 +49,16 @@ class Classifier(nn.Sequential):
 
     def forward(self, v_P):
         # each encoding
+        # print(v_P.shape) # batch_size * max_length * 24
         v_f = self.model_protein(v_P)
+
         # concatenate and classify
         for i, l in enumerate(self.predictor):
             if i == (len(self.predictor) - 1):
                 v_f = l(v_f)
             else:
                 v_f = F.relu(self.dropout(l(v_f)))
+
         return v_f
 
 
@@ -95,6 +98,8 @@ class Protein_Prediction:
                                      config['mlp_hidden_dims_target'])
         elif target_encoding == 'CNN':
             self.model_protein = CNN('protein', **config)
+        elif target_encoding == 'Token_CNN':
+            self.model_protein = Token_CNN('protein', **config)
         elif target_encoding == 'CNN_RNN':
             self.model_protein = CNN_RNN('protein', **config)
         elif target_encoding == 'Transformer':
@@ -157,17 +162,17 @@ class Protein_Prediction:
                 if verbose:
                     roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
                     plt.figure(0)
-                    roc_curve(label_lst, prediction_lst, roc_auc_file, self.target_encoding)
+                    roc_curve(label_lst, binary_pred_lst, roc_auc_file, self.target_encoding)
                     plt.figure(1)
                     pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
                     prauc_curve(label_lst, binary_pred_lst, pr_auc_file, self.target_encoding)
 
-            return roc_auc_score(label_lst, prediction_lst), average_precision_score(label_lst, binary_pred_lst), f1_score(label_lst, binary_pred_lst), prediction_lst
+            return roc_auc_score(label_lst, binary_pred_lst), average_precision_score(label_lst, binary_pred_lst), f1_score(label_lst, binary_pred_lst), prediction_lst
 
         else:
             raise NotImplementedError("Not implemented yet")
 
-    def train(self, train, val, test=None, verbose=True):
+    def train(self, train, val, test=None, verbose=True, batch_size=32):
 
         # if len(train.Label.unique()) == 2:
         #     self.binary = True
@@ -209,9 +214,9 @@ class Protein_Prediction:
                   'drop_last': False}
 
 
-        training_generator = data.DataLoader(data_process_loader_Token_Protein_Prediction(train))
+        training_generator = data.DataLoader(data_process_loader_Token_Protein_Prediction(train), batch_size = batch_size)
 
-        validation_generator = data.DataLoader(data_process_loader_Token_Protein_Prediction(val))
+        validation_generator = data.DataLoader(data_process_loader_Token_Protein_Prediction(val), batch_size = batch_size)
 
         if test is not None:
 
@@ -223,7 +228,7 @@ class Protein_Prediction:
                            'sampler': SequentialSampler(info)}
 
             testing_generator = data.DataLoader(
-                data_process_loader_Token_Protein_Prediction(test))
+                data_process_loader_Token_Protein_Prediction(test), batch_size=batch_size)
 
 
 
@@ -260,6 +265,8 @@ class Protein_Prediction:
 
                 score = self.model(sequence)
 
+                # print(score.shape)
+
                 if not torch.is_tensor(label):
                     label = torch.from_numpy(np.array(label)).float().to(self.device)
                 else:
@@ -274,8 +281,8 @@ class Protein_Prediction:
                         label = label.squeeze(-1)
 
                     criterion = torch.nn.BCEWithLogitsLoss(weight=mask, reduction='mean')
-                    print(score.shape)
-                    print(label.shape)
+
+                    # print(label.shape)
                     loss = criterion(score, label)
                 else:
                     raise NotImplementedError("Not Implemented for non-binary settings")

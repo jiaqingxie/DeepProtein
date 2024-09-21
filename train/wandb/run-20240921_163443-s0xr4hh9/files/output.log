@@ -1,0 +1,11 @@
+Found local copy...
+Loading...
+Done!
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\SAbDab_Liberis.py", line 106, in <module>
+    model = models.model_initialize(**config)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 68, in model_initialize
+    model = Protein_Prediction(**config)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 100, in __init__
+    self.model_protein = CNN('protein', **config)
+NameError: name 'CNN' is not defined

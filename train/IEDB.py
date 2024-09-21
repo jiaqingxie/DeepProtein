@@ -39,13 +39,15 @@ if __name__ == "__main__":
     compute_pos = args.compute_pos_enc
     batch_size = args.batch_size
 
-    job_name = f"Fluorescence + {target_encoding}"
-    # wandb.init(project=wandb_project, name=job_name)
-    # wandb.config.update(args)
+    job_name = f"IEDB + {target_encoding}"
+    wandb.init(project=wandb_project, name=job_name)
+    wandb.config.update(args)
 
     path = os.getcwd()
 
     data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
+    # data_class, name, X = Epitope, 'PDB_Jespersen', 'Antigen'
+
     data = data_class(name=name)
     split = data.get_split()
     train_data, valid_data, test_data = split['train'], split['valid'], split['test']
@@ -100,8 +102,10 @@ if __name__ == "__main__":
                              )
     config['multi'] = False
     config['binary'] = True
+    config['token'] = True
+    config['in_channels'] = 24
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
-    model.train(train_set, valid_set, test_set)
+    model.train(train_set, valid_set, test_set, batch_size=batch_size)
 
 

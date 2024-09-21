@@ -1,0 +1,20 @@
+Found local copy...
+Loading...
+Done!
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\SAbDab_Liberis.py", line 107, in <module>
+    model.train(train_set, valid_set, test_set)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 286, in train
+    loss = criterion(score, label)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\loss.py", line 731, in forward
+    return F.binary_cross_entropy_with_logits(input, target,
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\functional.py", line 3224, in binary_cross_entropy_with_logits
+    raise ValueError(f"Target size ({target.size()}) must be the same as input size ({input.size()})")
+ValueError: Target size (torch.Size([32, 300])) must be the same as input size (torch.Size([32, 303]))

@@ -3,24 +3,17 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils import data
 from torch.utils.data import SequentialSampler
-from torch import nn
+
+import torch.nn as nn
+import torch.nn.functional as F
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-from time import time
-from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score, log_loss
-from lifelines.utils import concordance_index
-from scipy.stats import pearsonr
-import pickle
 
-# torch.manual_seed(2)
+
 np.random.seed(3)
-import copy
-from prettytable import PrettyTable
 
-import os
 
 from ProB.utils import *
 from ProB.model_helper import Encoder_MultipleLayers, Embeddings
@@ -107,6 +100,49 @@ class CNN(nn.Sequential):
         v = v.view(v.size(0), -1)
         v = self.fc1(v.float())
         return v
+
+
+
+class Token_CNN(nn.Module):
+    def __init__(self, encoding, **config):
+        super(Token_CNN, self).__init__()
+        if encoding == 'protein':
+            in_channels = config['in_channels']
+            self.sequence_length = 300
+
+            num_filters = [32]
+            kernel_sizes = [5]
+            layers = []
+
+            for i in range(len(num_filters)):
+                layers.append(
+                    nn.Conv1d(
+                        in_channels=in_channels,
+                        out_channels=num_filters[i],
+                        kernel_size=kernel_sizes[i],
+                        padding=kernel_sizes[i] // 2
+                    )
+                )
+                layers.append(nn.ReLU())
+                in_channels = num_filters[i]
+
+            self.conv = nn.Sequential(*layers)
+            self.fc1 = nn.Linear(in_channels, config['hidden_dim_protein'])
+
+        else:
+            pass
+
+    def forward(self, v):
+
+        v = v.permute(0, 2, 1)
+
+        x = self.conv(v)
+
+        x = x.permute(0, 2, 1)
+
+        x = self.fc1(x)
+
+        return x
 
 
 class CNN_RNN(nn.Sequential):
