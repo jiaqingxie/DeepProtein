@@ -3,7 +3,7 @@ import sys
 import argparse
 import torch
 import wandb
-from tdc.single_pred import Epitope
+
 
 module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
@@ -11,8 +11,9 @@ if module_path not in sys.path:
 
 from ProB.dataset import *
 import ProB.utils as utils
-import ProB.ProteinPred as models
+import ProB.TokenPred as models
 
+from tdc.single_pred import Epitope
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with ProB")
@@ -39,48 +40,57 @@ if __name__ == "__main__":
     batch_size = args.batch_size
 
     job_name = f"Fluorescence + {target_encoding}"
-    wandb.init(project=wandb_project, name=job_name)
-    wandb.config.update(args)
+    # wandb.init(project=wandb_project, name=job_name)
+    # wandb.config.update(args)
 
     path = os.getcwd()
 
-    data = Epitope(name='IEDB_Jespersen')
+    data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
+    data = data_class(name=name)
     split = data.get_split()
+    train_data, valid_data, test_data = split['train'], split['valid'], split['test']
+    vocab_set = set()
 
-    train, y_train = split['train']['Antigen'], split['train']['y']
-    valid, y_valid = split['valid']['Antigen'], split['valid']['y']
-    test, y_test = split['test']['Antigen'], split['test']['y']
+    train_vocab, train_positive_ratio = data2vocab(train_data, train_data, X)
+    valid_vocab, valid_positive_ratio = data2vocab(valid_data, train_data, X)
+    test_vocab, test_positive_ratio = data2vocab(test_data, train_data, X)
 
-    train_IMDB = list(zip(train, y_train))
-    valid_IMDB = list(zip(valid, y_valid))
-    test_IMDB = list(zip(test, y_test))
+    vocab_set = train_vocab.union(valid_vocab)
+    vocab_set = vocab_set.union(test_vocab)
+    vocab_lst = list(vocab_set)
 
+    train_data = standardize_data(train_data, vocab_lst, X)
+    valid_data = standardize_data(valid_data, vocab_lst, X)
+    test_data = standardize_data(test_data, vocab_lst, X)
 
+    train_set = data_process_loader_Token_Protein_Prediction(train_data)
+    valid_set = data_process_loader_Token_Protein_Prediction(valid_data)
+    test_set = data_process_loader_Token_Protein_Prediction(test_data)
     #
-    if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP',  'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_IMDB, graph=True)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_IMDB, graph=True)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_IMDB, graph=True)
-
-    else:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_IMDB)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_IMDB)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_IMDB)
-
-    train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
-                                     # drug_encoding= drug_encoding,
-                                     split_method='random', frac=[0.99998, 1e-5, 1e-5],
-                                     random_seed=1)
-
-    _, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target, target_encoding=target_encoding,
-                                   # drug_encoding= drug_encoding,
-                                   split_method='random', frac=[1e-5, 0.99998, 1e-5],
-                                   random_seed=1)
-
-    _, _, test = utils.data_process(X_target=test_protein_processed, y=test_target, target_encoding=target_encoding,
-                                    # drug_encoding= drug_encoding,
-                                    split_method='random', frac=[1e-5, 1e-5, 0.99998],
-                                    random_seed=1)
+    # if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP',  'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+    #     train_protein_processed, train_target, train_protein_idx = collate_fn(train_IMDB, graph=True)
+    #     valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_IMDB, graph=True)
+    #     test_protein_processed, test_target, test_protein_idx = collate_fn(test_IMDB, graph=True)
+    #
+    # else:
+    #     train_protein_processed, train_target, train_protein_idx = collate_fn(train_IMDB)
+    #     valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_IMDB)
+    #     test_protein_processed, test_target, test_protein_idx = collate_fn(test_IMDB)
+    #
+    # train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
+    #                                  # drug_encoding= drug_encoding,
+    #                                  split_method='random', frac=[0.99998, 1e-5, 1e-5],
+    #                                  random_seed=1)
+    #
+    # _, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target, target_encoding=target_encoding,
+    #                                # drug_encoding= drug_encoding,
+    #                                split_method='random', frac=[1e-5, 0.99998, 1e-5],
+    #                                random_seed=1)
+    #
+    # _, _, test = utils.data_process(X_target=test_protein_processed, y=test_target, target_encoding=target_encoding,
+    #                                 # drug_encoding= drug_encoding,
+    #                                 split_method='random', frac=[1e-5, 1e-5, 0.99998],
+    #                                 random_seed=1)
 
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
@@ -89,8 +99,9 @@ if __name__ == "__main__":
                              batch_size=batch_size ,
                              )
     config['multi'] = False
+    config['binary'] = True
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
-    model.train(train, val, test, compute_pos_enc = compute_pos)
+    model.train(train_set, valid_set, test_set)
 
 

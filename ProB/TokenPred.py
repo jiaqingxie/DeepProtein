@@ -249,6 +249,7 @@ class Protein_Prediction:
 
         self.model.train()
         for epo in range(train_epoch):
+            self.model.train()  # Ensure the model is in training mode
 
             for i, (sequence, label, mask) in enumerate(training_generator):
                 if self.target_encoding in ['Transformer']:
@@ -257,24 +258,32 @@ class Protein_Prediction:
                     sequence = sequence.float().to(self.device)
                     mask = mask.to(self.device)
 
-
                 score = self.model(sequence)
-                label = torch.from_numpy(np.array(label)).float().to(self.device)
+
+                if not torch.is_tensor(label):
+                    label = torch.from_numpy(np.array(label)).float().to(self.device)
+                else:
+                    label = label.float().to(self.device)
 
                 if self.binary:
-                    criterion = torch.nn.BCEWithLogitsLoss(size_average=True, weight=mask)
-                    # m = torch.nn.Sigmoid()
-                    # n = torch.squeeze(m(score), 1)
-                    # # label = torch.squeeze(label, 1)
-                    # if label.dim() > 1:
-                    #     label = torch.squeeze(label)
+
+                    if score.dim() > 2:
+                        score = score.squeeze(-1)
+
+                    if label.dim() > 1 and label.size(-1) == 1:
+                        label = label.squeeze(-1)
+
+                    criterion = torch.nn.BCEWithLogitsLoss(weight=mask, reduction='mean')
+                    print(score.shape)
+                    print(label.shape)
                     loss = criterion(score, label)
-
                 else:
-                   raise NotImplementedError("Not Implemented for non-binary settings")
+                    raise NotImplementedError("Not Implemented for non-binary settings")
 
+                # Store the loss value
                 loss_history.append(loss.item())
 
+                # Backward pass and optimization
                 opt.zero_grad()
                 loss.backward()
                 opt.step()

@@ -11,6 +11,7 @@ from torch.utils import data
 from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset
+
 try:
     from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
 except:
@@ -103,7 +104,6 @@ def plot_confusion_matrix(y_pred, y_label, figure_file, method_name):
     import numpy as np
 
     # Generate the confusion matrix
-
 
     print(y_label)
     print(y_pred)
@@ -502,7 +502,8 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-    elif target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+    elif target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT',
+                             'Graphormer']:
         df_data[save_column_name] = df_data[column_name]
     # elif target_encoding == 'MPNN':
     #     unique = pd.Series(df_data[column_name].unique()).apply(smiles2mpnnfeature)
@@ -515,13 +516,12 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
 
 def data_process(X_drug=None, X_target=None, y=None, drug_encoding=None, target_encoding=None,
                  split_method='random', frac=[0.7, 0.1, 0.2], random_seed=1, sample_frac=1, mode='DTI', X_drug_=None,
-                 X_target_=None, multi_y = False):
+                 X_target_=None, multi_y=False):
     if random_seed == 'TDC':
         random_seed = 1234
     # property_prediction_flag = X_target is None
     property_prediction_flag, function_prediction_flag, DDI_flag, PPI_flag, DTI_flag = False, False, False, False, False
     token_prediction_flag = False
-
 
     if (X_target is None) and (X_drug is not None) and (X_drug_ is None) and (not multi_y):
         property_prediction_flag = True
@@ -804,7 +804,8 @@ class data_process_PPI_loader(data.Dataset):
         self.df = df
         self.config = config
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT',
+                                              'Graphormer']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
             self.node_featurizer = CanonicalAtomFeaturizer()
             self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
@@ -832,7 +833,6 @@ class data_process_PPI_loader(data.Dataset):
             # v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
         return v_d, v_p, y
-
 
 
 class data_process_loader_Property_Prediction(data.Dataset):
@@ -892,7 +892,8 @@ class data_process_loader_Protein_Prediction(data.Dataset):
         self.df = df
         self.config = config
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT',
+                                              'Graphormer']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
             self.node_featurizer = CanonicalAtomFeaturizer()
             self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
@@ -928,58 +929,61 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 
 
 class data_process_loader_Token_Protein_Prediction(Dataset):
-	def __init__(self, data):
-		self.sequences = [i[0] for i in data]
-		self.labels = [i[1] for i in data]
-		self.mask = [i[2] for i in data]
-	def __len__(self):
-		return len(self.labels)
-	def __getitem__(self, index):
-		return self.sequences[index], self.labels[index], self.mask[index]
+    def __init__(self, data):
+        self.sequences = [i[0] for i in data]
+        self.labels = [i[1] for i in data]
+        self.mask = [i[2] for i in data]
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, index):
+        return self.sequences[index], self.labels[index], self.mask[index]
 
 
+def data2vocab(data, train_data, X):
+    length = len(data)
+    vocab_set = set()
+    total_length, positive_num = 0, 0
+    for i in range(length):
+        antigen = train_data[X][i]
+        vocab_set = vocab_set.union(set(antigen))
+        Y = train_data['Y'][i]
+        assert len(antigen) > max(Y)
+        total_length += len(antigen)
+        positive_num += len(Y)
+    return vocab_set, positive_num / total_length
 
-
-def data2vocab(data):
-	length = len(data)
-	vocab_set = set()
-	total_length, positive_num = 0, 0
-	for i in range(length):
-		antigen = train_data[X][i]
-		vocab_set = vocab_set.union(set(antigen))
-		Y = train_data['Y'][i]
-		assert len(antigen) > max(Y)
-		total_length += len(antigen)
-		positive_num += len(Y)
-	return vocab_set, positive_num / total_length
 
 def onehot(idx, length):
-	lst = [0 for i in range(length)]
-	lst[idx] = 1
-	return lst
+    lst = [0 for i in range(length)]
+    lst[idx] = 1
+    return lst
+
 
 def zerohot(length):
-	return [0 for i in range(length)]
+    return [0 for i in range(length)]
 
-def standardize_data(data, vocab_lst, maxlength = 300):
-	length = len(data)
-	standard_data = []
-	for i in range(length):
-		antigen = data[X][i]
-		Y = data['Y'][i]
-		sequence = [onehot(vocab_lst.index(s), len(vocab_lst)) for s in antigen]
-		labels = [0 for i in range(len(antigen))]
-		mask = [True for i in range(len(labels))]
-		sequence += (maxlength-len(sequence)) * [zerohot(len(vocab_lst))]
-		labels += (maxlength-len(labels)) * [0]
-		mask += (maxlength-len(mask)) * [False]
-		for y in Y:
-			labels[y] = 1
-		sequence, labels, mask = sequence[:maxlength], labels[:maxlength], mask[:maxlength]
-		sequence, labels, mask = torch.FloatTensor(sequence), torch.FloatTensor(labels), torch.BoolTensor(mask)
-		# print(sequence.shape, labels.shape, mask.shape)
-		standard_data.append((sequence, labels, mask))
-	return standard_data
+
+def standardize_data(data, vocab_lst, X, maxlength=300):
+    length = len(data)
+    standard_data = []
+    for i in range(length):
+        antigen = data[X][i]
+        Y = data['Y'][i]
+        sequence = [onehot(vocab_lst.index(s), len(vocab_lst)) for s in antigen]
+        labels = [0 for i in range(len(antigen))]
+        mask = [True for i in range(len(labels))]
+        sequence += (maxlength - len(sequence)) * [zerohot(len(vocab_lst))]
+        labels += (maxlength - len(labels)) * [0]
+        mask += (maxlength - len(mask)) * [False]
+        for y in Y:
+            labels[y] = 1
+        sequence, labels, mask = sequence[:maxlength], labels[:maxlength], mask[:maxlength]
+        sequence, labels, mask = torch.FloatTensor(sequence), torch.FloatTensor(labels), torch.BoolTensor(mask)
+        # print(sequence.shape, labels.shape, mask.shape)
+        standard_data.append((sequence, labels, mask))
+    return standard_data
 
 
 def generate_config(drug_encoding=None, target_encoding=None,
@@ -1679,7 +1683,8 @@ def download_url(url, save_path, chunk_size=128):
         for chunk in r.iter_content(chunk_size=chunk_size):
             fd.write(chunk)
 
-def split_antibody(sequence_str, sep = "\\n"):
+
+def split_antibody(sequence_str, sep="\\n"):
     cleaned_str = sequence_str.strip("[]")
     if sep == "\\n":
         sequences = cleaned_str.split("\\n")
@@ -1690,7 +1695,7 @@ def split_antibody(sequence_str, sep = "\\n"):
     return first_sequence, second_sequence
 
 
-def to_two_seq(split, part, input_type, sep = "\\n"):
+def to_two_seq(split, part, input_type, sep="\\n"):
     first_sequence_list = []
     second_sequence_list = []
 
@@ -1735,15 +1740,17 @@ class GraphDataset(Dataset):
 
     def __getitem__(self, idx):
         return self.graphs[idx], self.labels[idx]
+
+
 # compute positional encodings for graph transformers
-def compute_pos(generator, params, method = "Laplacian"):
+def compute_pos(generator, params, method="Laplacian"):
     """ Return a new Dataset"""
     modified_graphs = []
     modified_labels = []
 
     if method == 'Laplacian':
         for graph, label in generator:
-            graph.ndata['PE'] = dgl.laplacian_pe(graph, k = 74)
+            graph.ndata['PE'] = dgl.laplacian_pe(graph, k=74)
             modified_graphs.append(graph)
             modified_labels.append(label)
 

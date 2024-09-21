@@ -48,18 +48,17 @@ def plot(label_lst, predict_lst, name):
 
 
 ############################# vocab #############################
-def data2vocab(data):
-	length = len(data)
-	vocab_set = set()
-	total_length, positive_num = 0, 0
-	for i in range(length):
-		antigen = train_data[X][i]
-		vocab_set = vocab_set.union(set(antigen))
-		Y = train_data['Y'][i]
-		assert len(antigen) > max(Y)
-		total_length += len(antigen)
-		positive_num += len(Y)
-	return vocab_set, positive_num / total_length
+def data2vocab(data, train_data):
+    vocab_set = set()
+    total_length, positive_num = 0, 0
+    for i in range(len(data)):
+        antigen = train_data[X][i]
+        vocab_set = vocab_set.union(set(antigen))
+        Y = train_data['Y'][i]
+        assert len(antigen) > max(Y)
+        total_length += len(antigen)
+        positive_num += len(Y)
+    return vocab_set, positive_num / total_length
 
 train_vocab, train_positive_ratio = data2vocab(train_data)
 valid_vocab, valid_positive_ratio = data2vocab(valid_data)
@@ -70,32 +69,32 @@ vocab_set = vocab_set.union(test_vocab)
 vocab_lst = list(vocab_set)
 ############################# vocab #############################
 def onehot(idx, length):
-	lst = [0 for i in range(length)]
-	lst[idx] = 1
-	return lst
+    lst = [0 for i in range(length)]
+    lst[idx] = 1
+    return lst
 
 def zerohot(length):
-	return [0 for i in range(length)]
+    return [0 for i in range(length)]
 
 def standardize_data(data, vocab_lst, maxlength = 300):
-	length = len(data)
-	standard_data = []
-	for i in range(length):
-		antigen = data[X][i]
-		Y = data['Y'][i]
-		sequence = [onehot(vocab_lst.index(s), len(vocab_lst)) for s in antigen]
-		labels = [0 for i in range(len(antigen))]
-		mask = [True for i in range(len(labels))]
-		sequence += (maxlength-len(sequence)) * [zerohot(len(vocab_lst))]
-		labels += (maxlength-len(labels)) * [0]
-		mask += (maxlength-len(mask)) * [False]
-		for y in Y:
-			labels[y] = 1
-		sequence, labels, mask = sequence[:maxlength], labels[:maxlength], mask[:maxlength]
-		sequence, labels, mask = torch.FloatTensor(sequence), torch.FloatTensor(labels), torch.BoolTensor(mask)
-		# print(sequence.shape, labels.shape, mask.shape)
-		standard_data.append((sequence, labels, mask))
-	return standard_data
+    length = len(data)
+    standard_data = []
+    for i in range(length):
+        antigen = data[X][i]
+        Y = data['Y'][i]
+        sequence = [onehot(vocab_lst.index(s), len(vocab_lst)) for s in antigen]
+        labels = [0 for i in range(len(antigen))]
+        mask = [True for i in range(len(labels))]
+        sequence += (maxlength-len(sequence)) * [zerohot(len(vocab_lst))]
+        labels += (maxlength-len(labels)) * [0]
+        mask += (maxlength-len(mask)) * [False]
+        for y in Y:
+            labels[y] = 1
+        sequence, labels, mask = sequence[:maxlength], labels[:maxlength], mask[:maxlength]
+        sequence, labels, mask = torch.FloatTensor(sequence), torch.FloatTensor(labels), torch.BoolTensor(mask)
+        # print(sequence.shape, labels.shape, mask.shape)
+        standard_data.append((sequence, labels, mask))
+    return standard_data
 
 train_data = standardize_data(train_data, vocab_lst)
 valid_data = standardize_data(valid_data, vocab_lst)
@@ -103,16 +102,16 @@ test_data = standardize_data(test_data, vocab_lst)
 
 
 class dataset(Dataset):
-	def __init__(self, data):
-		self.sequences = [i[0] for i in data]
-		self.labels = [i[1] for i in data]
-		self.mask = [i[2] for i in data]
+    def __init__(self, data):
+        self.sequences = [i[0] for i in data]
+        self.labels = [i[1] for i in data]
+        self.mask = [i[2] for i in data]
 
-	def __getitem__(self, index):
-		return self.sequences[index], self.labels[index], self.mask[index]
+    def __getitem__(self, index):
+        return self.sequences[index], self.labels[index], self.mask[index]
 
-	def __len__(self):
-		return len(self.labels)
+    def __len__(self):
+        return len(self.labels)
 
 train_set = dataset(train_data)
 valid_set = dataset(valid_data)
@@ -182,8 +181,8 @@ class RNN(nn.Module):
         binary_pred_lst = list(map(float2binary, prediction_lst))
         plot(label_lst, prediction_lst, name)
         print('roc_auc', roc_auc_score(label_lst, prediction_lst),
-    		  'F1', f1_score(label_lst, binary_pred_lst),
-    		  'prauc', average_precision_score(label_lst, binary_pred_lst))
+              'F1', f1_score(label_lst, binary_pred_lst),
+              'prauc', average_precision_score(label_lst, binary_pred_lst))
 
 
 class CNN(nn.Module):
@@ -274,6 +273,6 @@ model = RNN(name = 'Epitope', hidden_size=100, input_size = len(vocab_lst))
 # model = CNN(name='Epitope', input_channels=input_channels, num_filters=32, kernel_size=5, hidden_dim=128)
 epoch = 10
 for ep in range(epoch):
-	for sequence, labels, mask in train_loader:
-		model.learn(sequence, labels, mask)
-	model.test(test_loader, name = model.name + "_" + str(ep) + ".png")
+    for sequence, labels, mask in train_loader:
+        model.learn(sequence, labels, mask)
+    model.test(test_loader, name = model.name + "_" + str(ep) + ".png")
