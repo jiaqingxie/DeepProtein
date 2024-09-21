@@ -58,7 +58,7 @@ class Classifier(nn.Sequential):
                 v_f = l(v_f)
             else:
                 v_f = F.relu(self.dropout(l(v_f)))
-
+        # print(v_f.shape)
         return v_f
 
 
@@ -106,6 +106,8 @@ class Protein_Prediction:
             self.model_protein = Token_CNN_RNN('protein', **config)
         elif target_encoding == 'Transformer':
             self.model_protein = transformer('protein', **config)
+        elif target_encoding == 'Token_Transformer':
+            self.model_protein = Token_Transformer('protein', **config)
 
         else:
             raise AttributeError('Please use one of the available encoding method.')

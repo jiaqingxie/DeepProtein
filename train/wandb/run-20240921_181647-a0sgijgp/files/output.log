@@ -1,0 +1,13 @@
+Found local copy...
+Loading...
+Done!
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 0.25958. Total time 0.0 hours
+Validation at Epoch 1 , AUROC: 0.50877 , AUPRC: 0.06120 , F1: 0.08745
+--- Go for Testing ---
+[0 0 0 ... 0 0 0]
+[0. 0. 0. ... 0. 0. 0.]
+Testing AUROC: 0.5147765323746676 , AUPRC: 0.056379829400352036 , F1: 0.0902215018908698
+--- Training Finished ---

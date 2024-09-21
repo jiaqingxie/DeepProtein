@@ -55,6 +55,59 @@ class transformer(nn.Sequential):
         return encoded_layers[:, 0]
 
 
+import torch
+from torch import nn
+
+
+class Token_Transformer(nn.Module):
+    def __init__(self, encoding, **config):
+        super(Token_Transformer, self).__init__()
+        if encoding == 'protein':
+            self.sequence_length = 300
+            self.input_dim = config['in_channels']
+            d_model = config['transformer_emb_size_target']               # Embedding dimension
+            nhead = config['transformer_num_attention_heads_target']                 # Number of attention heads
+            num_layers = config['transformer_n_layer_target']        # Number of Transformer layers
+            dim_feedforward = config['transformer_intermediate_size_target'] # Dimension of the feedforward network
+            dropout =  config['transformer_attention_probs_dropout']              # Dropout rate
+
+            # Linear layer to project input to d_model dimensions
+            self.linear_in = nn.Linear(self.input_dim, d_model)
+
+            # Transformer Encoder
+            encoder_layer = nn.TransformerEncoderLayer(
+                d_model=d_model,
+                nhead=nhead,
+                dim_feedforward=dim_feedforward,
+                dropout=dropout,
+                batch_first=True  # Set batch_first to True
+            )
+            self.transformer_encoder = nn.TransformerEncoder(
+                encoder_layer,
+                num_layers=num_layers
+            )
+
+            # Fully connected layers
+            self.fc1 = nn.Linear(d_model, config['hidden_dim_protein'])
+            # self.fc_out = nn.Linear(config['hidden_dim_protein'], 1)
+
+        else:
+            # Handle other encodings if necessary
+            pass
+
+    def forward(self, v):
+        # v: (batch_size, max_length, input_dim)
+        x = self.linear_in(v)  # Project input to d_model dimensions
+
+        # Apply Transformer Encoder
+        x = self.transformer_encoder(x)  # (batch_size, max_length, d_model)
+
+        # Apply fully connected layers
+        x = self.fc1(x)       # (batch_size, max_length, hidden_dim_protein)
+        # x = self.fc_out(x)    # (batch_size, max_length, 1)
+
+        return x  # Output shape: (batch_size, max_length, 1)
+
 class CNN(nn.Sequential):
     def __init__(self, encoding, **config):
         super(CNN, self).__init__()
@@ -141,6 +194,8 @@ class Token_CNN(nn.Module):
         x = x.permute(0, 2, 1)
 
         x = self.fc1(x)
+
+        # print(x.shape)
 
         return x
 

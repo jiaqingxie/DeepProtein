@@ -1171,6 +1171,16 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
         base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
         base_config['hidden_dim_protein'] = transformer_emb_size_target
+    elif target_encoding == 'Token_Transformer':
+        base_config['input_dim_protein'] = 4114
+        base_config['transformer_emb_size_target'] = transformer_emb_size_target
+        base_config['transformer_num_attention_heads_target'] = transformer_num_attention_heads_target
+        base_config['transformer_intermediate_size_target'] = transformer_intermediate_size_target
+        base_config['transformer_n_layer_target'] = transformer_n_layer_target
+        base_config['transformer_dropout_rate'] = transformer_dropout_rate
+        base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
+        base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
+        base_config['hidden_dim_protein'] = transformer_emb_size_target
     elif target_encoding == 'DGL_GCN':
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
