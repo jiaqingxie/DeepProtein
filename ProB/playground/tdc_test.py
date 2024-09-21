@@ -8,9 +8,9 @@ from copy import deepcopy
 torch.manual_seed(1)
 from tdc.single_pred import Epitope, Paratope
 
-data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
+# data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
 # data_class, name, X = Epitope, 'PDB_Jespersen', 'Antigen'
-# data_class, name, X = Paratope, 'SAbDab_Liberis', 'Antibody'
+data_class, name, X = Paratope, 'SAbDab_Liberis', 'Antibody'
 
 data = data_class(name = name)
 split = data.get_split()
@@ -260,7 +260,7 @@ model = RNN(name = 'Epitope', hidden_size=100, input_size = len(vocab_lst))
 input_channels = len(vocab_lst)  # Number of unique characters in your vocabulary
 print(input_channels)
 model = CNN(name='Epitope', input_channels=input_channels, num_filters=32, kernel_size=5, hidden_dim=128)
-epoch = 10
+epoch = 20
 for ep in range(epoch):
     for sequence, labels, mask in train_loader:
         model.learn(sequence, labels, mask)

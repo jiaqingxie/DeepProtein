@@ -1,0 +1,225 @@
+2024-09-21 21:36:59,090 INFO    StreamThr :19592 [internal.py:wandb_internal():85] W&B internal server running at pid: 19592, started at: 2024-09-21 21:36:59.088953
+2024-09-21 21:36:59,091 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: status
+2024-09-21 21:36:59,095 INFO    WriterThread:19592 [datastore.py:open_for_write():87] open: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\run-fdukp25h.wandb
+2024-09-21 21:36:59,095 DEBUG   SenderThread:19592 [sender.py:send():379] send: header
+2024-09-21 21:36:59,124 DEBUG   SenderThread:19592 [sender.py:send():379] send: run
+2024-09-21 21:36:59,639 INFO    SenderThread:19592 [dir_watcher.py:__init__():211] watching files in: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files
+2024-09-21 21:36:59,644 INFO    SenderThread:19592 [sender.py:_start_run_threads():1188] run started: fdukp25h with start time 1726947419.091499
+2024-09-21 21:36:59,644 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: check_version
+2024-09-21 21:36:59,644 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: check_version
+2024-09-21 21:36:59,869 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: run_start
+2024-09-21 21:37:00,353 DEBUG   HandlerThread:19592 [system_info.py:__init__():26] System info init
+2024-09-21 21:37:00,353 DEBUG   HandlerThread:19592 [system_info.py:__init__():41] System info init done
+2024-09-21 21:37:00,353 INFO    HandlerThread:19592 [system_monitor.py:start():194] Starting system monitor
+2024-09-21 21:37:00,353 INFO    SystemMonitor:19592 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-09-21 21:37:00,353 INFO    HandlerThread:19592 [system_monitor.py:probe():214] Collecting system info
+2024-09-21 21:37:00,360 INFO    SystemMonitor:19592 [interfaces.py:start():188] Started cpu monitoring
+2024-09-21 21:37:00,360 INFO    SystemMonitor:19592 [interfaces.py:start():188] Started disk monitoring
+2024-09-21 21:37:00,360 INFO    SystemMonitor:19592 [interfaces.py:start():188] Started gpu monitoring
+2024-09-21 21:37:00,368 INFO    SystemMonitor:19592 [interfaces.py:start():188] Started memory monitoring
+2024-09-21 21:37:00,377 INFO    SystemMonitor:19592 [interfaces.py:start():188] Started network monitoring
+2024-09-21 21:37:00,380 DEBUG   HandlerThread:19592 [system_info.py:probe():152] Probing system
+2024-09-21 21:37:00,380 DEBUG   HandlerThread:19592 [system_info.py:_probe_git():137] Probing git
+2024-09-21 21:37:00,427 DEBUG   HandlerThread:19592 [system_info.py:_probe_git():145] Probing git done
+2024-09-21 21:37:00,427 DEBUG   HandlerThread:19592 [system_info.py:probe():200] Probing system done
+2024-09-21 21:37:00,427 DEBUG   HandlerThread:19592 [system_monitor.py:probe():223] {'os': 'Windows-10-10.0.22631-SP0', 'python': '3.9.18', 'heartbeatAt': '2024-09-21T19:37:00.380687', 'startedAt': '2024-09-21T19:36:59.074362', 'docker': None, 'cuda': None, 'args': ('--target_encoding', 'CNN', '--seed', '42', '--wandb_proj', 'DeepPurposePP', '--lr', '0.0001', '--epochs', '100'), 'state': 'running', 'program': 'E:\\DeepPurposePlusPlus\\train\\TAP.py', 'codePathLocal': 'train\\TAP.py', 'codePath': 'train\\TAP.py', 'git': {'remote': 'https://github.com/jiaqingxie/ProB.git', 'commit': '47d26c43c674bacdb0073820483e879f91b2eb2b'}, 'email': 'jiaxie@student.ethz.ch', 'root': 'E:/DeepPurposePlusPlus', 'host': 'DESKTOP-E5HJ25M', 'username': '嘉庆', 'executable': 'E:\\anaconda3\\envs\\graph\\python.exe', 'cpu_count': 16, 'cpu_count_logical': 24, 'cpu_freq': {'current': 1453.0, 'min': 0.0, 'max': 2100.0}, 'cpu_freq_per_core': [{'current': 1453.0, 'min': 0.0, 'max': 2100.0}], 'disk': {'/': {'total': 214.84276962280273, 'used': 75.61381912231445}}, 'gpu': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'memory_total': 8585740288}], 'memory': {'total': 15.745964050292969}}
+2024-09-21 21:37:00,427 INFO    HandlerThread:19592 [system_monitor.py:probe():224] Finished collecting system info
+2024-09-21 21:37:00,427 INFO    HandlerThread:19592 [system_monitor.py:probe():227] Publishing system info
+2024-09-21 21:37:00,427 DEBUG   HandlerThread:19592 [system_info.py:_save_conda():209] Saving list of conda packages installed into the current environment
+2024-09-21 21:37:00,428 ERROR   HandlerThread:19592 [system_info.py:_save_conda():223] Error saving conda packages: [WinError 2] 系统找不到指定的文件。
+Traceback (most recent call last):
+  File "E:\anaconda3\envs\graph\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 216, in _save_conda
+    subprocess.call(
+  File "E:\anaconda3\envs\graph\lib\subprocess.py", line 349, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "E:\anaconda3\envs\graph\lib\subprocess.py", line 951, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "E:\anaconda3\envs\graph\lib\subprocess.py", line 1436, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+FileNotFoundError: [WinError 2] 系统找不到指定的文件。
+2024-09-21 21:37:00,428 DEBUG   HandlerThread:19592 [system_info.py:_save_conda():224] Saving conda packages done
+2024-09-21 21:37:00,428 INFO    HandlerThread:19592 [system_monitor.py:probe():229] Finished publishing system info
+2024-09-21 21:37:00,434 DEBUG   SenderThread:19592 [sender.py:send():379] send: files
+2024-09-21 21:37:00,434 INFO    SenderThread:19592 [sender.py:_save_file():1454] saving file wandb-metadata.json with policy now
+2024-09-21 21:37:00,608 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: python_packages
+2024-09-21 21:37:00,608 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: python_packages
+2024-09-21 21:37:00,611 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-21 21:37:00,611 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: stop_status
+2024-09-21 21:37:00,611 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:00,644 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\wandb-metadata.json
+2024-09-21 21:37:00,644 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\conda-environment.yaml
+2024-09-21 21:37:00,645 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\requirements.txt
+2024-09-21 21:37:00,978 DEBUG   SenderThread:19592 [sender.py:send():379] send: telemetry
+2024-09-21 21:37:00,978 DEBUG   SenderThread:19592 [sender.py:send():379] send: config
+2024-09-21 21:37:01,310 INFO    wandb-upload_0:19592 [upload_job.py:push():130] Uploaded file C:\Users\嘉庆\AppData\Local\Temp\tmpujrzodwswandb\iy0f9om9-wandb-metadata.json
+2024-09-21 21:37:01,652 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:01,652 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\output.log
+2024-09-21 21:37:01,692 DEBUG   SenderThread:19592 [sender.py:send():379] send: telemetry
+2024-09-21 21:37:01,892 DEBUG   SenderThread:19592 [sender.py:send():379] send: telemetry
+2024-09-21 21:37:02,648 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:03,651 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:03,667 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\output.log
+2024-09-21 21:37:04,295 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: status_report
+2024-09-21 21:37:04,665 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:05,667 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:06,682 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:07,691 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:08,700 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:09,667 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: status_report
+2024-09-21 21:37:09,710 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:10,716 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:11,720 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:12,730 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:13,735 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:14,678 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: status_report
+2024-09-21 21:37:14,738 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:15,627 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: stop_status
+2024-09-21 21:37:15,628 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: stop_status
+2024-09-21 21:37:15,741 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:16,742 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:17,641 DEBUG   SenderThread:19592 [sender.py:send():379] send: exit
+2024-09-21 21:37:17,641 INFO    SenderThread:19592 [sender.py:send_exit():586] handling exit code: 1
+2024-09-21 21:37:17,641 INFO    SenderThread:19592 [sender.py:send_exit():588] handling runtime: 17
+2024-09-21 21:37:17,641 INFO    SenderThread:19592 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-09-21 21:37:17,645 INFO    SenderThread:19592 [sender.py:send_exit():594] send defer
+2024-09-21 21:37:17,645 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,645 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 0
+2024-09-21 21:37:17,645 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,645 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 0
+2024-09-21 21:37:17,645 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 1
+2024-09-21 21:37:17,645 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,645 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 1
+2024-09-21 21:37:17,645 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,645 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 1
+2024-09-21 21:37:17,645 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 2
+2024-09-21 21:37:17,645 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,645 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 2
+2024-09-21 21:37:17,645 INFO    HandlerThread:19592 [system_monitor.py:finish():203] Stopping system monitor
+2024-09-21 21:37:17,645 INFO    HandlerThread:19592 [interfaces.py:finish():200] Joined cpu monitor
+2024-09-21 21:37:17,645 INFO    HandlerThread:19592 [interfaces.py:finish():200] Joined disk monitor
+2024-09-21 21:37:17,645 DEBUG   SystemMonitor:19592 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-09-21 21:37:17,653 DEBUG   SystemMonitor:19592 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-09-21 21:37:17,658 DEBUG   SystemMonitor:19592 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-09-21 21:37:17,693 INFO    HandlerThread:19592 [interfaces.py:finish():200] Joined gpu monitor
+2024-09-21 21:37:17,693 INFO    HandlerThread:19592 [interfaces.py:finish():200] Joined memory monitor
+2024-09-21 21:37:17,693 INFO    HandlerThread:19592 [interfaces.py:finish():200] Joined network monitor
+2024-09-21 21:37:17,693 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,693 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 2
+2024-09-21 21:37:17,693 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 3
+2024-09-21 21:37:17,693 DEBUG   SenderThread:19592 [sender.py:send():379] send: stats
+2024-09-21 21:37:17,693 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,693 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 3
+2024-09-21 21:37:17,693 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,693 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 3
+2024-09-21 21:37:17,693 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 4
+2024-09-21 21:37:17,693 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,693 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 4
+2024-09-21 21:37:17,693 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,693 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 4
+2024-09-21 21:37:17,693 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 5
+2024-09-21 21:37:17,693 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,693 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 5
+2024-09-21 21:37:17,693 DEBUG   SenderThread:19592 [sender.py:send():379] send: summary
+2024-09-21 21:37:17,693 INFO    SenderThread:19592 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-09-21 21:37:17,697 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,697 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 5
+2024-09-21 21:37:17,697 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 6
+2024-09-21 21:37:17,697 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,697 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 6
+2024-09-21 21:37:17,697 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,697 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 6
+2024-09-21 21:37:17,699 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: status_report
+2024-09-21 21:37:17,767 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\wandb-summary.json
+2024-09-21 21:37:17,898 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 7
+2024-09-21 21:37:17,898 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:17,898 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 7
+2024-09-21 21:37:17,898 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:17,898 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 7
+2024-09-21 21:37:18,653 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-21 21:37:18,782 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\config.yaml
+2024-09-21 21:37:19,789 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\output.log
+2024-09-21 21:37:21,080 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 8
+2024-09-21 21:37:21,081 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: poll_exit
+2024-09-21 21:37:21,081 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:21,082 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 8
+2024-09-21 21:37:21,082 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:21,082 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 8
+2024-09-21 21:37:21,082 INFO    SenderThread:19592 [job_builder.py:build():440] Attempting to build job artifact
+2024-09-21 21:37:21,082 INFO    SenderThread:19592 [job_builder.py:_get_source_type():569] is repo sourced job
+2024-09-21 21:37:21,128 INFO    SenderThread:19592 [job_builder.py:build():545] adding wandb-job metadata file
+2024-09-21 21:37:21,133 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 9
+2024-09-21 21:37:21,137 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:21,137 DEBUG   SenderThread:19592 [sender.py:send():379] send: artifact
+2024-09-21 21:37:21,137 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 9
+2024-09-21 21:37:21,673 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-21 21:37:21,814 INFO    Thread-16 :19592 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\output.log
+2024-09-21 21:37:22,508 INFO    wandb-upload_0:19592 [upload_job.py:push():85] Skipped uploading C:\Users\嘉庆\AppData\Local\wandb\wandb\artifacts\staging\tmpj16o9ide
+2024-09-21 21:37:22,737 INFO    wandb-upload_1:19592 [upload_job.py:push():88] Uploaded file C:\Users\嘉庆\AppData\Local\Temp\tmpj39k7oxi\wandb-job.json
+2024-09-21 21:37:24,551 INFO    SenderThread:19592 [sender.py:send_artifact():1530] sent artifact job-https___github.com_jiaqingxie_ProB.git_train_TAP.py - {'id': 'QXJ0aWZhY3Q6MTI0MTIyNjE0NA==', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjQ1ODUzNDM1OA==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6MTIzODM2ODUwNQ==', 'versionIndex': 4}}}
+2024-09-21 21:37:24,551 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:24,551 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 9
+2024-09-21 21:37:24,551 INFO    SenderThread:19592 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-09-21 21:37:24,838 INFO    SenderThread:19592 [dir_watcher.py:finish():388] scan: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files
+2024-09-21 21:37:24,840 INFO    SenderThread:19592 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\conda-environment.yaml conda-environment.yaml
+2024-09-21 21:37:24,840 INFO    SenderThread:19592 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\config.yaml config.yaml
+2024-09-21 21:37:24,840 INFO    SenderThread:19592 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\output.log output.log
+2024-09-21 21:37:24,844 INFO    SenderThread:19592 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\requirements.txt requirements.txt
+2024-09-21 21:37:24,844 INFO    SenderThread:19592 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\wandb-metadata.json wandb-metadata.json
+2024-09-21 21:37:24,844 INFO    SenderThread:19592 [dir_watcher.py:finish():402] scan save: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\wandb-summary.json wandb-summary.json
+2024-09-21 21:37:24,844 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 10
+2024-09-21 21:37:24,844 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: poll_exit
+2024-09-21 21:37:24,852 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:24,852 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 10
+2024-09-21 21:37:24,852 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:24,852 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 10
+2024-09-21 21:37:24,852 INFO    SenderThread:19592 [file_pusher.py:finish():169] shutting down file pusher
+2024-09-21 21:37:25,271 INFO    wandb-upload_0:19592 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\config.yaml
+2024-09-21 21:37:25,425 INFO    wandb-upload_2:19592 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\output.log
+2024-09-21 21:37:25,521 INFO    wandb-upload_1:19592 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\requirements.txt
+2024-09-21 21:37:25,679 INFO    wandb-upload_3:19592 [upload_job.py:push():130] Uploaded file E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\files\wandb-summary.json
+2024-09-21 21:37:25,701 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-21 21:37:25,701 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: poll_exit
+2024-09-21 21:37:25,886 INFO    Thread-15 :19592 [sender.py:transition_state():614] send defer: 11
+2024-09-21 21:37:25,887 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:25,888 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 11
+2024-09-21 21:37:25,889 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:25,889 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 11
+2024-09-21 21:37:25,889 INFO    SenderThread:19592 [file_pusher.py:join():175] waiting for file pusher
+2024-09-21 21:37:25,890 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 12
+2024-09-21 21:37:25,890 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:25,890 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 12
+2024-09-21 21:37:25,891 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:25,891 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 12
+2024-09-21 21:37:25,891 INFO    SenderThread:19592 [file_stream.py:finish():601] file stream finish called
+2024-09-21 21:37:26,098 INFO    SenderThread:19592 [file_stream.py:finish():605] file stream finish is done
+2024-09-21 21:37:26,098 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 13
+2024-09-21 21:37:26,098 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:26,098 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 13
+2024-09-21 21:37:26,103 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: status_report
+2024-09-21 21:37:26,103 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:26,103 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 13
+2024-09-21 21:37:26,103 INFO    SenderThread:19592 [sender.py:transition_state():614] send defer: 14
+2024-09-21 21:37:26,103 DEBUG   SenderThread:19592 [sender.py:send():379] send: final
+2024-09-21 21:37:26,103 DEBUG   SenderThread:19592 [sender.py:send():379] send: footer
+2024-09-21 21:37:26,103 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: defer
+2024-09-21 21:37:26,103 INFO    HandlerThread:19592 [handler.py:handle_request_defer():184] handle defer: 14
+2024-09-21 21:37:26,103 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: defer
+2024-09-21 21:37:26,103 INFO    SenderThread:19592 [sender.py:send_request_defer():610] handle sender defer: 14
+2024-09-21 21:37:26,103 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-21 21:37:26,107 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: poll_exit
+2024-09-21 21:37:26,109 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: server_info
+2024-09-21 21:37:26,109 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: poll_exit
+2024-09-21 21:37:26,109 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: get_summary
+2024-09-21 21:37:26,109 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: sampled_history
+2024-09-21 21:37:26,109 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: internal_messages
+2024-09-21 21:37:26,109 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: server_info
+2024-09-21 21:37:26,272 DEBUG   SenderThread:19592 [sender.py:send_request():406] send_request: poll_exit
+2024-09-21 21:37:26,272 INFO    MainThread:19592 [wandb_run.py:_footer_history_summary_info():3991] rendering history
+2024-09-21 21:37:26,272 INFO    MainThread:19592 [wandb_run.py:_footer_history_summary_info():4023] rendering summary
+2024-09-21 21:37:26,272 INFO    MainThread:19592 [wandb_run.py:_footer_sync_info():3950] logging synced files
+2024-09-21 21:37:26,276 DEBUG   HandlerThread:19592 [handler.py:handle_request():158] handle_request: shutdown
+2024-09-21 21:37:26,277 INFO    HandlerThread:19592 [handler.py:finish():882] shutting down handler
+2024-09-21 21:37:27,122 INFO    WriterThread:19592 [datastore.py:close():296] close: E:\DeepPurposePlusPlus\wandb\run-20240921_213659-fdukp25h\run-fdukp25h.wandb
+2024-09-21 21:37:27,281 INFO    SenderThread:19592 [sender.py:finish():1608] shutting down sender
+2024-09-21 21:37:27,281 INFO    SenderThread:19592 [file_pusher.py:finish():169] shutting down file pusher
+2024-09-21 21:37:27,282 INFO    SenderThread:19592 [file_pusher.py:join():175] waiting for file pusher

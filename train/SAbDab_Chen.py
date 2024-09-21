@@ -53,27 +53,27 @@ if __name__ == "__main__":
 
     y_train, y_valid, y_test = split['train']['Y'], split['valid']['Y'], split['test']['Y']
 
-    train_TAP = list(zip(train_antibody_1, train_antibody_2, y_train))
-    valid_TAP = list(zip(valid_antibody_1, valid_antibody_2, y_valid))
-    test_TAP = list(zip(test_antibody_1, test_antibody_2, y_test))
+    train_SAbDab = list(zip(train_antibody_1, train_antibody_2, y_train))
+    valid_SAbDab = list(zip(valid_antibody_1, valid_antibody_2, y_valid))
+    test_SAbDab = list(zip(test_antibody_1, test_antibody_2, y_test))
 
     if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT',
                            'Graphormer']:
 
-        train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train_TAP, graph=True,
+        train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train_SAbDab, graph=True,
                                                                                            unsqueeze=False)
-        valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid_TAP, graph=True,
+        valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid_SAbDab, graph=True,
                                                                                            unsqueeze=False)
-        test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test_TAP, graph=True,
+        test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test_SAbDab, graph=True,
                                                                                        unsqueeze=False)
 
     else:
 
-        train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train_TAP, graph=False,
+        train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train_SAbDab, graph=False,
                                                                                            unsqueeze=False)
-        valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid_TAP, graph=False,
+        valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid_SAbDab, graph=False,
                                                                                            unsqueeze=False)
-        test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test_TAP, graph=False,
+        test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test_SAbDab, graph=False,
                                                                                        unsqueeze=False)
     train, _, _ = data_process(X_target=train_protein_1, X_target_=train_protein_2, y=train_target,
                                target_encoding=target_encoding,

@@ -1,0 +1,57 @@
+Found local copy...
+Loading...
+Done!
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Training at Epoch 1 iteration 0 with loss 0.26872. Total time 0.0 hours
+Validation at Epoch 1 , AUROC: 0.51163 , AUPRC: 0.06165 , F1: 0.09152
+Training at Epoch 2 iteration 0 with loss 0.12859. Total time 0.0 hours
+Validation at Epoch 2 , AUROC: 0.52511 , AUPRC: 0.06422 , F1: 0.11047
+Training at Epoch 3 iteration 0 with loss 0.10323. Total time 0.00027 hours
+Validation at Epoch 3 , AUROC: 0.54987 , AUPRC: 0.07093 , F1: 0.14530
+Training at Epoch 4 iteration 0 with loss 0.09655. Total time 0.00055 hours
+Validation at Epoch 4 , AUROC: 0.58422 , AUPRC: 0.08461 , F1: 0.19385
+Training at Epoch 5 iteration 0 with loss 0.09642. Total time 0.00083 hours
+Validation at Epoch 5 , AUROC: 0.62337 , AUPRC: 0.10628 , F1: 0.24908
+Training at Epoch 6 iteration 0 with loss 0.09526. Total time 0.00083 hours
+Validation at Epoch 6 , AUROC: 0.65427 , AUPRC: 0.12785 , F1: 0.29240
+Training at Epoch 7 iteration 0 with loss 0.09352. Total time 0.00111 hours
+Validation at Epoch 7 , AUROC: 0.67543 , AUPRC: 0.14468 , F1: 0.32157
+Training at Epoch 8 iteration 0 with loss 0.09094. Total time 0.00138 hours
+Validation at Epoch 8 , AUROC: 0.70095 , AUPRC: 0.16843 , F1: 0.35852
+Training at Epoch 9 iteration 0 with loss 0.08773. Total time 0.00166 hours
+Validation at Epoch 9 , AUROC: 0.71937 , AUPRC: 0.18687 , F1: 0.38437
+Training at Epoch 10 iteration 0 with loss 0.08463. Total time 0.00166 hours
+Validation at Epoch 10 , AUROC: 0.72976 , AUPRC: 0.19802 , F1: 0.39916
+Training at Epoch 11 iteration 0 with loss 0.08162. Total time 0.00194 hours
+Validation at Epoch 11 , AUROC: 0.74158 , AUPRC: 0.21118 , F1: 0.41584
+Training at Epoch 12 iteration 0 with loss 0.08008. Total time 0.00222 hours
+Validation at Epoch 12 , AUROC: 0.75636 , AUPRC: 0.22847 , F1: 0.43668
+Training at Epoch 13 iteration 0 with loss 0.07835. Total time 0.0025 hours
+Validation at Epoch 13 , AUROC: 0.76375 , AUPRC: 0.23746 , F1: 0.44710
+Training at Epoch 14 iteration 0 with loss 0.07708. Total time 0.0025 hours
+Validation at Epoch 14 , AUROC: 0.77848 , AUPRC: 0.25593 , F1: 0.46770
+Training at Epoch 15 iteration 0 with loss 0.07577. Total time 0.00277 hours
+Validation at Epoch 15 , AUROC: 0.77852 , AUPRC: 0.25613 , F1: 0.46795
+Training at Epoch 16 iteration 0 with loss 0.07495. Total time 0.00305 hours
+Validation at Epoch 16 , AUROC: 0.78139 , AUPRC: 0.25958 , F1: 0.47162
+Training at Epoch 17 iteration 0 with loss 0.07397. Total time 0.00305 hours
+Validation at Epoch 17 , AUROC: 0.78517 , AUPRC: 0.26483 , F1: 0.47733
+Training at Epoch 18 iteration 0 with loss 0.07316. Total time 0.00333 hours
+Validation at Epoch 18 , AUROC: 0.79108 , AUPRC: 0.27273 , F1: 0.48566
+Training at Epoch 19 iteration 0 with loss 0.07191. Total time 0.00361 hours
+Validation at Epoch 19 , AUROC: 0.79404 , AUPRC: 0.27673 , F1: 0.48983
+Training at Epoch 20 iteration 0 with loss 0.07126. Total time 0.00361 hours
+Validation at Epoch 20 , AUROC: 0.80143 , AUPRC: 0.28690 , F1: 0.50026
+Training at Epoch 21 iteration 0 with loss 0.07082. Total time 0.00388 hours
+Validation at Epoch 21 , AUROC: 0.80586 , AUPRC: 0.29312 , F1: 0.50651
+Training at Epoch 22 iteration 0 with loss 0.06977. Total time 0.00416 hours
+Validation at Epoch 22 , AUROC: 0.80512 , AUPRC: 0.29207 , F1: 0.50547
+Training at Epoch 23 iteration 0 with loss 0.06819. Total time 0.00444 hours
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\SAbDab_Liberis.py", line 82, in <module>
+    model.train(train_set, valid_set, test_set, batch_size=batch_size)
+  File "E:\DeepPurposePlusPlus\ProB\TokenPred.py", line 277, in train
+    label = label.float().to(self.device)
+KeyboardInterrupt

@@ -128,14 +128,14 @@ class CNN(nn.Sequential):
             self.fc1 = nn.Linear(n_size_d, config['hidden_dim_drug'])
 
         if encoding == 'protein':
-            in_ch = [300] + config['cnn_target_filters']
+            in_ch = [26] + config['cnn_target_filters']
             kernels = config['cnn_target_kernels']
             layer_size = len(config['cnn_target_filters'])
             self.conv = nn.ModuleList([nn.Conv1d(in_channels=in_ch[i],
                                                  out_channels=in_ch[i + 1],
                                                  kernel_size=kernels[i]) for i in range(layer_size)])
             self.conv = self.conv.double()
-            n_size_p = self._get_conv_output((300, 1000))
+            n_size_p = self._get_conv_output((26, 1000))
 
             self.fc1 = nn.Linear(n_size_p, config['hidden_dim_protein'])
 

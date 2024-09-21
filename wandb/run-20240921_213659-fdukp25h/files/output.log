@@ -1,0 +1,55 @@
+Protein Protein Interaction Prediction Mode...
+in total: 169 protein-protein pairs
+encoding protein...
+unique target sequence: 169
+encoding protein...
+unique target sequence: 168
+Done.
+Protein Protein Interaction Prediction Mode...
+in total: 24 protein-protein pairs
+encoding protein...
+unique target sequence: 24
+encoding protein...
+unique target sequence: 24
+Done.
+Protein Protein Interaction Prediction Mode...
+in total: 48 protein-protein pairs
+encoding protein...
+unique target sequence: 48
+encoding protein...
+unique target sequence: 48
+Done.
+Let's use 1 GPU!
+--- Data Preparation ---
+--- Go for Training ---
+Found local copy...
+Loading...
+Done!
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\TAP.py", line 105, in <module>
+    model.train(train, val, test)
+  File "E:\DeepPurposePlusPlus\ProB\PPI.py", line 277, in train
+    score = self.model(v_d, v_p)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\DeepPurposePlusPlus\ProB\PPI.py", line 44, in forward
+    v_D = self.model_protein(v_D)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\DeepPurposePlusPlus\ProB\encoders.py", line 156, in forward
+    v = self._forward_features(v.double())
+  File "E:\DeepPurposePlusPlus\ProB\encoders.py", line 151, in _forward_features
+    x = F.relu(l(x))
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\conv.py", line 310, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "E:\anaconda3\envs\graph\lib\site-packages\torch\nn\modules\conv.py", line 306, in _conv_forward
+    return F.conv1d(input, weight, bias, self.stride,
+RuntimeError: Given groups=1, weight of size [32, 300, 4], expected input[32, 26, 1000] to have 300 channels, but got 26 channels instead

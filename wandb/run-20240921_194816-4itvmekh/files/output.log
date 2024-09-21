@@ -1,0 +1,15 @@
+Protein Protein Interaction Prediction Mode...
+in total: 1686 protein-protein pairs
+encoding protein...
+unique target sequence: 1142
+Found local copy...
+Loading...
+Done!
+Traceback (most recent call last):
+  File "E:\DeepPurposePlusPlus\train\SAbDab_Chen.py", line 78, in <module>
+    train, _, _ = data_process(X_target=train_protein_1, X_target_=train_protein_2, y=train_target,
+  File "E:\DeepPurposePlusPlus\ProB\utils.py", line 619, in data_process
+    df_data = encode_protein(df_data, target_encoding, 'Target Sequence 1', 'target_encoding_1')
+  File "E:\DeepPurposePlusPlus\ProB\utils.py", line 515, in encode_protein
+    raise AttributeError("Please use the correct protein encoding available!")
+AttributeError: Please use the correct protein encoding available!

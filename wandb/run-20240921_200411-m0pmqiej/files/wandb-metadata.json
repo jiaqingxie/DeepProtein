@@ -1,0 +1,64 @@
+{
+    "os": "Windows-10-10.0.22631-SP0",
+    "python": "3.9.18",
+    "heartbeatAt": "2024-09-21T18:04:12.854609",
+    "startedAt": "2024-09-21T18:04:11.491781",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--target_encoding",
+        "Token_CNN",
+        "--seed",
+        "42",
+        "--wandb_proj",
+        "DeepPurposePP",
+        "--lr",
+        "0.01",
+        "--epochs",
+        "100"
+    ],
+    "state": "running",
+    "program": "E:\\DeepPurposePlusPlus\\train\\PDB.py",
+    "codePathLocal": "train\\PDB.py",
+    "codePath": "train\\PDB.py",
+    "git": {
+        "remote": "https://github.com/jiaqingxie/ProB.git",
+        "commit": "47d26c43c674bacdb0073820483e879f91b2eb2b"
+    },
+    "email": "jiaxie@student.ethz.ch",
+    "root": "E:/DeepPurposePlusPlus",
+    "host": "DESKTOP-E5HJ25M",
+    "username": "\u5609\u5e86",
+    "executable": "E:\\anaconda3\\envs\\graph\\python.exe",
+    "cpu_count": 16,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2100.0,
+        "min": 0.0,
+        "max": 2100.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2100.0,
+            "min": 0.0,
+            "max": 2100.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 214.84276962280273,
+            "used": 75.60087585449219
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+            "memory_total": 8585740288
+        }
+    ],
+    "memory": {
+        "total": 15.745964050292969
+    }
+}
