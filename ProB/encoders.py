@@ -90,17 +90,27 @@ class Token_Transformer(nn.Module):
             # Handle other encodings if necessary
             pass
 
-    def forward(self, v):
+    def forward(self, v, attention_mask=None):
         # v: (batch_size, max_length, input_dim)
         x = self.linear_in(v)  # Project input to d_model dimensions
 
-        # Apply Transformer Encoder
-        x = self.transformer_encoder(x)  # (batch_size, max_length, d_model)
+        # Apply Transformer Encoder with attention mask
+        if attention_mask is not None:
+            # The attention mask needs to be inverted and expanded for PyTorch Transformer
+            # The mask should be (batch_size, max_length)
+            # Transformer expects (batch_size, nhead, seq_length, seq_length)
+            attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)  # (batch_size, 1, 1, max_length)
+            attention_mask = attention_mask.expand(-1, self.transformer_encoder.layers[0].self_attn.num_heads, -1, -1)  # (batch_size, nhead, 1, max_length)
+            attention_mask = attention_mask.reshape(-1, self.sequence_length)  # Flatten for compatibility
+            # Since PyTorch Transformer uses additive mask where True values are masked
+            attention_mask = attention_mask == 0  # Invert mask: 1 for valid positions, 0 for masked positions
 
-        # Apply fully connected layers
+        x = self.transformer_encoder(x, src_key_padding_mask=attention_mask)  # (batch_size, max_length, d_model)
+
+        # Apply fully connected layer
         x = self.fc1(x)       # (batch_size, max_length, hidden_dim_protein)
 
-        return x  # Output shape: (batch_size, max_length, 1)
+        return x  # Output shape: (batch_size, max_length, hidden_dim_protein)
 
 class CNN(nn.Sequential):
     def __init__(self, encoding, **config):
