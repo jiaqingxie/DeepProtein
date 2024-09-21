@@ -99,7 +99,6 @@ class Token_Transformer(nn.Module):
 
         # Apply fully connected layers
         x = self.fc1(x)       # (batch_size, max_length, hidden_dim_protein)
-        # x = self.fc_out(x)    # (batch_size, max_length, 1)
 
         return x  # Output shape: (batch_size, max_length, 1)
 
