@@ -55,7 +55,7 @@ if __name__ == "__main__":
     val_GuideSeq, y_valid = list(split['valid']['GuideSeq']), list(split['valid']['Y'])
     test_GuideSeq, y_test = list(split['test']['GuideSeq']), list(split['test']['Y'])
 
-    print(y_train)
+    # print(y_train)
     train_CRISPR = list(zip(train_GuideSeq, y_train))
     valid_CRISPR = list(zip(val_GuideSeq, y_valid))
     test_CRISPR = list(zip(test_GuideSeq, y_test))
