@@ -358,6 +358,8 @@ def collate_fn_ppi(batch, graph=False, unsqueeze=True):
     target = list(target)
     batch_len = len(target)
 
+
+
     # Create index array for protein sequences (original indices)
     protein_idx = np.array(list(range(batch_len)))
 
@@ -370,9 +372,13 @@ def collate_fn_ppi(batch, graph=False, unsqueeze=True):
         # Process each protein sequence
         for i in tqdm(range(batch_len)):
             # Try to convert protein sequence to a molecule and then to SMILES
+
             mol1 = Chem.MolFromSequence(graph1[i])
+
+            # print(graph2[i])
             mol2 = Chem.MolFromSequence(graph2[i])
-            if mol1 is not None and mol2 is not None:
+            # print(mol1, mol2)
+            if (mol1 is not None) and (mol2 is not None):
                 # Append valid protein and target
                 valid_proteins1.append(Chem.MolToSmiles(mol1))
                 valid_proteins2.append(Chem.MolToSmiles(mol2))
@@ -394,5 +400,6 @@ def collate_fn_ppi(batch, graph=False, unsqueeze=True):
         # Unsqueeze to add an extra dimension if needed
         target = target.unsqueeze(1)
 
+    print("graph 1:".format(graph1))
     # Return processed protein sequences, target values, and the protein indices
     return graph1, graph2, target, protein_idx

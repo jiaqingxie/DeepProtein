@@ -466,6 +466,7 @@ def encode_drug(df_data, drug_encoding, column_name='SMILES', save_column_name='
 
 def encode_protein(df_data, target_encoding, column_name='Target Sequence', save_column_name='target_encoding'):
     print('encoding protein...')
+    # print(df_data)
     print('unique target sequence: ' + str(len(df_data[column_name].unique())))
     if target_encoding == 'AAC':
         print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU.\
@@ -616,6 +617,7 @@ def data_process(X_drug=None, X_target=None, y=None, drug_encoding=None, target_
         df_data = encode_drug(df_data, drug_encoding, 'SMILES 1', 'drug_encoding_1')
         df_data = encode_drug(df_data, drug_encoding, 'SMILES 2', 'drug_encoding_2')
     elif PPI_flag:
+
         df_data = encode_protein(df_data, target_encoding, 'Target Sequence 1', 'target_encoding_1')
         df_data = encode_protein(df_data, target_encoding, 'Target Sequence 2', 'target_encoding_2')
     elif property_prediction_flag:
@@ -1714,6 +1716,7 @@ def split_antibody(sequence_str, sep="\\n"):
         sequences = cleaned_str.split(",")
     first_sequence = sequences[0].strip("['")
     second_sequence = sequences[1].strip("]'")
+    second_sequence = second_sequence.strip(" '")
     return first_sequence, second_sequence
 
 

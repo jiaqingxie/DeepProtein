@@ -49,7 +49,11 @@ if __name__ == "__main__":
     data = Develop(name='TAP', label_name=label_list[0])
     split = data.get_split()
 
+
     train_antibody_1, train_antibody_2 = to_two_seq(split, 'train', 'Antibody')
+
+
+
     valid_antibody_1, valid_antibody_2 = to_two_seq(split, 'valid', 'Antibody')
     test_antibody_1, test_antibody_2 = to_two_seq(split, 'test', 'Antibody')
 
