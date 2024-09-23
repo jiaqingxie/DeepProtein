@@ -1,9 +1,9 @@
 <p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="400px" /></p>
 
 <h3 align="center">
-<p> ProB: Learning Based Protein Benchmark <br></h3>
+<p> ProB: Deep Learning Library for Protein Sequence Learning <br></h3>
 <h4 align="center">
-<p>  Applications in Protein Property Prediction, Localization Prediction and Protein-Protein Interaction etc. </h4>
+<p>  Applications in Protein Property Prediction, Localization Prediction, Protein-Protein Interaction, antigen epitope prediction, antibody paratope prediction, antibody developability prediction, etc. </h4>
 
 ---
 
@@ -71,7 +71,7 @@ This could be solved if applied to small graphs so it will be our future work.
 
 
 Done: 
-1. Dataset Built for: Fluorescence Dataset 
+1. Dataset Built for Fluorescence Dataset 
 
 test on the CNN probing on the Fluorescence dataset
 
@@ -91,8 +91,20 @@ python test.py
 ```
 
 
-### Protein Protein Interaction (PPI)
+### Protein-Protein Interaction (PPI)
 
 ```python
 python train/ppi_affinity.py --target_encoding CNN --seed 7 --wandb_proj DeepPurposePP --lr 0.0001 --epochs 60
 ```
+
+###  Protein Localization Prediction
+
+###  Antigen Epitope Prediction
+
+###  Antibody Paratope Prediction, 
+
+###  Antibody Developability Prediction
+
+
+
+
