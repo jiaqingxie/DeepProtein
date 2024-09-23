@@ -23,6 +23,7 @@ pip install git+https://github.com/bp-kelley/descriptastorus
 pip install lmdb
 pip install seaborn
 pip install DeepPurpose
+pip install wandb
 ```
 
 A version of torch 2.1+  is required to installed, since dgl required a version of torch >=2.1.0. 
