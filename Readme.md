@@ -25,6 +25,7 @@ pip install seaborn
 pip install DeepPurpose
 pip install wandb
 pip install pydantic
+conda install -c conda-forge pytdc
 ```
 
 A version of torch 2.1+  is required to installed, since dgl required a version of torch >=2.1.0. 
