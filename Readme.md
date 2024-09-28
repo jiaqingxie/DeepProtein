@@ -1,7 +1,7 @@
 <p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="400px" /></p>
 
 <h3 align="center">
-<p> ProB: Deep Learning Library for Protein Sequence Learning <br></h3>
+<p> DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning <br></h3>
 <h4 align="center">
 <p>  Applications in Protein Property Prediction, Localization Prediction, Protein-Protein Interaction, antigen epitope prediction, antibody paratope prediction, antibody developability prediction, etc. </h4>
 
@@ -17,8 +17,8 @@
 
 First we recommend you to follow the instruction of how DeepPurpose's dependencies are installed.
 ```bash
-conda create -n prob python=3.9
-conda activate prob
+conda create -n DeepProtein python=3.9
+conda activate DeepProtein
 pip install git+https://github.com/bp-kelley/descriptastorus
 pip install lmdb
 pip install seaborn
