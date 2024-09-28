@@ -43,9 +43,9 @@ if __name__ == "__main__":
 
     path = os.getcwd()
 
-    train_fluo = Subcellular(path + '/ProB/data', 'train')
-    valid_fluo = Subcellular(path + '/ProB/data', 'valid')
-    test_fluo = Subcellular(path + '/ProB/data', 'test')
+    train_fluo = Subcellular(path + '/DeepProtein/data', 'train')
+    valid_fluo = Subcellular(path + '/DeepProtein/data', 'valid')
+    test_fluo = Subcellular(path + '/DeepProtein/data', 'test')
 
     if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
         train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph=True)

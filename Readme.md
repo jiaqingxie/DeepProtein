@@ -7,9 +7,9 @@
 
 ---
 
-[![PyPI version](https://badge.fury.io/py/ProB.svg)](https://pypi.org/project/ProB/)
-[![Downloads](https://pepy.tech/badge/ProB/month)](https://pepy.tech/project/ProB)
-[![Downloads](https://pepy.tech/badge/ProB)](https://pepy.tech/project/ProB)
+[![PyPI version](https://badge.fury.io/py/DeepProtein.svg)](https://pypi.org/project/DeepProtein/)
+[![Downloads](https://pepy.tech/badge/DeepProtein/month)](https://pepy.tech/project/DeepProtein)
+[![Downloads](https://pepy.tech/badge/DeepProtein)](https://pepy.tech/project/DeepProtein)
 [![GitHub Repo stars](https://img.shields.io/github/stars/jiaqingxie/DeepPurposePlusPlus)](https://github.com/jiaqingxie/DeepPurposePlusPlus/stargazers)
 [![GitHub Repo forks](https://img.shields.io/github/forks/jiaqingxie/DeepPurposePlusPlus)](https://github.com/jiaqingxie/DeepPurposePlusPlus/network/members)
 

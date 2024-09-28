@@ -14,7 +14,7 @@ import DeepProtein.ProteinPred as models
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Protein Prediction with ProB")
+    parser = argparse.ArgumentParser(description="Protein Prediction with DeepProtein")
     parser.add_argument('--target_encoding', type=str, default='CNN', help='Encoding method for target proteins')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--wandb_proj', type=str, default='your_project_name', help='wandb project name')
@@ -43,9 +43,9 @@ if __name__ == "__main__":
 
     path = os.getcwd()
 
-    train_fluo = Solubility(path + '/ProB/data', 'train')
-    valid_fluo = Solubility(path + '/ProB/data', 'valid')
-    test_fluo = Solubility(path + '/ProB/data', 'test')
+    train_fluo = Solubility(path + '/DeepProtein/data', 'train')
+    valid_fluo = Solubility(path + '/DeepProtein/data', 'valid')
+    test_fluo = Solubility(path + '/DeepProtein/data', 'test')
 
     if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
         train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph=True)

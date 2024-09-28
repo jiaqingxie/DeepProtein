@@ -22,11 +22,11 @@
 2024-09-21 19:44:34,855 DEBUG   HandlerThread:21608 [system_info.py:_probe_git():137] Probing git
 2024-09-21 19:44:34,909 DEBUG   HandlerThread:21608 [system_info.py:_probe_git():145] Probing git done
 2024-09-21 19:44:34,909 DEBUG   HandlerThread:21608 [system_info.py:probe():200] Probing system done
-2024-09-21 19:44:34,910 DEBUG   HandlerThread:21608 [system_monitor.py:probe():223] {'os': 'Windows-10-10.0.22631-SP0', 'python': '3.9.18', 'heartbeatAt': '2024-09-21T17:44:34.854123', 'startedAt': '2024-09-21T17:44:33.472577', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': 'E:\\DeepPurposePlusPlus\\train\\PDB.py', 'codePathLocal': 'PDB.py', 'codePath': 'train\\PDB.py', 'git': {'remote': 'https://github.com/jiaqingxie/ProB.git', 'commit': '47d26c43c674bacdb0073820483e879f91b2eb2b'}, 'email': 'jiaxie@student.ethz.ch', 'root': 'E:/DeepPurposePlusPlus', 'host': 'DESKTOP-E5HJ25M', 'username': '¼ÎÇì', 'executable': 'E:\\anaconda3\\envs\\graph\\python.exe', 'cpu_count': 16, 'cpu_count_logical': 24, 'cpu_freq': {'current': 2100.0, 'min': 0.0, 'max': 2100.0}, 'cpu_freq_per_core': [{'current': 2100.0, 'min': 0.0, 'max': 2100.0}], 'disk': {'/': {'total': 214.84276962280273, 'used': 75.59336853027344}}, 'gpu': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'memory_total': 8585740288}], 'memory': {'total': 15.745964050292969}}
+2024-09-21 19:44:34,910 DEBUG   HandlerThread:21608 [system_monitor.py:probe():223] {'os': 'Windows-10-10.0.22631-SP0', 'python': '3.9.18', 'heartbeatAt': '2024-09-21T17:44:34.854123', 'startedAt': '2024-09-21T17:44:33.472577', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': 'E:\\DeepPurposePlusPlus\\train\\PDB.py', 'codePathLocal': 'PDB.py', 'codePath': 'train\\PDB.py', 'git': {'remote': 'https://github.com/jiaqingxie/DeepProtein.git', 'commit': '47d26c43c674bacdb0073820483e879f91b2eb2b'}, 'email': 'jiaxie@student.ethz.ch', 'root': 'E:/DeepPurposePlusPlus', 'host': 'DESKTOP-E5HJ25M', 'username': 'ï¿½ï¿½ï¿½ï¿½', 'executable': 'E:\\anaconda3\\envs\\graph\\python.exe', 'cpu_count': 16, 'cpu_count_logical': 24, 'cpu_freq': {'current': 2100.0, 'min': 0.0, 'max': 2100.0}, 'cpu_freq_per_core': [{'current': 2100.0, 'min': 0.0, 'max': 2100.0}], 'disk': {'/': {'total': 214.84276962280273, 'used': 75.59336853027344}}, 'gpu': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 4070 Laptop GPU', 'memory_total': 8585740288}], 'memory': {'total': 15.745964050292969}}
 2024-09-21 19:44:34,910 INFO    HandlerThread:21608 [system_monitor.py:probe():224] Finished collecting system info
 2024-09-21 19:44:34,910 INFO    HandlerThread:21608 [system_monitor.py:probe():227] Publishing system info
 2024-09-21 19:44:34,910 DEBUG   HandlerThread:21608 [system_info.py:_save_conda():209] Saving list of conda packages installed into the current environment
-2024-09-21 19:44:34,911 ERROR   HandlerThread:21608 [system_info.py:_save_conda():223] Error saving conda packages: [WinError 2] ÏµÍ³ÕÒ²»µ½Ö¸¶¨µÄÎÄ¼þ¡£
+2024-09-21 19:44:34,911 ERROR   HandlerThread:21608 [system_info.py:_save_conda():223] Error saving conda packages: [WinError 2] ÏµÍ³ï¿½Ò²ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
 Traceback (most recent call last):
   File "E:\anaconda3\envs\graph\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 216, in _save_conda
     subprocess.call(
@@ -36,7 +36,7 @@ Traceback (most recent call last):
     self._execute_child(args, executable, preexec_fn, close_fds,
   File "E:\anaconda3\envs\graph\lib\subprocess.py", line 1436, in _execute_child
     hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
-FileNotFoundError: [WinError 2] ÏµÍ³ÕÒ²»µ½Ö¸¶¨µÄÎÄ¼þ¡£
+FileNotFoundError: [WinError 2] ÏµÍ³ï¿½Ò²ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
 2024-09-21 19:44:34,911 DEBUG   HandlerThread:21608 [system_info.py:_save_conda():224] Saving conda packages done
 2024-09-21 19:44:34,912 INFO    HandlerThread:21608 [system_monitor.py:probe():229] Finished publishing system info
 2024-09-21 19:44:34,917 DEBUG   SenderThread:21608 [sender.py:send():379] send: files
@@ -51,7 +51,7 @@ FileNotFoundError: [WinError 2] ÏµÍ³ÕÒ²»µ½Ö¸¶¨µÄÎÄ¼þ¡£
 2024-09-21 19:44:35,114 INFO    Thread-16 :21608 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\train\wandb\run-20240921_194433-kjtfghpx\files\wandb-metadata.json
 2024-09-21 19:44:35,380 DEBUG   SenderThread:21608 [sender.py:send():379] send: telemetry
 2024-09-21 19:44:35,380 DEBUG   SenderThread:21608 [sender.py:send():379] send: config
-2024-09-21 19:44:35,653 INFO    wandb-upload_0:21608 [upload_job.py:push():130] Uploaded file C:\Users\¼ÎÇì\AppData\Local\Temp\tmpg9ky0f4cwandb\n09fyo3h-wandb-metadata.json
+2024-09-21 19:44:35,653 INFO    wandb-upload_0:21608 [upload_job.py:push():130] Uploaded file C:\Users\ï¿½ï¿½ï¿½ï¿½\AppData\Local\Temp\tmpg9ky0f4cwandb\n09fyo3h-wandb-metadata.json
 2024-09-21 19:44:35,909 DEBUG   SenderThread:21608 [sender.py:send():379] send: telemetry
 2024-09-21 19:44:36,045 DEBUG   SenderThread:21608 [sender.py:send():379] send: telemetry
 2024-09-21 19:44:36,114 INFO    Thread-16 :21608 [dir_watcher.py:_on_file_created():271] file/dir created: E:\DeepPurposePlusPlus\train\wandb\run-20240921_194433-kjtfghpx\files\output.log
@@ -152,8 +152,8 @@ FileNotFoundError: [WinError 2] ÏµÍ³ÕÒ²»µ½Ö¸¶¨µÄÎÄ¼þ¡£
 2024-09-21 19:44:39,752 DEBUG   SenderThread:21608 [sender.py:send():379] send: artifact
 2024-09-21 19:44:39,993 DEBUG   HandlerThread:21608 [handler.py:handle_request():158] handle_request: poll_exit
 2024-09-21 19:44:40,164 INFO    Thread-16 :21608 [dir_watcher.py:_on_file_modified():288] file/dir modified: E:\DeepPurposePlusPlus\train\wandb\run-20240921_194433-kjtfghpx\files\output.log
-2024-09-21 19:44:41,002 INFO    wandb-upload_0:21608 [upload_job.py:push():85] Skipped uploading C:\Users\¼ÎÇì\AppData\Local\wandb\wandb\artifacts\staging\tmpz1bw8_sb
-2024-09-21 19:44:41,229 INFO    wandb-upload_1:21608 [upload_job.py:push():88] Uploaded file C:\Users\¼ÎÇì\AppData\Local\Temp\tmpjjcfb4zl\wandb-job.json
+2024-09-21 19:44:41,002 INFO    wandb-upload_0:21608 [upload_job.py:push():85] Skipped uploading C:\Users\ï¿½ï¿½ï¿½ï¿½\AppData\Local\wandb\wandb\artifacts\staging\tmpz1bw8_sb
+2024-09-21 19:44:41,229 INFO    wandb-upload_1:21608 [upload_job.py:push():88] Uploaded file C:\Users\ï¿½ï¿½ï¿½ï¿½\AppData\Local\Temp\tmpjjcfb4zl\wandb-job.json
 2024-09-21 19:44:42,538 INFO    SenderThread:21608 [sender.py:send_artifact():1530] sent artifact job-https___github.com_jiaqingxie_ProB.git_train_PDB.py - {'id': 'QXJ0aWZhY3Q6MTI0MTExMzA1NQ==', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjQ1OTkxMjA3MA==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6MTI0MTExMjczMQ==', 'versionIndex': 0}}}
 2024-09-21 19:44:42,538 DEBUG   SenderThread:21608 [sender.py:send_request():406] send_request: defer
 2024-09-21 19:44:42,538 INFO    SenderThread:21608 [sender.py:send_request_defer():610] handle sender defer: 9

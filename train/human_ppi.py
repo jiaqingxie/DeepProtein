@@ -40,9 +40,9 @@ if __name__ == '__main__':
 
     path = os.getcwd()
 
-    train_ppi = HUMAN_PPI(path + '/ProB/data', 'train')
-    valid_ppi = HUMAN_PPI(path + '/ProB/data', 'valid')
-    test_ppi = HUMAN_PPI(path + '/ProB/data', 'test')
+    train_ppi = HUMAN_PPI(path + '/DeepProtein/data', 'train')
+    valid_ppi = HUMAN_PPI(path + '/DeepProtein/data', 'valid')
+    test_ppi = HUMAN_PPI(path + '/DeepProtein/data', 'test')
 
     if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
 

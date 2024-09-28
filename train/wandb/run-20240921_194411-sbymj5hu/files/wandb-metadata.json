@@ -11,7 +11,7 @@
     "codePathLocal": "PDB.py",
     "codePath": "train\\PDB.py",
     "git": {
-        "remote": "https://github.com/jiaqingxie/ProB.git",
+        "remote": "https://github.com/jiaqingxie/DeepProtein.git",
         "commit": "47d26c43c674bacdb0073820483e879f91b2eb2b"
     },
     "email": "jiaxie@student.ethz.ch",
