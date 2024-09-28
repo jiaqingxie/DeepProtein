@@ -15,7 +15,7 @@
 
 ### Installation
 
-First we recommend you to follow the instruction of how DeepPurpose's dependencies are installed.
+First, we recommend you follow the instructions on how DeepPurpose's dependencies are installed.
 ```bash
 conda create -n DeepProtein python=3.9
 conda activate DeepProtein
@@ -28,9 +28,9 @@ pip install pydantic
 conda install -c conda-forge pytdc
 ```
 
-A version of torch 2.1+  is required to installed, since dgl required a version of torch >=2.1.0. 
+A version of torch 2.1+ is required to be installed since Jul requires a version of torch >=2.1.0. 
 
-1. If you want to use GPU, then firstly find a matched torch version, then install dgl with cuda version. We give an example of torch 2.3.0 with cuda 11.8:
+1. If you want to use GPU, then first find a matched torch version, then install duel with cuda version. We give an example of torch 2.3.0 with cuda 11.8:
     ```bash
    pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu118
    conda install -c dglteam/label/th23_cu118 dgl
@@ -41,11 +41,11 @@ A version of torch 2.1+  is required to installed, since dgl required a version 
     conda install -c dglteam/label/th23_cpu dgl
     ```
 
-
+### Tutorials 
 
 ### Encodings
 
-Thanks to DeepPurpose and dgllife, we could borrow some of the encodings from DeepPurpose. The new added encodings are PAGTN, 
+Thanks to DeepPurpose and dgllife, we could borrow some of the encodings from DeepPurpose. The newly added encodings are PAGTN, 
 EGT and Graphormer which belong to graph transformer modules that are prevailing methods
 these years for encoding protein graphs.
 
@@ -110,4 +110,15 @@ python train/ppi_affinity.py --target_encoding CNN --seed 7 --wandb_proj DeepPur
 
 
 
+## Cite Us
+
+If you found this package useful, please cite [our paper](https://doi.org/10.1093/bioinformatics/btaa1005):
+```
+@article{huang2020deeppurpose,
+  title={DeepPurpose: A Deep Learning Library for Drug-Target Interaction Prediction},
+  author={Huang, Kexin and Fu, Tianfan and Glass, Lucas M and Zitnik, Marinka and Xiao, Cao and Sun, Jimeng},
+  journal={Bioinformatics},
+  year={2020}
+}
+```
 
