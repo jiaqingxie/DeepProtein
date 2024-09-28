@@ -21,9 +21,9 @@ from prettytable import PrettyTable
 import wandb
 import os
 
-from ProB.utils import *
-from ProB.model_helper import Encoder_MultipleLayers, Embeddings
-from ProB.encoders import *
+from DeepProtein.utils import *
+from DeepProtein.model_helper import Encoder_MultipleLayers, Embeddings
+from DeepProtein.encoders import *
 from sklearn.metrics import mean_absolute_error
 
 class Classifier(nn.Sequential):

@@ -8,9 +8,9 @@ module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from ProB.dataset import *
-import ProB.utils as utils
-import ProB.ProteinPred as models
+from DeepProtein.dataset import *
+import DeepProtein.utils as utils
+import DeepProtein.ProteinPred as models
 
 
 def parse_args():

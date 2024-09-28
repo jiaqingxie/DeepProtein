@@ -15,8 +15,8 @@ import numpy as np
 np.random.seed(3)
 
 
-from ProB.utils import *
-from ProB.model_helper import Encoder_MultipleLayers, Embeddings
+from DeepProtein.utils import *
+from DeepProtein.model_helper import Encoder_MultipleLayers, Embeddings
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
