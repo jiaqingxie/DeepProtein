@@ -50,6 +50,20 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
 
 ## Example
 
+We give two examples for each case study. One is trained with fixed parameters (a) and one is trained with argument. The argument list is given below.
+
+
+| Argument  | Description                                     |
+|-----------------|-------------------------------------------------|
+| target_encoding             | 'CNN' / 'Transformer' for sequential learning, or 'DGL_GCN' for 'DGL_AttentiveFP' for structure learning. Current available protein encoding belongs to this full list: ['CNN', 'Transformer', 'CNN_RNN', 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'Graphormer']  |
+| seed         | For paper: 7 / 42 /100. You could try your own seed.            |
+| wandb_proj     | The name of your wandb project that you wish to save the results into.                     |
+| lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning                  |
+| epochs         | Number of training epochs. Generally setting 60 - 100 epochs leads to convergence.                     |
+| compute_pos_enc *    | Compute positional encoding for using graph transformers. We dont recommend add this inductive bias into GNN as GNN itself already encoded it. This don't work effectively on large scale graphs with dgl so the implementation is still under test.                           |
+| batch_size | Batch size of 8 - 32 is good for protein sequence learning.                |
+
+
 
 
 ### Case Study 1(a): A Framework for Protein Function (Property) Prediction with sequential learning.
@@ -57,61 +71,59 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
   <summary>Click here for the code!</summary>
 
 ```python
-from DeepPurpose import DTI as models
-from DeepPurpose.utils import *
-from DeepPurpose.dataset import *
-
-SAVE_PATH='./saved_path'
-import os 
-if not os.path.exists(SAVE_PATH):
-  os.makedirs(SAVE_PATH)
+### package import
+import os
+import sys
+import argparse
+import torch
+import wandb
 
 
-# Load Data, an array of SMILES for drug, an array of Amino Acid Sequence for Target and an array of binding values/0-1 label.
-# e.g. ['Cc1ccc(CNS(=O)(=O)c2ccc(s2)S(N)(=O)=O)cc1', ...], ['MSHHWGYGKHNGPEHWHKDFPIAKGERQSPVDIDTH...', ...], [0.46, 0.49, ...]
-# In this example, BindingDB with Kd binding score is used.
-X_drug, X_target, y  = process_BindingDB(download_BindingDB(SAVE_PATH),
-					 y = 'Kd', 
-					 binary = False, 
-					 convert_to_log = True)
+### Our library DeepProtein
+from DeepProtein.dataset import *
+import DeepProtein.utils as utils
+import DeepProtein.ProteinPred as models
 
-# Type in the encoding names for drug/protein.
-drug_encoding, target_encoding = 'CNN', 'Transformer'
+### Load Beta lactamase dataset
+path = os.getcwd()
+train_fluo = Beta_lactamase(path + '/DeepProtein/data', 'train')
+valid_fluo = Beta_lactamase(path + '/DeepProtein/data', 'valid')
+test_fluo = Beta_lactamase(path + '/DeepProtein/data', 'test')
 
-# Data processing, here we select cold protein split setup.
-train, val, test = data_process(X_drug, X_target, y, 
-                                drug_encoding, target_encoding, 
-                                split_method='cold_protein', 
-                                frac=[0.7,0.1,0.2])
+train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
+valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
+test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
 
-# Generate new model using default parameters; also allow model tuning via input parameters.
-config = generate_config(drug_encoding, target_encoding, transformer_n_layer_target = 8)
-net = models.model_initialize(**config)
+### Train Valid Test Split
+target_encoding = 'CNN'
+train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, 
+    target_encoding=target_encoding, split_method='random', frac=[0.99998, 1e-5, 1e-5])
 
-# Train the new model.
-# Detailed output including a tidy table storing validation loss, metrics, AUC curves figures and etc. are stored in the ./result folder.
-net.train(train, val, test)
+_, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target,        
+    target_encoding=target_encoding, split_method='random', frac=[1e-5, 0.99998, 1e-5])
 
-# or simply load pretrained model from a model directory path or reproduced model name such as DeepDTA
-net = models.model_pretrained(MODEL_PATH_DIR or MODEL_NAME)
+_, _, test = utils.data_process(X_target=test_protein_processed, y=test_target,         
+    target_encoding=target_encoding,split_method='random', frac=[1e-5, 1e-5, 0.99998])
+                            
+### Load configuration for model
+config = generate_config(target_encoding=target_encoding,
+                         cls_hidden_dims=[1024, 1024],
+                         train_epoch=20,
+                         LR=0.0001,
+                         batch_size=32,
+                         )
+config['multi'] = False
+torch.manual_seed(args.seed)
+model = models.model_initialize(**config)
 
-# Repurpose using the trained model or pre-trained model
-# In this example, loading repurposing dataset using Broad Repurposing Hub and SARS-CoV 3CL Protease Target.
-X_repurpose, drug_name, drug_cid = load_broad_repurposing_hub(SAVE_PATH)
-target, target_name = load_SARS_CoV_Protease_3CL()
-
-_ = models.repurpose(X_repurpose, target, net, drug_name, target_name)
-
-# Virtual screening using the trained model or pre-trained model 
-X_repurpose, drug_name, target, target_name = ['CCCCCCCOc1cccc(c1)C([O-])=O', ...], ['16007391', ...], ['MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...', ...], ['P36896', 'P00374']
-
-_ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
+### Train our model
+model.train(train, val, test, compute_pos_enc = False)
 
 ```
 
 </details>
 
-
+If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True.
 
 
 ### Protein-Protein Interaction (PPI)
