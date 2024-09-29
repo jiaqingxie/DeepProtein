@@ -42,20 +42,20 @@ if __name__ == "__main__":
 
     path = os.getcwd()
 
-    #  Test on FluorescenceDataset
-    train_fluo = Beta_lactamase(path + '/DeepProtein/data', 'train')
-    valid_fluo = Beta_lactamase(path + '/DeepProtein/data', 'valid')
-    test_fluo = Beta_lactamase(path + '/DeepProtein/data', 'test')
+    #  Test on Beta lactamase
+    train_beta = Beta_lactamase(path + '/DeepProtein/data', 'train')
+    valid_beta = Beta_lactamase(path + '/DeepProtein/data', 'valid')
+    test_beta = Beta_lactamase(path + '/DeepProtein/data', 'test')
 
     if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph=True)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph=True)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph=True)
+        train_protein_processed, train_target, train_protein_idx = collate_fn(train_beta, graph=True)
+        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_beta, graph=True)
+        test_protein_processed, test_target, test_protein_idx = collate_fn(test_beta, graph=True)
 
     else:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
+        train_protein_processed, train_target, train_protein_idx = collate_fn(train_beta)
+        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_beta)
+        test_protein_processed, test_target, test_protein_idx = collate_fn(test_beta)
 
     train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
                                      # drug_encoding= drug_encoding,

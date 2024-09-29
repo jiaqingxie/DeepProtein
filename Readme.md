@@ -47,6 +47,15 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
 
 ## Demos
 
+Checkout some demos & tutorials to start:
+
+| Name | Description |
+|-----------------|-------------|
+| [Dataset Tutorial](DEMO/load_dataset.ipynb) | Tutorial on how to use the dataset loader and read customized data|
+| [Protein Property Prediction Tutorial](DEMO/lactamase_Protein_Property.ipynb)| Example of CNN on Beta-lactamase property prediction|
+| [Protein Protein Interaction Tutorial](DEMO/ppi_affinity_PPI.ipynb)| Example of CNN on PPI Affinity prediction|
+
+
 ## Example
 
 We give two examples for each case study. One is trained with fixed parameters (a) and one is trained with argument. The argument list is given below.
