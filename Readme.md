@@ -71,7 +71,6 @@ We give two examples for each case study. One is trained with fixed parameters (
   <summary>Click here for the code!</summary>
 
 ```python
-### package import
 import os
 import sys
 import argparse
