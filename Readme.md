@@ -66,7 +66,7 @@ We give two examples for each case study. One is trained with fixed parameters (
 
 
 
-### Case Study 1(a): A Framework for Protein Function (Property) Prediction with sequential learning.
+### Case Study 1(a): A Framework for Protein Function (Property) Prediction 
 <details>
   <summary>Click here for the code!</summary>
 
@@ -86,13 +86,13 @@ import DeepProtein.ProteinPred as models
 
 ### Load Beta lactamase dataset
 path = os.getcwd()
-train_fluo = Beta_lactamase(path + '/DeepProtein/data', 'train')
-valid_fluo = Beta_lactamase(path + '/DeepProtein/data', 'valid')
-test_fluo = Beta_lactamase(path + '/DeepProtein/data', 'test')
+train_beta = Beta_lactamase(path + '/DeepProtein/data', 'train')
+valid_beta = Beta_lactamase(path + '/DeepProtein/data', 'valid')
+test_beta = Beta_lactamase(path + '/DeepProtein/data', 'test')
 
-train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
-valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
-test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
+train_protein_processed, train_target, train_protein_idx = collate_fn(train_beta)
+valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_beta)
+test_protein_processed, test_target, test_protein_idx = collate_fn(test_beta)
 
 ### Train Valid Test Split
 target_encoding = 'CNN'
@@ -125,7 +125,7 @@ model.train(train, val, test, compute_pos_enc = False)
 
 If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True.
 
-(b) If you wish to use arguments, this could be trained in one line.
+(b) If you wish to use arguments, this could be trained in one line. All mentioned GNN variants above is available for training.
 
 <details>
   <summary>CNN Case</summary>
@@ -143,6 +143,90 @@ python train/beta.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein
 ```
 
 </details>
+
+### Case Study 1(b): A Framework for Protein Protein Interaction Prediction 
+<details>
+  <summary>Click here for the code!</summary>
+
+```python
+### package import
+import os
+import sys
+import argparse
+import torch
+import wandb
+
+
+### Our library DeepProtein
+from DeepProtein.dataset import *
+import DeepProtein.utils as utils
+import DeepProtein.PPI as models
+
+### Load Beta lactamase dataset
+path = os.getcwd()
+train_ppi = PPI_Affinity(path + '/DeepProtein/data', 'train')
+valid_ppi = PPI_Affinity(path + '/DeepProtein/data', 'valid')
+test_ppi = PPI_Affinity(path + '/DeepProtein/data', 'test')
+
+train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train_ppi, graph=False, unsqueeze=False)
+valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid_ppi, graph=False, unsqueeze=False)
+test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test_ppi, graph=False, unsqueeze=False)
+
+### Train Valid Test Split
+target_encoding = 'CNN'
+train, _, _ = data_process(X_target = train_protein_1, X_target_ = train_protein_2, y = train_target,
+                target_encoding = target_encoding,
+                split_method='random', frac=[0.99998, 1e-5, 1e-5],
+                random_seed = 1)
+_, val, _ = data_process(X_target = valid_protein_1, X_target_ = valid_protein_2, y = valid_target,
+                target_encoding = target_encoding,
+                split_method='random',frac=[1e-5, 0.99998, 1e-5],
+                random_seed = 1)
+
+_, _, test = data_process(X_target = test_protein_1, X_target_ = test_protein_2, y = test_target,
+                target_encoding = target_encoding,
+                split_method='random',frac=[1e-5, 1e-5, 0.99998],
+                random_seed = 1)
+                            
+### Load configuration for model
+config = generate_config(target_encoding=target_encoding,
+                         cls_hidden_dims=[512],
+                         train_epoch=20,
+                         LR=0.0001,
+                         batch_size=32,
+                         )
+# config['multi'] = False
+torch.manual_seed(args.seed)
+model = models.model_initialize(**config)
+
+### Train our model
+model.train(train, val, test)
+
+```
+</details>
+
+If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn_ppi() into True.
+
+(b) If you wish to use arguments, this could be trained in one line. For GNN, only DGL_GCN, DGL_GAT and DGL_NeuralFP is available currently.
+
+
+<details>
+  <summary>CNN Case</summary>
+
+```python 
+python train/ppi_affinity.py --target_encoding CNN --seed 42 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+```
+
+</details>
+<details>
+  <summary>GNN Case</summary>
+
+```python 
+python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+```
+
+</details>
+
 
 <!-- 
 ### Protein-Protein Interaction (PPI)
