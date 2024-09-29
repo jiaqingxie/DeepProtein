@@ -79,12 +79,7 @@ We give two examples for each case study. One is trained with fixed parameters (
   <summary>Click here for the code!</summary>
 
 ```python
-import os
-import sys
-import argparse
-import torch
-import wandb
-
+import os, sys, argparse, torch, wandb
 
 ### Our library DeepProtein
 from DeepProtein.dataset import *
@@ -157,12 +152,7 @@ python train/beta.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein
 
 ```python
 ### package import
-import os
-import sys
-import argparse
-import torch
-import wandb
-
+import os, sys, argparse, torch, wandb
 
 ### Our library DeepProtein
 from DeepProtein.dataset import *
@@ -242,12 +232,7 @@ python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj De
 
 ```python
 ### package import
-import os
-import sys
-import argparse
-import torch
-import wandb
-
+import os, sys, argparse, torch, wandb
 
 ### Our library DeepProtein
 from DeepProtein.dataset import *
@@ -325,12 +310,7 @@ pip install PyTDC
 
 ```python
 ### package import
-import os
-import sys
-import argparse
-import torch
-import wandb
-
+import os, sys, argparse, torch, wandb
 
 ### Our library DeepProtein
 from DeepProtein.dataset import *
@@ -410,12 +390,7 @@ pip install PyTDC
 
 ```python
 ### package import
-import os
-import sys
-import argparse
-import torch
-import wandb
-
+import os, sys, argparse, torch, wandb 
 
 ### Our library DeepProtein
 from DeepProtein.dataset import *
@@ -497,11 +472,7 @@ pip install PyTDC
 
 ```python
 ### package import
-import os
-import sys
-import argparse
-import torch
-import wandb
+import os, sys, argparse, torch, wandb
 
 
 ### Our library DeepProtein
@@ -605,11 +576,7 @@ pip install PyTDC
 
 ```python
 ### package import
-import os
-import sys
-import argparse
-import torch
-import wandb
+import os, sys, argparse, torch, wandb
 
 
 ### Our library DeepProtein
@@ -746,14 +713,16 @@ We provided the data under the folder DeepProtein/data (Besides TDC) and the fol
 | TAP | TDC | TAB | Antibody Developability Prediction  |
 | SAbDab-Chen | TDC | TAB | Antibody Developability Prediction |
 | CRISPR-Leenay | TDC | TAB | CRISPR Repair Outcome Prediction |
+
+
 ## Cite Us
 If you found this package useful, please cite [our paper](https://doi.org/10.1093/bioinformatics/btaa1005):
 ```
-@article{huang2020deeppurpose,
-  title={DeepPurpose: A Deep Learning Library for Drug-Target Interaction Prediction},
-  author={Huang, Kexin and Fu, Tianfan and Glass, Lucas M and Zitnik, Marinka and Xiao, Cao and Sun, Jimeng},
-  journal={Bioinformatics},
-  year={2020}
+@article{xie2024deepprotein,
+  title={DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning},
+  author={Xie, Jiaqing and Fu, Tianfan},
+  journal={arxiv},
+  year={2024}
 }
 ```
 
