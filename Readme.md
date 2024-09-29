@@ -58,7 +58,7 @@ We give two examples for each case study. One is trained with fixed parameters (
 | target_encoding             | 'CNN' / 'Transformer' for sequential learning, or 'DGL_GCN' for 'DGL_AttentiveFP' for structure learning. Current available protein encoding belongs to this full list: ['CNN', 'Transformer', 'CNN_RNN', 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'Graphormer']  |
 | seed         | For paper: 7 / 42 /100. You could try your own seed.            |
 | wandb_proj     | The name of your wandb project that you wish to save the results into.                     |
-| lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning                  |
+| lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning.                  |
 | epochs         | Number of training epochs. Generally setting 60 - 100 epochs leads to convergence.                     |
 | compute_pos_enc *    | Compute positional encoding for using graph transformers. We dont recommend add this inductive bias into GNN as GNN itself already encoded it. This don't work effectively on large scale graphs with dgl so the implementation is still under test.                           |
 | batch_size | Batch size of 8 - 32 is good for protein sequence learning.                |
@@ -125,7 +125,26 @@ model.train(train, val, test, compute_pos_enc = False)
 
 If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True.
 
+(b) If you wish to use arguments, this could be trained in one line.
 
+<details>
+  <summary>CNN Case</summary>
+
+```python 
+python train/beta.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+```
+
+</details>
+<details>
+  <summary>GNN Case</summary>
+
+```python 
+python train/beta.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+```
+
+</details>
+
+<!-- 
 ### Protein-Protein Interaction (PPI)
 
 ```python
@@ -139,7 +158,7 @@ python train/ppi_affinity.py --target_encoding CNN --seed 7 --wandb_proj DeepPur
 
 ###  Antibody Paratope Prediction, 
 
-###  Antibody Developability Prediction    
+###  Antibody Developability Prediction     -->
 
 ## Contact
 Please contact jiaxie@ethz.ch or futianfan@gmail.com for help or submit an issue. 
