@@ -55,7 +55,7 @@ We give two examples for each case study. One is trained with fixed parameters (
 
 | Argument  | Description                                     |
 |-----------------|-------------------------------------------------|
-| target_encoding             | 'CNN' / 'Transformer' for sequential learning, or 'DGL_GCN' for 'DGL_AttentiveFP' for structure learning. Current available protein encoding belongs to this full list: ['CNN', 'Transformer', 'CNN_RNN', 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'Graphormer']  |
+| target_encoding             | 'CNN' / 'Transformer' for sequential learning, or 'DGL_GCN' for 'DGL_AttentiveFP' for structure learning. Current available protein encoding belongs to this full list: ['CNN', 'Transformer', 'CNN_RNN', 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'Graphormer']. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer']  |
 | seed         | For paper: 7 / 42 /100. You could try your own seed.            |
 | wandb_proj     | The name of your wandb project that you wish to save the results into.                     |
 | lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning.                  |
@@ -306,12 +306,96 @@ python train/subcellular.py --target_encoding CNN --seed 7 --wandb_proj DeepProt
 ```python 
 python train/subcellular.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
 ```
+</details>
+
+### Case Study 1(c): A Framework for Antigen Epitope Prediction
+Make sure that tdc is installed, if not 
+```bash
+pip install PyTDC
+```
+<details>
+  <summary>Click here for the code!</summary>
+
+```python
+### package import
+import os
+import sys
+import argparse
+import torch
+import wandb
+
+
+### Our library DeepProtein
+from DeepProtein.dataset import *
+import DeepProtein.utils as utils
+import DeepProtein.TokenPred as models
+from tdc.single_pred import Epitope
+
+### Load Epitope  Dataset
+data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
+data = data_class(name=name)
+split = data.get_split()
+
+train_data, valid_data, test_data = split['train'], split['valid'], split['test']
+vocab_set = set()
+
+train_vocab, train_positive_ratio = data2vocab(train_data, train_data, X)
+valid_vocab, valid_positive_ratio = data2vocab(valid_data, train_data, X)
+test_vocab, test_positive_ratio = data2vocab(test_data, train_data, X)
+
+vocab_set = train_vocab.union(valid_vocab)
+vocab_set = vocab_set.union(test_vocab)
+vocab_lst = list(vocab_set)
+
+### Train Valid Test Split
+train_data = standardize_data(train_data, vocab_lst, X)
+valid_data = standardize_data(valid_data, vocab_lst, X)
+test_data = standardize_data(test_data, vocab_lst, X)
+
+train_set = data_process_loader_Token_Protein_Prediction(train_data)
+valid_set = data_process_loader_Token_Protein_Prediction(valid_data)
+test_set = data_process_loader_Token_Protein_Prediction(test_data)
+
+### Load configuration for model
+config = generate_config(target_encoding=target_encoding,
+                         cls_hidden_dims=[1024, 1024],
+                         train_epoch=20,
+                         LR=0.0001,
+                         batch_size=32,
+                         )
+config['multi'] = False
+config['binary'] = True
+config['token'] = True
+config['in_channels'] = 24
+torch.manual_seed(args.seed)
+model = models.model_initialize(**config)
+
+
+### Train our model
+model.train(train_set, valid_set, test_set, batch_size=batch_size)
+
+```
+
+</details>
+
+If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True. 
+
+(b) If you wish to use arguments, this could be trained in one line. All mentioned GNN variants above is not available for training. For an important notice, this task is residue (token) level classification therefore we deploy token level CNN, CNN_RNN and Transformer models.
+
+Current version only supports Token_CNN, Token_CNN_RNN and Token_Transformer for target_encoding.
+
+<details>
+  <summary>CNN Case</summary>
+
+```python 
+python train/IEDB.py --target_encoding Token_CNN --seed 7 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+```
+
+</details>
 
 
 <!-- 
 
-
-###  Antigen Epitope Prediction
 
 ###  Antibody Paratope Prediction, 
 

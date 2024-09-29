@@ -43,7 +43,7 @@ if __name__ == "__main__":
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 
-    path = os.getcwd()
+    # path = os.getcwd()
 
     data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
     # data_class, name, X = Epitope, 'PDB_Jespersen', 'Antigen'
