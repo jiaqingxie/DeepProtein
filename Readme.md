@@ -586,8 +586,7 @@ python train/TAP.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein 
 </details>
 
 
-### Case Study 1(g): A Framework for Antibody Developability Prediction (CRISPR)
-CRISPR is a special case of antibody developability prediction where only one protein is taken as input. In this case, we use the class ProteinPred.
+### Case Study 1(g): A Framework for Repair Outcome Prediction (CRISPR)
 
 Make sure that tdc is installed, if not 
 ```bash
@@ -720,9 +719,25 @@ Note that we've tried EGT, however, it would lead to memory error if we want to
 construct a large batched edge feature matrix therefore we ignore the implementation of EGT.
 This could be solved if applied to small graphs so it will be our future work. 
 
-
-
-
+## Data
+We provided the data under the folder DeepProtein/data (Besides TDC) and the folder data (TDC). 
+| Data  | Source | Form | Task |
+|----------|----------|----------|----------|
+| Fluorescence | PEER | LMDB | Protein Property Prediction |
+| Solubility | PEER | LMDB | Protein Property Prediction |
+| Stability | PEER | LMDB | Protein Property Prediction |
+| Beta-lactamase | PEER | LMDB | Protein Property Prediction |
+| SubCellular | PEER | LMDB | Protein Localization Prediction | 
+| SubCellular-Binary | PEER | LMDB | Protein Localization Prediction | 
+| PPI_Affinity | PEER | LMDB | Protein-Protein Interaction |
+| Human_PPI | PEER | LMDB | Protein-Protein Interaction |
+| Yeast_PPI | PEER | LMDB | Protein-Protein Interaction |
+| IEDB | TDC | PICKLE | Antigen Epitope Prediction  |
+| PDB-Jespersen | TDC | PICKLE | Antigen Epitope Prediction |
+| SAbDab-Liberis | TDC | PICKLE | Antibody Paratope Prediction |
+| TAP | TDC | TAB | Antibody Developability Prediction  |
+| SAbDab-Chen | TDC | TAB | Antibody Developability Prediction |
+| CRISPR-Leenay | TDC | TAB | CRISPR Repair Outcome Prediction |
 ## Cite Us
 If you found this package useful, please cite [our paper](https://doi.org/10.1093/bioinformatics/btaa1005):
 ```
