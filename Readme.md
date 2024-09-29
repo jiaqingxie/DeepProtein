@@ -308,7 +308,7 @@ python train/subcellular.py --target_encoding DGL_GCN --seed 7 --wandb_proj Deep
 ```
 </details>
 
-### Case Study 1(c): A Framework for Antigen Epitope Prediction
+### Case Study 1(d): A Framework for Antigen Epitope Prediction
 Make sure that tdc is installed, if not 
 ```bash
 pip install PyTDC
