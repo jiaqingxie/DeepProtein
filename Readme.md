@@ -162,7 +162,7 @@ from DeepProtein.dataset import *
 import DeepProtein.utils as utils
 import DeepProtein.PPI as models
 
-### Load Beta lactamase dataset
+### Load PPI Affinity dataset
 path = os.getcwd()
 train_ppi = PPI_Affinity(path + '/DeepProtein/data', 'train')
 valid_ppi = PPI_Affinity(path + '/DeepProtein/data', 'valid')
@@ -228,15 +228,88 @@ python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj De
 </details>
 
 
-<!-- 
-### Protein-Protein Interaction (PPI)
+
+### Case Study 1(c): A Framework for Protein Localization Prediction 
+<details>
+  <summary>Click here for the code!</summary>
 
 ```python
-python train/ppi_affinity.py --target_encoding CNN --seed 7 --wandb_proj DeepPurposePP --lr 0.0001 --epochs 60
+### package import
+import os
+import sys
+import argparse
+import torch
+import wandb
+
+
+### Our library DeepProtein
+from DeepProtein.dataset import *
+import DeepProtein.utils as utils
+import DeepProtein.ProteinPred as models
+
+### Load Subcellular Dataset
+path = os.getcwd()
+train_sub = Subcellular(path + '/DeepProtein/data', 'train')
+valid_sub = Subcellular(path + '/DeepProtein/data', 'valid')
+test_sub = Subcellular(path + '/DeepProtein/data', 'test')
+
+train_protein_processed, train_target, train_protein_idx = collate_fn(train_sub)
+valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_sub)
+test_protein_processed, test_target, test_protein_idx = collate_fn(test_sub)
+
+### Train Valid Test Split
+target_encoding = 'CNN'
+train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, 
+    target_encoding=target_encoding, split_method='random', frac=[0.99998, 1e-5, 1e-5])
+
+_, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target,        
+    target_encoding=target_encoding, split_method='random', frac=[1e-5, 0.99998, 1e-5])
+
+_, _, test = utils.data_process(X_target=test_protein_processed, y=test_target,         
+    target_encoding=target_encoding,split_method='random', frac=[1e-5, 1e-5, 0.99998])
+                            
+### Load configuration for model
+config = generate_config(target_encoding=target_encoding,
+                         cls_hidden_dims=[1024, 1024],
+                         train_epoch=20,
+                         LR=0.0001,
+                         batch_size=32,
+                         )
+config['binary'] = False
+config['multi'] = True
+config['classes'] = 10
+torch.manual_seed(args.seed)
+model = models.model_initialize(**config)
+
+### Train our model
+model.train(train, val, test, compute_pos_enc = False)
+
+```
+
+</details>
+
+If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True. Note that SubCellular is multi-class classification problem, therefore you should set config['multi'] to True.
+
+(b) If you wish to use arguments, this could be trained in one line. All mentioned GNN variants above is available for training.
+
+<details>
+  <summary>CNN Case</summary>
+
+```python 
+python train/subcellular.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+```
+
+</details>
+<details>
+  <summary>GNN Case</summary>
+
+```python 
+python train/subcellular.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
 ```
 
 
-###  Protein Localization Prediction
+<!-- 
+
 
 ###  Antigen Epitope Prediction
 

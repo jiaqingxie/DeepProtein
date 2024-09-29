@@ -40,7 +40,7 @@ if __name__ == "__main__":
     wandb.config.update(args)
 
     path = os.getcwd()
-    #  Test on FluorescenceDataset
+    #  Test on Stability Dataset
     train_fluo = Stability(path + '/DeepProtein/data', 'train')
     valid_fluo = Stability(path + '/DeepProtein/data', 'valid')
     test_fluo = Stability(path + '/DeepProtein/data', 'test')
