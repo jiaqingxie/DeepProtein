@@ -34,7 +34,7 @@ conda install -c conda-forge pytdc
 
 A version of torch 2.1+ is required to be installed since Jul requires a version of torch >=2.1.0. 
 
-1. 1. If you want to use GPU, then first find a matched torch version, then install duel with cuda version. We give an example of torch 2.3.0 with cuda 11.8:
+1. If you want to use GPU, then first find a matched torch version, then install duel with cuda version. We give an example of torch 2.3.0 with cuda 11.8:
     ```bash
    pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu118
    conda install -c dglteam/label/th23_cu118 dgl
@@ -45,8 +45,7 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
     conda install -c dglteam/label/th23_cpu dgl
     ```
 
-### Tutorials 
-
+## Demos
 
 ## Example
 

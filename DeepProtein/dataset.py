@@ -400,6 +400,6 @@ def collate_fn_ppi(batch, graph=False, unsqueeze=True):
         # Unsqueeze to add an extra dimension if needed
         target = target.unsqueeze(1)
 
-    print("graph 1:".format(graph1))
+    # print("graph 1:".format(graph1))
     # Return processed protein sequences, target values, and the protein indices
     return graph1, graph2, target, protein_idx
