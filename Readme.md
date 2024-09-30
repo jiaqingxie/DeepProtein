@@ -5,13 +5,8 @@
 <h4 align="center">
 <p>  Applications in Protein Property Prediction, Localization Prediction, Protein-Protein Interaction, antigen epitope prediction, antibody paratope prediction, antibody developability prediction, etc. </h4>
 
----
 
-[![PyPI version](https://badge.fury.io/py/DeepProtein.svg)](https://pypi.org/project/DeepProtein/)
-[![Downloads](https://pepy.tech/badge/DeepProtein/month)](https://pepy.tech/project/DeepProtein)
-[![Downloads](https://pepy.tech/badge/DeepProtein)](https://pepy.tech/project/DeepProtein)
-[![GitHub Repo stars](https://img.shields.io/github/stars/jiaqingxie/DeepPurposePlusPlus)](https://github.com/jiaqingxie/DeepPurposePlusPlus/stargazers)
-[![GitHub Repo forks](https://img.shields.io/github/forks/jiaqingxie/DeepPurposePlusPlus)](https://github.com/jiaqingxie/DeepPurposePlusPlus/network/members)
+
 
 ## News
 - [09/24] DeepProtein is online. The website is under initial test and construction. 
@@ -713,16 +708,3 @@ We provided the data under the folder DeepProtein/data (Besides TDC) and the fol
 | TAP | TDC | TAB | Antibody Developability Prediction  |
 | SAbDab-Chen | TDC | TAB | Antibody Developability Prediction |
 | CRISPR-Leenay | TDC | TAB | CRISPR Repair Outcome Prediction |
-
-
-## Cite Us
-If you found this package useful, please cite [our paper](https://doi.org/10.1093/bioinformatics/btaa1005):
-```
-@article{xie2024deepprotein,
-  title={DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning},
-  author={Xie, Jiaqing and Fu, Tianfan},
-  journal={arxiv},
-  year={2024}
-}
-```
-
