@@ -660,10 +660,6 @@ python train/CRISPR.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProte
 
 </details>
 
-
-## Contact
-Please contact jiaxie@ethz.ch or futianfan@gmail.com for help or submit an issue. 
-
 ## Encodings
 Thanks to DeepPurpose and dgllife, we could borrow some of the encodings from DeepPurpose. The newly added encodings are PAGTN, 
 EGT and Graphormer which belong to graph transformer modules that are prevailing methods
