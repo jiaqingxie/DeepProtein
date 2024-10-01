@@ -10,7 +10,7 @@
 
 ## Approach
 
-![DeepProtein](figs/DeepProtein.pdf)
+![DeepProtein](figs/DeepProtein.jpg)
 
 ## News
 - [09/24] DeepProtein is online. The website is under initial test and construction. 
