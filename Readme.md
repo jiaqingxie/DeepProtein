@@ -3,7 +3,7 @@
 ---
 
 <h3 align="center">
-  DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning
+  [DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning](https://arxiv.org/abs/2410.02023)
 </h3>
 
 <h4 align="center">
@@ -735,3 +735,17 @@ We provided the data under the folder DeepProtein/data (Besides TDC) and the fol
 | TAP | TDC | TAB | Antibody Developability Prediction  |
 | SAbDab-Chen | TDC | TAB | Antibody Developability Prediction |
 | CRISPR-Leenay | TDC | TAB | CRISPR Repair Outcome Prediction |
+
+
+## Cite Us
+If you found this package useful, please cite [our paper](https://arxiv.org/abs/2410.02023):
+```
+@article{xie2024deepprotein,
+  title={DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning},
+  author={Xie, Jiaqing and Zhao, Yue and Fu, Tianfan},
+  journal={arxiv},
+  year={2024}
+}
+```
+
+
