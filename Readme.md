@@ -1,20 +1,51 @@
-<p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="logo" width="400px" /></p>
+<p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="DeepProtein Logo" width="400px" /></p>
+
+---
 
 <h3 align="center">
-<p> DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning <br></h3>
+  DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning
+</h3>
+
 <h4 align="center">
-<p>  Applications in Protein Property Prediction, Localization Prediction, Protein-Protein Interaction, antigen epitope prediction, antibody paratope prediction, antibody developability prediction, etc. </h4>
+  Applications in Protein Property Prediction, Localization Prediction, Protein-Protein Interaction, Antigen Epitope Prediction, Antibody Paratope Prediction, Antibody Developability Prediction, and more.
+</h4>
+
+---
+
+## Introduction
+
+Understanding proteomics is critical for advancing biology, genomics, and medicine. Proteins perform essential roles, such as catalyzing biochemical reactions and providing immune responses. With the rise of 3D databases like AlphaFold 2.0, machine learning has become a powerful tool for studying protein mechanisms.
+
+### Why DeepProtein?
+
+Deep learning has revolutionized tasks such as:
+1. Protein-protein interaction
+2. Protein folding
+3. Protein-ligand interaction
+4. Protein function and property prediction
+
+However, current benchmarks often focus on sequential methods like CNNs and transformers, overlooking graph-based models and lacking user-friendly interfaces.
+
+---
+
+### What is DeepProtein?
+
+**DeepProtein** is a comprehensive deep learning library and benchmark designed to fill these gaps:
+
+1. **Comprehensive Benchmarking**: Evaluating CNNs, RNNs, transformers, and GNNs on 7 essential protein learning tasks, such as function prediction and antibody developability.
+2. **User-friendly Interface**: Simplifying execution with one command for all tasks.
+3. **Enhanced Accessibility**: Extensive documentation and tutorials for reproducible research.
 
 
+<p align="center"><img src="figs/DeepProtein.jpg" alt="DeepProtein Approach" /></p>
 
-
-## Approach
-
-![DeepProtein](figs/DeepProtein.jpg)
+---
 
 ## News
 - [09/24] DeepProtein is online. The website is under initial test and construction. 
 
+
+---
 
 ## Installation
 
@@ -23,11 +54,7 @@ First, we recommend you follow the instructions on how DeepPurpose's dependencie
 conda create -n DeepProtein python=3.9
 conda activate DeepProtein
 pip install git+https://github.com/bp-kelley/descriptastorus
-pip install lmdb
-pip install seaborn
-pip install DeepPurpose
-pip install wandb
-pip install pydantic
+pip install lmdb seaborn wandb pydantic DeepPurpose
 conda install -c conda-forge pytdc
 ```
 
