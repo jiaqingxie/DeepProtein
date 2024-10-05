@@ -1,0 +1,3 @@
+prune DEMO
+include Readme.md
+include requirements.txt

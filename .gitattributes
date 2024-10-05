@@ -1,0 +1,3 @@
+docs/* linguist-documentation
+DEMO/*.ipynb linguist-documentation
+figs/*.ipynb linguist-documentation
