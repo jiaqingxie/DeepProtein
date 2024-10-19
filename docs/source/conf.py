@@ -43,7 +43,7 @@ html_logo = '../build/html/_images/deeppurpose_pp_logo.png'
 html_context = {
     'css_files': [
   	   'https://fonts.googleapis.com/css?family=Raleway',
-       '../build/html/_static/css/deeppurpose_docs_theme.css'
+       '../build/html/_static/css/deepprotein_docs_theme.css'
     ],
 }
 
