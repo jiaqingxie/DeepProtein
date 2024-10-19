@@ -31,14 +31,6 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 import sphinx_rtd_theme
 html_theme = "sphinx_rtd_theme"
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-
-html_context = {
-    'css_files': [
-  	   'https://fonts.googleapis.com/css?family=Raleway',
-       '../build/html/_static/css/deeppurpose_docs_theme.css'
-    ],
-}
 
 html_theme_options = {
    'collapse_navigation': False,
@@ -46,7 +38,18 @@ html_theme_options = {
    'logo_only': False,
 }
 
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_logo = '../build/html/_images/deeppurpose_pp_logo.png'
+html_context = {
+    'css_files': [
+  	   'https://fonts.googleapis.com/css?family=Raleway',
+       '../build/html/_static/css/deeppurpose_docs_theme.css'
+    ],
+}
+
+
+
+
 html_static_path = ['_static']
 
 
