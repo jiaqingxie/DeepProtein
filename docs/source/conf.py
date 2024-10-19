@@ -40,17 +40,17 @@ html_theme_options = {
 
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # html_logo = '../build/html/_images/deeppurpose_pp_logo.png'
-html_context = {
-    'css_files': [
-  	   'https://fonts.googleapis.com/css?family=Raleway',
-       '../build/html/_static/css/deepprotein_docs_theme.css'
-    ],
-}
+# html_context = {
+#     'css_files': [
+#   	   'https://fonts.googleapis.com/css?family=Raleway',
+#        '../build/html/_static/css/deepprotein_docs_theme.css'
+#     ],
+# }
 
 
 
 
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 
 # The master toctree document.
