@@ -3,15 +3,72 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-DeepProtein documentation
-=========================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+DeepProtein documentation
+================================================================
+DeepProtein is a comprehensive deep learning library and benchmark designed to fill these gaps:
+
+1. Comprehensive Benchmarking: Evaluating CNNs, RNNs, transformers, and GNNs on 7 essential protein learning tasks, such as function prediction and antibody developability.
+2. User-friendly Interface: Simplifying execution with one command for all tasks.
+3. Enhanced Accessibility: Extensive documentation and tutorials for reproducible research.
+The Github repository is located `here <https://github.com/jiaqingxie/DeepProtein>`_.
 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :glob:
+   :maxdepth: 1
+   :caption: Background 
+
+   notes/introduction
+
+
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Install DeepProtein
+
+   notes/download 
+
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Get Started
+
+   notes/examples
+   notes/casestudy
+
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Tutorials
+
+   notes/notebooks
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Package Reference
+
+   notes/models
+   notes/dataset
+   notes/chemutils
+   notes/oneliner
+   notes/model_helper
+   notes/utils
+
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Importance Function
+
+   notes/model
+   notes/encoder
+   notes/process_data
+   notes/configuration
+   notes/utility_function
+
 
