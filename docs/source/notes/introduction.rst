@@ -20,7 +20,9 @@ Features
   * time reference for computational expensive encoding. 
   * PyTorch based, support CPU, GPU, Multi-GPUs.  
 
-TODO:
+TODO
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* List
   * Pretraining
   * Protein Structure Prediction 
   * Protein design
