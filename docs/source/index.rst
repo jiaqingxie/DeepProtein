@@ -8,9 +8,9 @@ DeepProtein documentation
 ================================================================
 DeepProtein is a comprehensive deep learning library and benchmark designed to fill these gaps:
 
-1. Comprehensive Benchmarking: Evaluating CNNs, RNNs, transformers, and GNNs on 7 essential protein learning tasks, such as function prediction and antibody developability.
-2. User-friendly Interface: Simplifying execution with one command for all tasks.
-3. Enhanced Accessibility: Extensive documentation and tutorials for reproducible research.
+* Comprehensive Benchmarking: Evaluating CNNs, RNNs, transformers, and GNNs on 7 essential protein learning tasks, such as function prediction and antibody developability.
+* User-friendly Interface: Simplifying execution with one command for all tasks.
+* Enhanced Accessibility: Extensive documentation and tutorials for reproducible research.
 The Github repository is located `here <https://github.com/jiaqingxie/DeepProtein>`_.
 
 
