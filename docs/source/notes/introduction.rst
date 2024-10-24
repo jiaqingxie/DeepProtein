@@ -14,6 +14,7 @@ Features
 * For computational researchers, 10+ powerful encodings for  proteins, ranging from  CNN, transformers to GNNs and graph transformers. 
 
 * Realistic and user-friendly design:
+
   * Applications in Protein Property Prediction, Localization Prediction, Protein-Protein Interaction, Antigen Epitope Prediction, Antibody Paratope Prediction, Antibody Developability Prediction, and more.
   * easy monitoring of training process with detailed training metrics output such as test set figures (AUCs) and tables, also support early stopping.
   * various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.
@@ -23,6 +24,7 @@ Features
 TODO
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * List
+
   * Pretraining
   * Protein Structure Prediction 
   * Protein design
