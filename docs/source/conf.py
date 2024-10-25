@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'DeepProtein'
-copyright = '2024, jiaqingxie'
+copyright = '2024, Jiaqing Xie, Yue Zhao, Tianfan Fu'
 author = 'jiaqingxie'
 release = '0.1.1'
 
