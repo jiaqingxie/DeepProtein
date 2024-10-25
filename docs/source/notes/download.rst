@@ -74,6 +74,7 @@ Second time and later
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you use conda env, then 
+
 .. code-block:: bash
 
    $ conda activate DeepProtein
@@ -83,6 +84,7 @@ If you use conda env, then
    $ conda deactivate ### exit
 
 If you use python virtual env, then 
+
 .. code-block:: bash
 
    $ source env_path/DeepProtein/activate
