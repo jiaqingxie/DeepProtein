@@ -1,4 +1,4 @@
-Introduction
+Features of DeepProtein
 ================================================
 
 DeepProtein is a Deep Learning Library and Benchmark for Protein Sequence Learning Toolkit (using PyTorch)

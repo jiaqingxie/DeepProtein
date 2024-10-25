@@ -20,6 +20,7 @@ The Github repository is located `here <https://github.com/jiaqingxie/DeepProtei
    :caption: Background 
 
    notes/introduction
+   notes/task
 
 
 
