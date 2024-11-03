@@ -13,15 +13,13 @@ CNN Case:
 
 .. code-block:: bash
 
-
-python train/beta.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+  $ python train/beta.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
 
 GNN Case:
 
 .. code-block:: bash
 
-python train/beta.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
-
+  $ python train/beta.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
 
 
 
@@ -35,13 +33,13 @@ CNN Case:
 .. code-block:: bash
 
 
-python train/ppi_affinity.py --target_encoding CNN --seed 42 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+  $ python train/ppi_affinity.py --target_encoding CNN --seed 42 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
 
 GNN Case:
 
 .. code-block:: bash
 
-python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+  $ python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
 
 
 
