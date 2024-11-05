@@ -1,7 +1,7 @@
 Examples
 ================================================
 
-1a. Antiviral Drugs Repurposing for SARS-CoV2 3CLPro, using One Line.**
+1a. Protein Property Prediction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Given a new target sequence (e.g. SARS-CoV2 3CL Protease), 
