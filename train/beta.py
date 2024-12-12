@@ -70,7 +70,7 @@ if __name__ == "__main__":
     elif target_encoding == "esm_1b":
         from transformers import EsmTokenizer, EsmModel
         tokenizer = EsmTokenizer.from_pretrained("facebook/esm1b_t33_650M_UR50S")
-        embedding_model = EsmModel.from_pretrained("facebook/esm1b_t33_650M_UR50S")
+        embedding_model = EsmModel.from_pretrained("facebook/esm1b_t33_650M_UR50S").to("cuda")
         train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
                                                          target_encoding)
         valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
