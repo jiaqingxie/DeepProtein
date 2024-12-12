@@ -60,9 +60,9 @@ if __name__ == "__main__":
         from transformers import BertModel, BertTokenizer
         tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
         embedding_model = BertModel.from_pretrained("Rostlab/prot_bert").to("cuda")
-        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model)
-        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model)
-        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model)
+        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model, target_encoding)
+        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model, target_encoding)
+        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model, target_encoding)
     train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
                                      # drug_encoding= drug_encoding,
                                      split_method='random', frac=[0.99998, 1e-5, 1e-5],

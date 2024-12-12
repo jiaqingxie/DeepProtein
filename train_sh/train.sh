@@ -15,12 +15,12 @@ source activate /cluster/scratch/jiaxie/deepprotein
 
 cd /cluster/project/sachan/jiaxie/DeepProtein
 
-method="prot_bert"
+method="esm_1b"
 SEED=42
 wandb_proj="DeepProtein"
-LR=5e-5
+LR=2e-4
 EPOCH=100
-BATCH_SIZE=16
+BATCH_SIZE=8
 
 python -u train/beta.py \
       --target_encoding ${method} \

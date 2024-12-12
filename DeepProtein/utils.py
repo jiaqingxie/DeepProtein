@@ -1792,13 +1792,15 @@ def compute_pos(generator, params, method="Laplacian"):
     modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels), **params)
     return modified_generator
 
-def get_hf_model_embedding(data, tokenizer, embedding_model):
+def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):
     ans = []
-    for _data in tqdm(data):
-        _data = " ".join(_data)
-        input = tokenizer(_data, return_tensors='pt').to("cuda")
-        outputs = embedding_model(**input).last_hidden_state.mean(dim=1).detach().cpu()
-        ans.append(outputs)
+    with torch.no_grad():
+        for _data in tqdm(data):
+            if target_encoding in ['prot_bert']:
+                _data = " ".join(_data)
+            input = tokenizer(_data, return_tensors='pt').to("cuda")
+            outputs = embedding_model(**input).last_hidden_state.mean(dim=1).cpu()
+            ans.append(outputs)
 
     gc.collect()
     torch.cuda.empty_cache()
