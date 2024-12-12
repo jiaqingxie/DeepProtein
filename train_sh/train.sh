@@ -28,5 +28,5 @@ python -u train/beta.py \
       --wandb_proj ${wandb_proj} \
       --lr ${LR} \
       --epochs ${EPOCH} \
-      ---batch_size ${BATCH_SIZE} \
+      --batch_size ${BATCH_SIZE} \
 

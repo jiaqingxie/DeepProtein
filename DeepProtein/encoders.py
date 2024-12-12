@@ -116,6 +116,20 @@ class Prot_Bert_Predictor(nn.Module):
     def __init__(self, encoding, **config):
         super(Prot_Bert_Predictor, self).__init__()
         if encoding == 'drug':
+            self.fc1 = nn.Linear(1280, config['hidden_dim_drug'])
+        elif encoding == 'protein':
+            self.fc1 = nn.Linear(1280, config['hidden_dim_protein'])
+
+    def forward(self, v):
+        v = v.view(v.size(0), -1)
+        v = self.fc1(v.float())
+        v = F.relu(v)
+        return v
+
+class ESM_1B_Predictor(nn.Module):
+    def __init__(self, encoding, **config):
+        super(ESM_1B_Predictor, self).__init__()
+        if encoding == 'drug':
             self.fc1 = nn.Linear(1024, config['hidden_dim_drug'])
         elif encoding == 'protein':
             self.fc1 = nn.Linear(1024, config['hidden_dim_protein'])

@@ -146,6 +146,11 @@ class Protein_Prediction:
                                              predictor_dim=config['hidden_dim_drug'])
         elif target_encoding == 'prot_bert':
             self.model_protein = Prot_Bert_Predictor('protein', **config)
+
+        elif target_encoding == 'esm_1b':
+            self.model_protein = ESM_1B_Predictor('protein', **config)
+
+
         else:
             raise AttributeError('Please use one of the available encoding method.')
 
