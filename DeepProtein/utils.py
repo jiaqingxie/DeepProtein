@@ -12,6 +12,8 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 from tqdm import tqdm
+import time
+import gc
 
 try:
     from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
@@ -1788,9 +1790,13 @@ def compute_pos(generator, params, method="Laplacian"):
     modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels), **params)
     return modified_generator
 
-def get_hf_model_embedding(data, tokenizer, model):
+def get_hf_model_embedding(data, tokenizer, embedding_model):
     ans = []
     for _data in tqdm(data):
-        input = tokenizer(_data, return_tensors='pt', max_length=300)
-        ans.append(model(**input)['pooler_output'].squeeze().detach())
+        input = tokenizer(_data, return_tensors='pt').to("cuda")
+        ans.append(embedding_model(**input)['pooler_output'].squeeze().detach())
+
+    gc.collect()
+    torch.cuda.empty_cache()
+    time.sleep(5)
     return ans
