@@ -138,17 +138,14 @@ class Protein_Prediction:
                                        edge_feat_size = 13,
                                        graph_feat_size = config['gnn_hid_dim_drug'],
                                        predictor_dim=config['hidden_dim_drug'])
-        elif target_encoding == 'EGT':
-            self.model_protein = EGT(node_feat_size =74,
-                                     node_hid_size = config['gnn_hid_dim_drug'],
-                                     edge_feat_size = 13,
-                                     graph_feat_size = config['gnn_hid_dim_drug'],
-                                     predictor_dim=config['hidden_dim_drug'])
+
         elif target_encoding == 'Graphormer':
             self.model_protein = Graphormer(node_feat_size=74,
                                             node_hid_size=config['gnn_hid_dim_drug'],
                                              graph_feat_size=config['gnn_hid_dim_drug'],
                                              predictor_dim=config['hidden_dim_drug'])
+        elif target_encoding == 'prot_bert':
+            self.model_protein = Prot_Bert_Predictor('protein', **config)
         else:
             raise AttributeError('Please use one of the available encoding method.')
 
@@ -367,6 +364,7 @@ class Protein_Prediction:
                                             'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
                     v_p = v_p
                 else:
+                    # print(v_p)
                     v_p = v_p.float().to(self.device)
 
 

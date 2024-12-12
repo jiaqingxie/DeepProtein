@@ -27,6 +27,7 @@ import os
 import sys
 import pathlib
 import dgl
+import re
 
 this_dir = str(pathlib.Path(__file__).parent.absolute())
 
@@ -492,7 +493,7 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA = pd.Series(df_data[column_name].unique()).apply(protein2espf)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-    elif target_encoding == 'CNN':
+    elif target_encoding in ['CNN', 'prot_bert']:
         AA = pd.Series(df_data[column_name].unique()).apply(trans_protein)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
@@ -923,6 +924,13 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
+        elif self.config['target_encoding'] == 'prot_bert':
+            from transformers import BertModel, BertTokenizer
+            tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
+            model = BertModel.from_pretrained("Rostlab/prot_bert")
+            v_p = re.sub(r"[UZOB]", "X", v_p)
+            encoded_input = tokenizer(v_p, return_tensors='pt')
+            v_p = model(**encoded_input)['pooler_output']
         elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
                                                 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
             v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
@@ -1210,6 +1218,8 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
     elif target_encoding == 'Graphormer':
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+    elif target_encoding == 'prot_bert':
+        base_config['hidden_dim_protein'] = hidden_dim_protein
     # elif target_encoding == 'MPNN':
     #     base_config['hidden_dim_drug'] = hidden_dim_drug
     #     base_config['batch_size'] = batch_size
