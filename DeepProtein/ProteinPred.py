@@ -307,6 +307,8 @@ class Protein_Prediction:
                                                                                       val, **self.config),
                                                **params)
 
+
+
         if test is not None:
 
             info = data_process_loader_Protein_Prediction(test.index.values, test.Label.values, test, **self.config)

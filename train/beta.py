@@ -4,6 +4,7 @@ import argparse
 import torch
 import wandb
 
+
 module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
@@ -11,7 +12,7 @@ if module_path not in sys.path:
 from DeepProtein.dataset import *
 import DeepProtein.utils as utils
 import DeepProtein.ProteinPred as models
-
+from DeepProtein.utils import get_hf_model_embedding
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with DeepProtein")
@@ -57,6 +58,14 @@ if __name__ == "__main__":
         valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_beta)
         test_protein_processed, test_target, test_protein_idx = collate_fn(test_beta)
 
+
+    if target_encoding == "prot_bert":
+        from transformers import BertModel, BertTokenizer
+        tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
+        model = BertModel.from_pretrained("Rostlab/prot_bert")
+        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, model)
+        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, model)
+        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, model)
     train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
                                      # drug_encoding= drug_encoding,
                                      split_method='random', frac=[0.99998, 1e-5, 1e-5],
@@ -66,7 +75,7 @@ if __name__ == "__main__":
                                    # drug_encoding= drug_encoding,
                                    split_method='random', frac=[1e-5, 0.99998, 1e-5],
                                    random_seed=1)
-
+    #
     _, _, test = utils.data_process(X_target=test_protein_processed, y=test_target, target_encoding=target_encoding,
                                     # drug_encoding= drug_encoding,
                                     split_method='random', frac=[1e-5, 1e-5, 0.99998],

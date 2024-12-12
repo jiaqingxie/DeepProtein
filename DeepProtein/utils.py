@@ -11,6 +11,7 @@ from torch.utils import data
 from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset
+from tqdm import tqdm
 
 try:
     from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
@@ -493,7 +494,7 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA = pd.Series(df_data[column_name].unique()).apply(protein2espf)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-    elif target_encoding in ['CNN', 'prot_bert']:
+    elif target_encoding in ['CNN']:
         AA = pd.Series(df_data[column_name].unique()).apply(trans_protein)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
@@ -507,7 +508,7 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
     elif target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT',
-                             'Graphormer']:
+                             'Graphormer', 'prot_bert']:
         df_data[save_column_name] = df_data[column_name]
     # elif target_encoding == 'MPNN':
     #     unique = pd.Series(df_data[column_name].unique()).apply(smiles2mpnnfeature)
@@ -912,6 +913,7 @@ class data_process_loader_Protein_Prediction(data.Dataset):
             from functools import partial
             self.fc = partial(smiles_to_bigraph, add_self_loop=True)
 
+
     def __len__(self):
         'Denotes the total number of samples'
         return len(self.list_IDs)
@@ -924,13 +926,6 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] == 'prot_bert':
-            from transformers import BertModel, BertTokenizer
-            tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
-            model = BertModel.from_pretrained("Rostlab/prot_bert")
-            v_p = re.sub(r"[UZOB]", "X", v_p)
-            encoded_input = tokenizer(v_p, return_tensors='pt')
-            v_p = model(**encoded_input)['pooler_output']
         elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
                                                 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
             v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
@@ -1037,7 +1032,7 @@ def generate_config(drug_encoding=None, target_encoding=None,
                     rnn_target_hid_dim=64,
                     rnn_target_n_layers=2,
                     rnn_target_bidirectional=True,
-                    num_workers=8,
+                    num_workers=4,
                     cuda_id=None,
                     gnn_hid_dim_drug=64,
                     gnn_num_layers=3,
@@ -1792,3 +1787,10 @@ def compute_pos(generator, params, method="Laplacian"):
     modified_dataset = list(zip(modified_graphs, modified_labels))
     modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels), **params)
     return modified_generator
+
+def get_hf_model_embedding(data, tokenizer, model):
+    ans = []
+    for _data in tqdm(data):
+        input = tokenizer(_data, return_tensors='pt', max_length=300)
+        ans.append(model(**input)['pooler_output'].squeeze().detach())
+    return ans

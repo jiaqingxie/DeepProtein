@@ -2,7 +2,7 @@
 
 #SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/beta_CNN.out
 #SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/beta_CNN.err
-#SBATCH --mem-per-cpu=10G
+#SBATCH --mem-per-cpu=20G
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus=rtx_3090:1
 #SBATCH --time=1:00:00
