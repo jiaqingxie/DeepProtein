@@ -12,7 +12,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 from tqdm import tqdm
-import time
+import time as TIME
 import gc
 
 try:
@@ -1793,10 +1793,11 @@ def compute_pos(generator, params, method="Laplacian"):
 def get_hf_model_embedding(data, tokenizer, embedding_model):
     ans = []
     for _data in tqdm(data):
+        _data = " ".join(_data)
         input = tokenizer(_data, return_tensors='pt').to("cuda")
-        ans.append(embedding_model(**input)['pooler_output'].squeeze().detach())
+        outputs = embedding_model(**input).last_hidden_state.mean(dim=1).detach().cpu()
+        ans.append(outputs)
 
     gc.collect()
     torch.cuda.empty_cache()
-    time.sleep(5)
     return ans

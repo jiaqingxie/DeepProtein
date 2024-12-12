@@ -123,6 +123,7 @@ class Prot_Bert_Predictor(nn.Module):
     def forward(self, v):
         v = v.view(v.size(0), -1)
         v = self.fc1(v.float())
+        v = F.relu(v)
         return v
 
 

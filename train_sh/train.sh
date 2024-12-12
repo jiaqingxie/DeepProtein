@@ -16,9 +16,9 @@ source activate /cluster/scratch/jiaxie/deepprotein
 cd /cluster/project/sachan/jiaxie/DeepProtein
 
 method="prot_bert"
-SEED=7
+SEED=42
 wandb_proj="DeepProtein"
-LR=0.0001
+LR=5e-5
 EPOCH=100
 
 python -u train/beta.py \

@@ -9,7 +9,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from time import time
+from time import time as T
 from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score, accuracy_score
 from sklearn.metrics import mean_absolute_error
 from lifelines.utils import concordance_index
@@ -356,7 +356,7 @@ class Protein_Prediction:
 
         if verbose:
             print('--- Go for Training ---')
-        t_start = time()
+        t_start = T()
 
         self.model.train()
         for epo in range(train_epoch):
@@ -373,7 +373,6 @@ class Protein_Prediction:
 
                 score = self.model(v_p)
                 label = torch.from_numpy(np.array(label)).float().to(self.device)
-
                 if self.binary:
                     loss_fct = torch.nn.BCELoss()
                     m = torch.nn.Sigmoid()
@@ -412,7 +411,7 @@ class Protein_Prediction:
 
                 if verbose:
                     if (i % 100 == 0):
-                        t_now = time()
+                        t_now = T()
                         if verbose:
                             print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
                                   ' with loss ' + str(loss.cpu().detach().numpy())[:7] + \

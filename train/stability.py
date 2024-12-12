@@ -11,7 +11,7 @@ if module_path not in sys.path:
 from DeepProtein.dataset import *
 import DeepProtein.utils as utils
 import DeepProtein.ProteinPred as models
-
+from DeepProtein.utils import get_hf_model_embedding
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with DeepProtein")
@@ -56,6 +56,13 @@ if __name__ == "__main__":
         valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, unsqueeze=False)
         test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, unsqueeze=False)
 
+    if target_encoding == "prot_bert":
+        from transformers import BertModel, BertTokenizer
+        tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
+        embedding_model = BertModel.from_pretrained("Rostlab/prot_bert").to("cuda")
+        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model)
+        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model)
+        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model)
     train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
                                      # drug_encoding= drug_encoding,
                                      split_method='random', frac=[0.99998, 1e-5, 1e-5],
