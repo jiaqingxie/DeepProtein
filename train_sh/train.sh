@@ -20,6 +20,7 @@ SEED=42
 wandb_proj="DeepProtein"
 LR=5e-5
 EPOCH=100
+BATCH_SIZE=16
 
 python -u train/beta.py \
       --target_encoding ${method} \
@@ -27,3 +28,5 @@ python -u train/beta.py \
       --wandb_proj ${wandb_proj} \
       --lr ${LR} \
       --epochs ${EPOCH} \
+      ---batch_size ${BATCH_SIZE} \
+
