@@ -66,12 +66,12 @@ if __name__ == "__main__":
                              cls_hidden_dims=[1024, 1024],
                              train_epoch=epochs,
                              LR=lr,
-                             batch_size=batch_size ,
+                             batch_size=batch_size,
                              )
     config['multi'] = False
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
-    model.test_LLM(test_protein_processed, test_target, "beta")
+    model.LLM_test_and_log(test_protein_processed, test_target, "beta", False)
 
 
 

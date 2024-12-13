@@ -20,7 +20,7 @@ import pickle
 np.random.seed(3)
 import copy
 from prettytable import PrettyTable
-from DeepProtein.LLM_decoders import BioMistral
+from DeepProtein.LLM_decoders import *
 
 import os
 
@@ -158,7 +158,7 @@ class Protein_Prediction:
         elif target_encoding == 'prot_t5':
             self.model_protein = Prot_T5_Predictor('protein', **config)
 
-        elif target_encoding in ['BioMistral']:
+        elif target_encoding in ['BioMistral', 'BioT5_plus']:
             self.model_protein = Prot_Bert_Predictor('protein', **config)
 
         else:
@@ -181,10 +181,13 @@ class Protein_Prediction:
 
 
     def test_LLM(self, data, y_label, dataset_name, repurposing_mode=False):
+        model = None
         if self.target_encoding == 'BioMistral':
             model = BioMistral(dataset_name)
-            y_pred = model.inference(data)
+        elif self.target_encoding == 'BioT5_plus':
+            model = BioT5_plus(dataset_name)
 
+        y_pred = model.inference(data)
         if self.binary:
             pass
         else:
@@ -200,6 +203,28 @@ class Protein_Prediction:
                 pearsonr(y_label, y_pred)[1], \
                 concordance_index(y_label, y_pred), y_pred
 
+
+    def LLM_test_and_log(self, data, y_label, dataset_name, repurposing_mode, verbose=True):
+        if self.binary:
+            pass
+        else:
+            mae, mse, r2, p_val, CI, logits = self.test_LLM(self, data, y_label, dataset_name, repurposing_mode)
+            test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+            float2str = lambda x: '%0.4f' % x
+            test_table.add_row(list(map(float2str, [mae, mse, r2, p_val, CI])))
+            wandb.log({"TEST MSE": mse, "MAE": mae, "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
+            if verbose:
+                if self.config['use_spearmanr']:
+                    print('Testing MSE: ' + str(mse) + ' , MAE: ' + str(mae) + ' , Spearman Correlation: ' + str(r2)
+                          + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI))
+                else:
+                    print('Testing MSE: ' + str(mse) + ' , MAE: ' + str(mae) + ' , Pearson Correlation: ' + str(r2)
+                          + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI))
+
+
+        prettytable_file = os.path.join(self.result_folder, "test_markdowntable.txt")
+        with open(prettytable_file, 'w') as fp:
+            fp.write(test_table.get_string())
 
 
     def test_(self, data_generator, model, repurposing_mode=False, test=False, verbose=True):
