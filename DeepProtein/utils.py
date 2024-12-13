@@ -1795,7 +1795,7 @@ def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):
     ans = []
     with torch.no_grad():
         for _data in tqdm(data):
-            if target_encoding in ['prot_bert']:
+            if target_encoding in ['prot_bert', 'prot_t5']:
                 _data = " ".join(_data)
             input = tokenizer(_data, return_tensors='pt').to("cuda")
             outputs = embedding_model(**input).last_hidden_state.mean(dim=1).cpu()

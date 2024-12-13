@@ -153,6 +153,9 @@ class Protein_Prediction:
         elif target_encoding == 'esm_2':
             self.model_protein = ESM_2_Predictor('protein', **config)
 
+        elif target_encoding == 'prot_t5':
+            self.model_protein = Prot_T5_Predictor('protein', **config)
+
 
         else:
             raise AttributeError('Please use one of the available encoding method.')
