@@ -1225,6 +1225,8 @@ def generate_config(drug_encoding=None, target_encoding=None,
     #     base_config['mpnn_depth'] = mpnn_depth
     elif target_encoding is None:
         pass
+    elif target_encoding in ['BioMistral']:
+        pass
     else:
         raise AttributeError("Please use the correct protein encoding available!")
 

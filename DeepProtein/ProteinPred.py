@@ -20,7 +20,7 @@ import pickle
 np.random.seed(3)
 import copy
 from prettytable import PrettyTable
-from LLM_decoders import BioMistral
+from DeepProtein.LLM_decoders import BioMistral
 
 import os
 
@@ -65,6 +65,7 @@ class Classifier(nn.Sequential):
 def model_initialize(**config):
     model = Protein_Prediction(**config)
     return model
+
 
 
 def model_pretrained(path_dir=None, model=None):
@@ -157,6 +158,8 @@ class Protein_Prediction:
         elif target_encoding == 'prot_t5':
             self.model_protein = Prot_T5_Predictor('protein', **config)
 
+        elif target_encoding in ['BioMistral']:
+            self.model_protein = Prot_Bert_Predictor('protein', **config)
 
         else:
             raise AttributeError('Please use one of the available encoding method.')

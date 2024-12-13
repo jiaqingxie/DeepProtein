@@ -15,14 +15,14 @@ source activate /cluster/scratch/jiaxie/deepprotein
 
 cd /cluster/project/sachan/jiaxie/DeepProtein
 
-method="prot_t5"
+method="BioMistral"
 SEED=42
 wandb_proj="DeepProtein"
 LR=1e-4
 EPOCH=100
 BATCH_SIZE=16
 
-python -u train/beta.py \
+python -u train/LLM_beta.py \
       --target_encoding ${method} \
       --seed ${SEED} \
       --wandb_proj ${wandb_proj} \

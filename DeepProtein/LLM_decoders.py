@@ -1,13 +1,21 @@
-from transformers import AutoModel, AutoTokenizer
-from instruction import *
+from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from DeepProtein.instruction import get_example
 import torch
 import re
 class BioMistral():
     def __init__(self, dataset_name):
         super(BioMistral, self).__init__()
-        self.tokenizer = AutoTokenizer.from_pretrained("BioMistral/BioMistral-7B")
-        self.model = AutoModel.from_pretrained("BioMistral/BioMistral-7B", torch_dtype=torch.float16, device_map="auto",trust_remote_code=True)
-        self.instruction, self.aim = instruction_list[dataset_name]
+        self.bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.bfloat16
+        )
+        self.tokenizer = AutoTokenizer.from_pretrained("BioMistral/BioMistral-7B",  add_bos_token=True, trust_remote_code=True)
+        self.model = AutoModelForCausalLM.from_pretrained("BioMistral/BioMistral-7B",
+                                                          quantization_config=self.bnb_config,
+                                                          device_map="auto",trust_remote_code=True)
+        self.instruction, self.aim = get_example(dataset_name)
         self.newline_token_id = self.tokenizer.encode("\n", add_special_tokens=False)
     def inference(self, data):
         ans = []
@@ -20,7 +28,7 @@ class BioMistral():
                     max_new_tokens=64,
                     temperature=0,
                     top_p=1,
-                    pad_token_id=self.newline_token_id
+                    eos_token_id=self.newline_token_id
                 )
             response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
             num = float(self.extract_num(response))
