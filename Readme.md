@@ -42,9 +42,12 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 ---
 
 ## News
+- [12/24] The documentation of DeepProtein is still under construction. It's at https://deepprotein.readthedocs.io/
+- [12/24] DeepProtein is going to be supported with pretrained shallow DL models.
+- [12/24] DeepProtein now supports BioMistral-7B model, working on [BioT5+, BioT5, ChemLLM, and LlaSMol]
 - [12/24] DeepProtein now supports four new Protein Language Models: ESM-1-650M, ESM-2-650M, Prot-Bert and Prot-T5 Models for Protein Function Prediction.
-- [11/24] DeepProtein is accepted at NeurIPS AI4DrugX as Spotlight.
-- [09/24] DeepProtein is online. The website is under initial test and construction. 
+- [11/24] DeepProtein is accepted at NeurIPS AI4DrugX as Spotlight. It's under revision at Bioinformatics.
+- [09/24] DeepProtein is online. 
 
 
 ---
