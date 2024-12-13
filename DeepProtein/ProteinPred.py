@@ -20,6 +20,7 @@ import pickle
 np.random.seed(3)
 import copy
 from prettytable import PrettyTable
+from LLM_decoders import BioMistral
 
 import os
 
@@ -175,6 +176,29 @@ class Protein_Prediction:
         if 'decay' not in self.config.keys():
             self.config['decay'] = 0
 
+
+    def test_LLM(self, data, y_label, dataset_name, repurposing_mode=False):
+        if self.target_encoding == 'BioMistral':
+            model = BioMistral(dataset_name)
+            y_pred = model.inference(data)
+
+        if self.binary:
+            pass
+        else:
+            if repurposing_mode:
+                return y_pred
+            elif self.config['use_spearmanr']:
+                return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), \
+                    spearmanr(y_label, y_pred)[0], \
+                    spearmanr(y_label, y_pred)[1], \
+                    concordance_index(y_label, y_pred), y_pred
+            return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), \
+                pearsonr(y_label, y_pred)[0], \
+                pearsonr(y_label, y_pred)[1], \
+                concordance_index(y_label, y_pred), y_pred
+
+
+
     def test_(self, data_generator, model, repurposing_mode=False, test=False, verbose=True):
         y_pred = []
         multi_y_pred = []
@@ -258,6 +282,12 @@ class Protein_Prediction:
                 pearsonr(y_label, y_pred)[0], \
                 pearsonr(y_label, y_pred)[1], \
                 concordance_index(y_label, y_pred), y_pred
+
+    def train_LLM(self, test):
+        ### Fine-tune LLM
+        ##TODO:
+        pass
+
 
     def train(self, train, val, test=None, verbose=True, compute_pos_enc=False):
 
