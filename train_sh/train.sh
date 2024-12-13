@@ -18,7 +18,7 @@ cd /cluster/project/sachan/jiaxie/DeepProtein
 method="prot_t5"
 SEED=42
 wandb_proj="DeepProtein"
-LR=5e-5
+LR=1e-4
 EPOCH=100
 BATCH_SIZE=16
 

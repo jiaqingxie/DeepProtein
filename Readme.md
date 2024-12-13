@@ -42,6 +42,8 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 ---
 
 ## News
+- [12/24] DeepProtein now supports four new Protein Language Models: ESM-1-650M, ESM-2-650M, Prot-Bert and Prot-T5 Models for Protein Function Prediction.
+- [11/24] DeepProtein is accepted at NeurIPS AI4DrugX as Spotlight.
 - [09/24] DeepProtein is online. The website is under initial test and construction. 
 
 
