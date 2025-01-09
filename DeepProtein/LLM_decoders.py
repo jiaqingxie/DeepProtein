@@ -71,9 +71,8 @@ class ChemLLM_7B():
     def __init__(self, dataset_name):
         super(ChemLLM_7B, self).__init__()
         self.instruction, self.aim = get_example(dataset_name)
-        self.tokenizer = T5Tokenizer.from_pretrained("QizhiPei/biot5-plus-base-chebi20",
-                                                     model_max_length=512)
-        self.model = T5ForConditionalGeneration.from_pretrained('QizhiPei/biot5-plus-base-chebi20')
+        self.tokenizer = AutoTokenizer.from_pretrained("AI4Chem/ChemLLM-7B-Chat-1_5-DPO", trust_remote_code=True)
+        self.model = AutoModelForCausalLM.from_pretrained('AI4Chem/ChemLLM-7B-Chat-1_5-DPO', torch_dtype=torch.float16, device_map="auto",trust_remote_code=True)
         self.newline_token_id = self.tokenizer.encode("\n", add_special_tokens=False)
 
     def InternLM2_format(self, instruction, prompt):
@@ -129,7 +128,7 @@ class ChemLLM_7B():
                 instruction=self.instruction,
                 prompt=prompt
             )
-            num = float(extract_num(response ))
+            num = float(extract_num(response))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
