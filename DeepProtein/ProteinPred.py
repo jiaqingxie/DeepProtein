@@ -208,7 +208,7 @@ class Protein_Prediction:
         if self.binary:
             pass
         else:
-            mae, mse, r2, p_val, CI, logits = self.test_LLM(self, data, y_label, dataset_name, repurposing_mode)
+            mae, mse, r2, p_val, CI, logits = self.test_LLM(self, data, y_label, dataset_name)
             test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
             float2str = lambda x: '%0.4f' % x
             test_table.add_row(list(map(float2str, [mae, mse, r2, p_val, CI])))
