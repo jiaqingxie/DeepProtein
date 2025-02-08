@@ -60,7 +60,8 @@ conda create -n DeepProtein python=3.9
 conda activate DeepProtein
 pip install git+https://github.com/bp-kelley/descriptastorus
 pip install lmdb seaborn wandb pydantic DeepPurpose
-pip install transformers bitsandbytes
+pip install transformers bitsandbytes 
+pip install 'accelerate>=0.26.0'
 conda install -c conda-forge pytdc
 ```
 
