@@ -58,11 +58,52 @@ if __name__ == "__main__":
 
     if target_encoding == "prot_bert":
         from transformers import BertModel, BertTokenizer
+
         tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
         embedding_model = BertModel.from_pretrained("Rostlab/prot_bert").to("cuda")
-        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model, target_encoding)
-        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model, target_encoding)
-        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model, target_encoding)
+        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
+                                                        target_encoding)
+
+    elif target_encoding == "esm_1b":
+        from transformers import EsmTokenizer, EsmModel
+
+        tokenizer = EsmTokenizer.from_pretrained("facebook/esm1b_t33_650M_UR50S")
+        embedding_model = EsmModel.from_pretrained("facebook/esm1b_t33_650M_UR50S").to("cuda")
+        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
+                                                        target_encoding)
+
+    elif target_encoding == "esm_2":
+        from transformers import EsmTokenizer, EsmModel
+
+        tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D")
+        embedding_model = EsmModel.from_pretrained("facebook/esm2_t33_650M_UR50D").to("cuda")
+        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
+                                                        target_encoding)
+
+    elif target_encoding == "prot_t5":
+        from transformers import T5Tokenizer, T5EncoderModel
+
+        tokenizer = T5Tokenizer.from_pretrained("Rostlab/prot_t5_xl_uniref50", do_lower_case=False)
+        embedding_model = T5EncoderModel.from_pretrained("Rostlab/prot_t5_xl_uniref50").to("cuda")
+        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
+                                                         target_encoding)
+        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
+                                                        target_encoding)
+
     train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
                                      # drug_encoding= drug_encoding,
                                      split_method='random', frac=[0.99998, 1e-5, 1e-5],
