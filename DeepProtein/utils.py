@@ -1800,6 +1800,8 @@ def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):
             if target_encoding in ['prot_bert', 'prot_t5']:
                 _data = " ".join(_data)
             input = tokenizer(_data, return_tensors='pt').to("cuda")
+            # print(_data)
+            embedding_model.resize_token_embeddings(len(tokenizer))
             outputs = embedding_model(**input).last_hidden_state.mean(dim=1).cpu()
             ans.append(outputs)
 
