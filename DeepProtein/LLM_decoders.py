@@ -14,30 +14,30 @@ class BioMistral():
             bnb_4bit_compute_dtype=torch.bfloat16
         )
         self.tokenizer = AutoTokenizer.from_pretrained("BioMistral/BioMistral-7B",  add_bos_token=True, trust_remote_code=True)
+        # self.tokenizer.pad_token = self.tokenizer.eos_token
         self.model = AutoModelForCausalLM.from_pretrained("BioMistral/BioMistral-7B",
                                                           quantization_config=self.bnb_config,
                                                           device_map="auto",trust_remote_code=True)
         self.instruction, self.aim = get_example(dataset_name)
-        self.newline_token_id = self.tokenizer.encode("\n", add_special_tokens=False)
+        self.newline_token_id = self.tokenizer.encode("<b>", add_special_tokens=False)
     def inference(self, data):
         ans = []
-        for _data in data:
-            inputs = f"{self.instruction} What is the {self.aim} of the given protein sequence {_data}?"
+        for _data in tqdm(data):
+            inputs = f"What is the {self.aim} of the given protein sequence {_data}? Please return a float number only."
             inputs = self.tokenizer(inputs, return_tensors="pt").to("cuda")
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
-                    max_new_tokens=64,
-                    temperature=0,
+                    max_new_tokens=32,
                     top_p=1,
+                    pad_token_id=self.tokenizer.eos_token_id,
                     eos_token_id=self.newline_token_id
                 )
-            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-            num = float(extract_num(response))
-            ans.append(num)
+                response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+                num = float(extract_num(response))
+                ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
-
 
 
 
@@ -47,20 +47,20 @@ class BioT5_plus():
         self.instruction, self.aim = get_example(dataset_name)
         self.tokenizer = T5Tokenizer.from_pretrained("QizhiPei/biot5-plus-base-chebi20",
                                                      model_max_length=512)
-        self.model = T5ForConditionalGeneration.from_pretrained('QizhiPei/biot5-plus-base-chebi20')
+        self.model = T5ForConditionalGeneration.from_pretrained('QizhiPei/biot5-plus-base-chebi20', device_map="auto")
         self.newline_token_id = self.tokenizer.encode("\n", add_special_tokens=False)
 
     def inference(self, data):
         ans = []
         for _data in data:
-            inputs = f"{self.instruction} What is the {self.aim} of the given protein sequence {_data}?"
-            inputs = self.tokenizer(inputs, return_tensors="pt").to("cuda").input_ids
+            inputs = f"What is the {self.aim} of the given protein sequence {_data}?"
+            inputs = self.tokenizer(inputs, return_tensors="pt").to("cuda")
 
             generation_config = self.model.generation_config
             generation_config.max_length = 64
             generation_config.num_beams = 1
 
-            outputs = self.model.generate(inputs, generation_config=generation_config)
+            outputs = self.model.generate(**inputs, generation_config=generation_config)
             output_selfies = self.tokenizer.decode(outputs[0], skip_special_tokens=True).replace(' ', '')
             num = float(extract_num(output_selfies ))
             ans.append(num)
@@ -128,6 +128,7 @@ class ChemLLM_7B():
                 instruction=self.instruction,
                 prompt=prompt
             )
+            print(response)
             num = float(extract_num(response))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
