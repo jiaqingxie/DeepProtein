@@ -158,7 +158,7 @@ class Protein_Prediction:
         elif target_encoding == 'prot_t5':
             self.model_protein = Prot_T5_Predictor('protein', **config)
 
-        elif target_encoding in ['BioMistral', 'BioT5_plus']:
+        elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B']:
             self.model_protein = Prot_Bert_Predictor('protein', **config)
 
         else:
@@ -186,6 +186,9 @@ class Protein_Prediction:
             model = BioMistral(dataset_name)
         elif self.target_encoding == 'BioT5_plus':
             model = BioT5_plus(dataset_name)
+        elif self.target_encoding == "ChemLLM_7B":
+            model = ChemLLM_7B(dataset_name)
+
 
         y_pred = model.inference(data)
         if self.binary:
@@ -208,7 +211,7 @@ class Protein_Prediction:
         if self.binary:
             pass
         else:
-            mae, mse, r2, p_val, CI, logits = self.test_LLM(self, data, y_label, dataset_name)
+            mae, mse, r2, p_val, CI, logits = self.test_LLM(data, y_label, dataset_name)
             test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
             float2str = lambda x: '%0.4f' % x
             test_table.add_row(list(map(float2str, [mae, mse, r2, p_val, CI])))
