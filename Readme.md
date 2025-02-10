@@ -62,7 +62,7 @@ pip install git+https://github.com/bp-kelley/descriptastorus
 pip install lmdb seaborn wandb pydantic DeepPurpose
 pip install transformers bitsandbytes 
 pip install accelerate>=0.26.0
-pip install SentencePiece
+pip install SentencePiece einops
 conda install -c conda-forge pytdc
 ```
 
