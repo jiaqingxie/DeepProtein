@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/beta_CNN.out
-#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/beta_CNN.err
+#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/sub_bin_esm2_0.out
+#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/sub_bin_esm2_0.err
 #SBATCH --mem-per-cpu=20G
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus=rtx_3090:1
-#SBATCH --time=1:00:00
+#SBATCH --time=3:00:00
 
 module load eth_proxy
 export TRANSFORMERS_CACHE=/cluster/scratch/jiaxie/.cache
@@ -15,14 +15,14 @@ source activate /cluster/scratch/jiaxie/deepprotein
 
 cd /cluster/project/sachan/jiaxie/DeepProtein
 
-method="BioMistral"
-SEED=42
+method="esm_2"
+SEED=0
 wandb_proj="DeepProtein"
 LR=1e-4
-EPOCH=100
+EPOCH=200
 BATCH_SIZE=16
 
-python -u train/LLM_beta.py \
+python -u train/subcellular_binary.py \
       --target_encoding ${method} \
       --seed ${SEED} \
       --wandb_proj ${wandb_proj} \

@@ -133,6 +133,7 @@ class PPI_Model:
 											  predictor_hidden_size=config['neuralfp_predictor_hid_dim'],
 											  predictor_dim=config['hidden_dim_drug'],
 											  predictor_activation=config['neuralfp_predictor_activation'])
+
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 

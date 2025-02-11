@@ -108,8 +108,9 @@ class ChemLLM_7B():
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
+                do_sample=True,
                 max_new_tokens=max_tokens,
-                temperature=0,
+                temperature=0.05,
                 top_p=1,
                 pad_token_id=tokenizer.eos_token_id
             )
@@ -122,7 +123,6 @@ class ChemLLM_7B():
         ans = []
         for _data in data:
             prompt = f"What is the {self.aim} of the given protein sequence {_data}?"
-            prompt = self.tokenizer(prompt, return_tensors="pt").to("cuda").input_ids
             response = self.generate_response(
                 self.model, self.tokenizer,
                 instruction=self.instruction,
@@ -137,4 +137,4 @@ class ChemLLM_7B():
 def extract_num(input_string):
 
     numbers = re.findall(r'\d+', input_string)
-    return numbers[-1] if numbers else 0
+    return numbers[0] if numbers else 0
