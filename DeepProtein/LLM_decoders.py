@@ -146,7 +146,7 @@ class LlaSMol():
         ans = []
         for _data in data:
             prompt = f"What is the {self.aim} of the given protein sequence {_data}?"
-            answer = self.generator.generate(prompt)[0]['output']
+            answer = self.generator.generate(prompt)[0]['output'][0]
             print(answer)
             num = float(extract_num(answer))
             ans.append(num)
@@ -157,8 +157,8 @@ class ChemDFM():
     def __init__(self, dataset_name):
         super(ChemDFM, self).__init__()
         self.instruction, self.aim = get_example(dataset_name)
-        self.tokenizer = LlamaTokenizer.from_pretrained("OpenDFM/ChemDFM-v1.5-8B", trust_remote_code=True)
-        self.model = LlamaForCausalLM.from_pretrained("OpenDFM/ChemDFM-v1.5-8B", torch_dtype=torch.float16, device_map="auto",trust_remote_code=True)
+        self.tokenizer = LlamaTokenizer.from_pretrained("OpenDFM/ChemDFM-13B-v1.0", trust_remote_code=True)
+        self.model = LlamaForCausalLM.from_pretrained("OpenDFM/ChemDFM-13B-v1.0", torch_dtype=torch.float16, device_map="auto",trust_remote_code=True)
         self.newline_token_id = self.tokenizer.encode("\n", add_special_tokens=False)
 
         self.generation_config = GenerationConfig(
@@ -179,11 +179,11 @@ class ChemDFM():
             inputs = self.tokenizer(input_text, return_tensors="pt").to("cuda")
             outputs = self.model.generate(**inputs, generation_config=self.generation_config)
             generated_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)[0][len(input_text):]
+            print(generated_text)
             num = float(extract_num(generated_text.strip()))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
-
 
 
 def extract_num(input_string):
