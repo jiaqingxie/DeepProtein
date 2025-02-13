@@ -61,13 +61,66 @@ if __name__ == "__main__":
     vocab_set = vocab_set.union(test_vocab)
     vocab_lst = list(vocab_set)
 
-    train_data = standardize_data(train_data, vocab_lst, X)
-    valid_data = standardize_data(valid_data, vocab_lst, X)
-    test_data = standardize_data(test_data, vocab_lst, X)
+    # train_data = standardize_data(train_data, vocab_lst, X)
+    # valid_data = standardize_data(valid_data, vocab_lst, X)
+    # test_data = standardize_data(test_data, vocab_lst, X)
+
+    if target_encoding == "prot_bert":
+        from transformers import BertModel, BertTokenizer
+
+        tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
+        embedding_model = BertModel.from_pretrained("Rostlab/prot_bert").to("cuda")
+        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
+                                                         target_encoding, X)
+        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
+                                                         target_encoding, X)
+        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
+                                                        target_encoding, X)
+
+    elif target_encoding == "esm_1b":
+        from transformers import EsmTokenizer, EsmModel
+
+        tokenizer = EsmTokenizer.from_pretrained("facebook/esm1b_t33_650M_UR50S")
+        embedding_model = EsmModel.from_pretrained("facebook/esm1b_t33_650M_UR50S").to("cuda")
+        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
+                                               target_encoding, X)
+        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
+                                               target_encoding, X)
+        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
+                                              target_encoding, X)
+
+    elif target_encoding == "esm_2":
+        from transformers import EsmTokenizer, EsmModel
+
+        tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D")
+        embedding_model = EsmModel.from_pretrained("facebook/esm2_t33_650M_UR50D").to("cuda")
+        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
+                                               target_encoding, X)
+        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
+                                               target_encoding, X)
+        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
+                                              target_encoding, X)
+
+    elif target_encoding == "prot_t5":
+        from transformers import T5Tokenizer, T5EncoderModel
+
+        tokenizer = T5Tokenizer.from_pretrained("Rostlab/prot_t5_xl_uniref50", do_lower_case=False)
+        embedding_model = T5EncoderModel.from_pretrained("Rostlab/prot_t5_xl_uniref50").to("cuda")
+        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
+                                               target_encoding, X)
+        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
+                                               target_encoding, X)
+        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
+                                              target_encoding, X)
+
+
 
     train_set = data_process_loader_Token_Protein_Prediction(train_data)
     valid_set = data_process_loader_Token_Protein_Prediction(valid_data)
     test_set = data_process_loader_Token_Protein_Prediction(test_data)
+
+
+
 
 
     config = generate_config(target_encoding=target_encoding,

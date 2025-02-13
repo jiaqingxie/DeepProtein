@@ -133,7 +133,20 @@ class PPI_Model:
 											  predictor_hidden_size=config['neuralfp_predictor_hid_dim'],
 											  predictor_dim=config['hidden_dim_drug'],
 											  predictor_activation=config['neuralfp_predictor_activation'])
+		elif target_encoding == 'prot_bert':
+			self.model_protein = Prot_Bert_Predictor('protein', **config)
 
+		elif target_encoding == 'esm_1b':
+			self.model_protein = ESM_1B_Predictor('protein', **config)
+
+		elif target_encoding == 'esm_2':
+			self.model_protein = ESM_2_Predictor('protein', **config)
+
+		elif target_encoding == 'prot_t5':
+			self.model_protein = Prot_T5_Predictor('protein', **config)
+
+		elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B']:
+			self.model_protein = Prot_Bert_Predictor('protein', **config)
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 

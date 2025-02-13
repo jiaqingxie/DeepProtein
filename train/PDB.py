@@ -70,6 +70,9 @@ if __name__ == "__main__":
     test_set = data_process_loader_Token_Protein_Prediction(test_data)
 
 
+
+
+
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
                              train_epoch=epochs,

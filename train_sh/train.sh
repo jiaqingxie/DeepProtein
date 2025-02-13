@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/sub_bin_esm2_0.out
-#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/sub_bin_esm2_0.err
+#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/crispr_esm2_42.out
+#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/crispr_esm2_42.err
 #SBATCH --mem-per-cpu=20G
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus=rtx_3090:1
@@ -16,13 +16,13 @@ source activate /cluster/scratch/jiaxie/deepprotein
 cd /cluster/project/sachan/jiaxie/DeepProtein
 
 method="esm_2"
-SEED=0
+SEED=42
 wandb_proj="DeepProtein"
 LR=1e-4
 EPOCH=200
 BATCH_SIZE=16
 
-python -u train/subcellular_binary.py \
+python -u train/CRISPR.py \
       --target_encoding ${method} \
       --seed ${SEED} \
       --wandb_proj ${wandb_proj} \
