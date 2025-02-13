@@ -29,12 +29,13 @@ class BioMistral():
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
-                    max_new_tokens=32,
+                    max_new_tokens=1024,
                     top_p=1,
                     pad_token_id=self.tokenizer.eos_token_id,
                     eos_token_id=self.newline_token_id
                 )
                 response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+                print(response)
                 num = float(extract_num(response))
                 ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
@@ -63,6 +64,7 @@ class BioT5_plus():
 
             outputs = self.model.generate(**inputs, generation_config=generation_config)
             output_selfies = self.tokenizer.decode(outputs[0], skip_special_tokens=True).replace(' ', '')
+            print(output_selfies)
             num = float(extract_num(output_selfies ))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
@@ -146,7 +148,14 @@ class LlaSMol():
         ans = []
         for _data in data:
             prompt = f"What is the {self.aim} of the given protein sequence {_data}?"
-            answer = self.generator.generate(prompt)[0]['output'][0]
+            try:
+                answer = self.generator.generate(prompt)[0]['output'][0]
+                if "insoluble" in answer:
+                    answer = "0"
+                elif "soluble" in answer:
+                    answer = "1"
+            except:
+                answer = "0.5"
             print(answer)
             num = float(extract_num(answer))
             ans.append(num)
@@ -157,8 +166,8 @@ class ChemDFM():
     def __init__(self, dataset_name):
         super(ChemDFM, self).__init__()
         self.instruction, self.aim = get_example(dataset_name)
-        self.tokenizer = LlamaTokenizer.from_pretrained("OpenDFM/ChemDFM-13B-v1.0", trust_remote_code=True)
-        self.model = LlamaForCausalLM.from_pretrained("OpenDFM/ChemDFM-13B-v1.0", torch_dtype=torch.float16, device_map="auto",trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained("OpenDFM/ChemDFM-v1.5-8B")
+        self.model = LlamaForCausalLM.from_pretrained("OpenDFM/ChemDFM-v1.5-8B", torch_dtype=torch.float16, device_map="auto")
         self.newline_token_id = self.tokenizer.encode("\n", add_special_tokens=False)
 
         self.generation_config = GenerationConfig(
@@ -174,7 +183,7 @@ class ChemDFM():
     def inference(self, data):
         ans = []
         for _data in data:
-            prompt = f"What is the {self.aim} of the given protein sequence?\n{_data}"
+            prompt = f"{self.instruction} What is the {self.aim} of the given protein sequence?\n{_data}"
             input_text = f"[Round 0]\nHuman: {prompt}\nAssistant:"
             inputs = self.tokenizer(input_text, return_tensors="pt").to("cuda")
             outputs = self.model.generate(**inputs, generation_config=self.generation_config)
@@ -186,7 +195,12 @@ class ChemDFM():
         return ans_tensor
 
 
-def extract_num(input_string):
+import re
 
-    numbers = re.findall(r'\d+', input_string)
-    return numbers[0] if numbers else 0
+def extract_num(input_string):
+    pattern = r'[+-]?\d+(?:\.\d+)?'
+    numbers = re.findall(pattern, input_string)
+    if numbers:
+        return float(numbers[0])
+    else:
+        return 0
