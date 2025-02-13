@@ -950,6 +950,7 @@ class data_process_loader_Token_Protein_Prediction(Dataset):
         return self.sequences[index], self.labels[index], self.mask[index]
 
 
+
 def data2vocab(data, train_data, X):
     length = len(data)
     vocab_set = set()
@@ -1225,7 +1226,7 @@ def generate_config(drug_encoding=None, target_encoding=None,
     #     base_config['mpnn_depth'] = mpnn_depth
     elif target_encoding is None:
         pass
-    elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B']:
+    elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B', 'LlaSMol']:
         pass
     else:
         raise AttributeError("Please use the correct protein encoding available!")
@@ -1808,3 +1809,26 @@ def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):
     gc.collect()
     torch.cuda.empty_cache()
     return ans
+
+def standardize_data_llm_mean(data, tokenizer, embedding_model, target_encoding, X):
+
+    length = len(data)
+    standard_data = []
+
+    all_sequences = data[X]
+    embeddings = get_hf_model_embedding(all_sequences, tokenizer, embedding_model, target_encoding)
+
+    for i in range(length):
+
+        emb = embeddings[i]
+
+        Y = data['Y'][i]
+
+        label = torch.tensor([1.0 if len(Y) > 0 else 0.0])  # 仅示例
+
+        # 不再需要 mask / pad
+        mask = None  # 或者你直接不返回它
+
+        standard_data.append((emb, label, mask))
+
+    return standard_data

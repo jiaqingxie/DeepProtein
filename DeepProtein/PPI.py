@@ -145,7 +145,7 @@ class PPI_Model:
 		elif target_encoding == 'prot_t5':
 			self.model_protein = Prot_T5_Predictor('protein', **config)
 
-		elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B']:
+		elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B', 'LlaSMol']:
 			self.model_protein = Prot_Bert_Predictor('protein', **config)
 		else:
 			raise AttributeError('Please use one of the available encoding method.')

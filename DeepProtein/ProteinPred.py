@@ -158,7 +158,7 @@ class Protein_Prediction:
         elif target_encoding == 'prot_t5':
             self.model_protein = Prot_T5_Predictor('protein', **config)
 
-        elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B']:
+        elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B', 'LlaSMol']:
             self.model_protein = Prot_Bert_Predictor('protein', **config)
 
         else:
@@ -188,7 +188,8 @@ class Protein_Prediction:
             model = BioT5_plus(dataset_name)
         elif self.target_encoding == "ChemLLM_7B":
             model = ChemLLM_7B(dataset_name)
-
+        elif self.target_encoding == "LlaSMol":
+            model = LlaSMol(dataset_name)
 
         y_pred = model.inference(data)
         if self.binary:
