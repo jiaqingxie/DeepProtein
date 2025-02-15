@@ -1,13 +1,13 @@
 
 def get_example(dataset_name):
     instruction_list = {
-        "fluorescence": ["Return a floating-point number as the protein's fluorescence intensity.", "fluorescence intensity"],
+        "fluorescence": ["You should return a floating-point number.", "fluorescence intensity"],
 
-        "beta": ["Return a floating-point number as the protein's increased activity.", "increased activity"],
+        "beta": ["You should return a floating-point number.", "increased activity"],
 
-        "stability": ["Return a floating-point number as the protein's stability.", "protein stability"],
+        "stability": ["You should return a floating-point number.", "protein stability"],
 
-        "solubility": ["Return an integer (0 or 1) as the protein's solubility. 0 is not soluble and 1 is soluble", "protein solubility"]
+        "solubility": ["You should return an integer (0 or 1) where 0 is not soluble and 1 is soluble", "protein solubility"]
 
     }
     return instruction_list[dataset_name]

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/beta_BioMistral.out
-#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/beta_BioMistral.err
+#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/fluo_LlaSMol.out
+#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/fluo_LlaSMol.err
 #SBATCH --mem-per-cpu=20G
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus=rtx_3090:1
@@ -22,7 +22,7 @@ LR=1e-4
 EPOCH=200
 BATCH_SIZE=16
 
-python -u train/llm/llm_beta.py \
+python -u train/llm/llm_stability.py \
       --target_encoding ${method} \
       --seed ${SEED} \
       --wandb_proj ${wandb_proj} \

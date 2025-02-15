@@ -5,9 +5,13 @@ from DeepProtein.instruction import get_example
 import torch
 import re
 from tqdm import tqdm
+
+
+Regression = ["fluorescence", "stability", "beta", "ppi_affinity", "tap", "sabdab_chen", "crispr"]
 class BioMistral():
     def __init__(self, dataset_name):
         super(BioMistral, self).__init__()
+        self.dataset_name = dataset_name
         self.bnb_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_use_double_quant=True,
@@ -24,7 +28,7 @@ class BioMistral():
     def inference(self, data):
         ans = []
         for _data in tqdm(data):
-            inputs = f"What is the {self.aim} of the given protein sequence {_data}?"
+            inputs = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
             inputs = self.tokenizer(inputs, return_tensors="pt").to("cuda")
             with torch.no_grad():
                 outputs = self.model.generate(
@@ -36,7 +40,11 @@ class BioMistral():
                 )
                 response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
                 print(response)
-                num = float(extract_num(response))
+                if self.dataset_name in Regression:
+                    num = float(extract_num(response, True, False))
+                else:
+                    num = float(extract_num(response, False, True))
+
                 ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor 
@@ -46,6 +54,7 @@ class BioMistral():
 class BioT5_plus():
     def __init__(self, dataset_name):
         super(BioT5_plus, self).__init__()
+        self.dataset_name = dataset_name
         self.instruction, self.aim = get_example(dataset_name)
         self.tokenizer = T5Tokenizer.from_pretrained("QizhiPei/biot5-plus-base-chebi20",
                                                      model_max_length=512)
@@ -55,7 +64,7 @@ class BioT5_plus():
     def inference(self, data):
         ans = []
         for _data in data:
-            inputs = f"What is the {self.aim} of the given protein sequence {_data}?"
+            inputs = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
             inputs = self.tokenizer(inputs, return_tensors="pt").to("cuda")
 
             generation_config = self.model.generation_config
@@ -63,9 +72,12 @@ class BioT5_plus():
             generation_config.num_beams = 1
 
             outputs = self.model.generate(**inputs, generation_config=generation_config)
-            output_selfies = self.tokenizer.decode(outputs[0], skip_special_tokens=True).replace(' ', '')
-            print(output_selfies)
-            num = float(extract_num(output_selfies ))
+            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True).replace(' ', '')
+            print(response)
+            if self.dataset_name in Regression:
+                num = float(extract_num(response, True, False))
+            else:
+                num = float(extract_num(response, False, True))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
@@ -73,6 +85,7 @@ class BioT5_plus():
 class ChemLLM_7B():
     def __init__(self, dataset_name):
         super(ChemLLM_7B, self).__init__()
+        self.dataset_name = dataset_name
         self.instruction, self.aim = get_example(dataset_name)
         self.tokenizer = AutoTokenizer.from_pretrained("AI4Chem/ChemLLM-7B-Chat-1_5-DPO", trust_remote_code=True)
         self.model = AutoModelForCausalLM.from_pretrained('AI4Chem/ChemLLM-7B-Chat-1_5-DPO', torch_dtype=torch.float16, device_map="auto",trust_remote_code=True)
@@ -125,14 +138,17 @@ class ChemLLM_7B():
     def inference(self, data):
         ans = []
         for _data in data:
-            prompt = f"What is the {self.aim} of the given protein sequence {_data}?"
+            prompt = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
             response = self.generate_response(
                 self.model, self.tokenizer,
                 instruction=self.instruction,
                 prompt=prompt
             )
             print(response)
-            num = float(extract_num(response))
+            if self.dataset_name in Regression:
+                num = float(extract_num(response, True, False))
+            else:
+                num = float(extract_num(response, False, True))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
@@ -140,6 +156,7 @@ class ChemLLM_7B():
 class LlaSMol():
     def __init__(self, dataset_name):
         super(LlaSMol, self).__init__()
+        self.dataset_name = dataset_name
         self.instruction, self.aim = get_example(dataset_name)
         from LlaSMol.generation import LlaSMolGeneration
         self.generator = LlaSMolGeneration('osunlp/LlaSMol-Mistral-7B')
@@ -147,7 +164,7 @@ class LlaSMol():
     def inference(self, data):
         ans = []
         for _data in data:
-            prompt = f"What is the {self.aim} of the given protein sequence {_data}?"
+            prompt = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
             try:
                 answer = self.generator.generate(prompt)[0]['output'][0]
                 if "insoluble" in answer:
@@ -157,7 +174,10 @@ class LlaSMol():
             except:
                 answer = "0.5"
             print(answer)
-            num = float(extract_num(answer))
+            if self.dataset_name in Regression:
+                num = float(extract_num(answer, True, False))
+            else:
+                num = float(extract_num(answer, False, True))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
@@ -166,6 +186,7 @@ class ChemDFM():
     def __init__(self, dataset_name):
         super(ChemDFM, self).__init__()
         self.instruction, self.aim = get_example(dataset_name)
+        self.dataset_name = dataset_name
         self.tokenizer = AutoTokenizer.from_pretrained("OpenDFM/ChemDFM-v1.5-8B")
         self.model = LlamaForCausalLM.from_pretrained("OpenDFM/ChemDFM-v1.5-8B", torch_dtype=torch.float16, device_map="auto")
         self.newline_token_id = self.tokenizer.encode("\n", add_special_tokens=False)
@@ -183,13 +204,16 @@ class ChemDFM():
     def inference(self, data):
         ans = []
         for _data in data:
-            prompt = f"What is the {self.aim} of the given protein sequence {_data}?"
+            prompt = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
             input_text = f"[Round 0]\nHuman: {prompt}\nAssistant:"
             inputs = self.tokenizer(input_text, return_tensors="pt").to("cuda")
             outputs = self.model.generate(**inputs, generation_config=self.generation_config)
             generated_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)[0][len(input_text):]
             print(generated_text)
-            num = float(extract_num(generated_text.strip()))
+            if self.dataset_name in Regression:
+                num = float(extract_num(generated_text.strip(), True, False))
+            else:
+                num = float(extract_num(generated_text.strip(), False, True))
             ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
@@ -197,10 +221,13 @@ class ChemDFM():
 
 import re
 
-def extract_num(input_string):
+def extract_num(input_string, _float = False, _int = False):
     pattern = r'[+-]?\d+(?:\.\d+)?'
     numbers = re.findall(pattern, input_string)
     if numbers:
-        return float(numbers[0])
+        if _float:
+            return float(numbers[0])
+        else:
+            return int(float(numbers[0]))
     else:
         return 0

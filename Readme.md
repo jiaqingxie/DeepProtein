@@ -42,6 +42,7 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 ---
 
 ## News
+- [02/25] DeepProtein now supported BioMistral, BioT5+, ChemLLM_7B, ChemDFM, and LlaSMol on some tasks
 - [12/24] The documentation of DeepProtein is still under construction. It's at https://deepprotein.readthedocs.io/
 - [12/24] DeepProtein is going to be supported with pretrained shallow DL models.
 - [12/24] DeepProtein now supports BioMistral-7B model, working on [BioT5+, BioT5, ChemLLM, and LlaSMol]

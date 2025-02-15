@@ -44,18 +44,18 @@ if __name__ == "__main__":
     path = os.getcwd()
 
     #  Test on Beta lactamase
-    train_stab = Stability(path + '/DeepProtein/data', 'train')
-    valid_stab = Stability(path + '/DeepProtein/data', 'valid')
+    # train_stab = Stability(path + '/DeepProtein/data', 'train')
+    # valid_stab = Stability(path + '/DeepProtein/data', 'valid')
     test_stab = Stability(path + '/DeepProtein/data', 'test')
 
     if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_stab, graph=True)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_stab, graph=True)
+        # train_protein_processed, train_target, train_protein_idx = collate_fn(train_stab, graph=True)
+        # valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_stab, graph=True)
         test_protein_processed, test_target, test_protein_idx = collate_fn(test_stab, graph=True)
 
     else:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_stab)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_stab)
+        # train_protein_processed, train_target, train_protein_idx = collate_fn(train_stab)
+        # valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_stab)
         test_protein_processed, test_target, test_protein_idx = collate_fn(test_stab)
 
 
