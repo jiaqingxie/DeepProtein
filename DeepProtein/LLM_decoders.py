@@ -24,12 +24,12 @@ class BioMistral():
     def inference(self, data):
         ans = []
         for _data in tqdm(data):
-            inputs = f"What is the {self.aim} of the given protein sequence {_data}? Please return a float number only."
+            inputs = f"What is the {self.aim} of the given protein sequence {_data}?"
             inputs = self.tokenizer(inputs, return_tensors="pt").to("cuda")
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
-                    max_new_tokens=1024,
+                    max_new_tokens=512,
                     top_p=1,
                     pad_token_id=self.tokenizer.eos_token_id,
                     eos_token_id=self.newline_token_id
@@ -39,7 +39,7 @@ class BioMistral():
                 num = float(extract_num(response))
                 ans.append(num)
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
-        return ans_tensor
+        return ans_tensor 
 
 
 
@@ -183,7 +183,7 @@ class ChemDFM():
     def inference(self, data):
         ans = []
         for _data in data:
-            prompt = f"{self.instruction} What is the {self.aim} of the given protein sequence?\n{_data}"
+            prompt = f"What is the {self.aim} of the given protein sequence {_data}?"
             input_text = f"[Round 0]\nHuman: {prompt}\nAssistant:"
             inputs = self.tokenizer(input_text, return_tensors="pt").to("cuda")
             outputs = self.model.generate(**inputs, generation_config=self.generation_config)

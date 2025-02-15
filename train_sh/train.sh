@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/solu_LlaSMol.out
-#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/solu_LlaSMol.err
+#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/beta_BioMistral.out
+#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/beta_BioMistral.err
 #SBATCH --mem-per-cpu=20G
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus=rtx_3090:1
-#SBATCH --time=3:00:00
+#SBATCH --time=6:00:00
 
 module load eth_proxy
 export TRANSFORMERS_CACHE=/cluster/scratch/jiaxie/.cache
@@ -22,7 +22,7 @@ LR=1e-4
 EPOCH=200
 BATCH_SIZE=16
 
-python -u train/llm/llm_solubility.py \
+python -u train/llm/llm_beta.py \
       --target_encoding ${method} \
       --seed ${SEED} \
       --wandb_proj ${wandb_proj} \

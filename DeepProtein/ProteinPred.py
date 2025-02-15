@@ -195,7 +195,11 @@ class Protein_Prediction:
 
         y_pred = model.inference(data)
         if self.binary:
-            pass
+            if repurposing_mode:
+                return y_pred
+
+            return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
+                                                                                                      y_pred), y_pred
         else:
             if repurposing_mode:
                 return y_pred
@@ -212,7 +216,13 @@ class Protein_Prediction:
 
     def LLM_test_and_log(self, data, y_label, dataset_name, repurposing_mode, verbose=True):
         if self.binary:
-            pass
+            auc, auprc, f1, logits = self.test_LLM(data, y_label, dataset_name)
+            test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+            float2str = lambda x: '%0.4f' % x
+            test_table.add_row(list(map(float2str, [auc, auprc, f1])))
+            wandb.log({"TEST AUROC": auc, "TEST AUPRC": auprc, "TEST F1": f1})
+            if verbose:
+                print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
         else:
             mae, mse, r2, p_val, CI, logits = self.test_LLM(data, y_label, dataset_name)
             test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
