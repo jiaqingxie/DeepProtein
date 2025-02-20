@@ -965,6 +965,25 @@ def data2vocab(data, train_data, X):
     return vocab_set, positive_num / total_length
 
 
+def data2vocab_dataset(dataset):
+
+    length = len(dataset)
+    vocab_set = set()
+    total_length = 0
+    positive_num = 0
+
+    for i in range(length):
+
+        protein_orig, target, mask = dataset[i]
+        vocab_set.update(protein_orig)
+
+        if len(target) > 0:
+            assert len(protein_orig) > max(target)
+
+        total_length += len(protein_orig)
+        positive_num += len(target)
+
+    return vocab_set, positive_num / total_length
 def onehot(idx, length):
     lst = [0 for i in range(length)]
     lst[idx] = 1
@@ -993,6 +1012,57 @@ def standardize_data(data, vocab_lst, X, maxlength=300):
         sequence, labels, mask = torch.FloatTensor(sequence), torch.FloatTensor(labels), torch.BoolTensor(mask)
         # print(sequence.shape, labels.shape, mask.shape)
         standard_data.append((sequence, labels, mask))
+    return standard_data
+
+
+def standardize_data_dataset(dataset, vocab_lst, maxlength=300):
+    """
+    dataset: 你的 SecondaryStructure 实例
+             它的 __getitem__ 返回 (protein_orig, target, data_mask)
+    vocab_lst: 词表列表，用于把氨基酸（或字符）转为 one-hot
+    maxlength: 进行 padding/截断的最大长度
+    """
+    length = len(dataset)
+    standard_data = []
+
+    for i in range(length):
+        # 从 Dataset 获取一条数据
+        protein_orig, target, data_mask = dataset[i]
+
+        # 1) 对 protein_orig 做 one-hot
+        sequence = [onehot(vocab_lst.index(s), len(vocab_lst)) for s in protein_orig]
+
+        # 2) 初始化 labels = 0
+        labels = [0 for _ in range(len(protein_orig))]
+
+        # 3) 初始化 mask（这里先沿用你原本的逻辑，将所有位置设 True，
+        #    或者你也可以结合 data_mask 做与操作，以仅保留 valid_mask）
+        mask = [True for _ in range(len(protein_orig))]
+
+        # 4) 根据 target 设定 label=1
+        #    （这里假设 target 里存的是位置索引，和原本 Y 的含义一致）
+        for y in target:
+            if y < len(labels):  # 以防万一
+                labels[y] = 1
+
+        # 5) 对 sequence/labels/mask 进行 padding
+        sequence += (maxlength - len(sequence)) * [zerohot(len(vocab_lst))]
+        labels += (maxlength - len(labels)) * [0]
+        mask += (maxlength - len(mask)) * [False]
+
+        # 6) 截断至 maxlength
+        sequence = sequence[:maxlength]
+        labels = labels[:maxlength]
+        mask = mask[:maxlength]
+
+        # 7) 转为 Tensor
+        sequence = torch.FloatTensor(sequence)
+        labels = torch.FloatTensor(labels)
+        mask = torch.BoolTensor(mask)
+
+        # 收集到列表
+        standard_data.append((sequence, labels, mask))
+
     return standard_data
 
 
