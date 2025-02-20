@@ -24,8 +24,12 @@ import os
 from DeepProtein.utils import *
 from DeepProtein.model_helper import Encoder_MultipleLayers, Embeddings
 from DeepProtein.encoders import *
+from DeepProtein.LLM_decoders import *
+from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score, accuracy_score
 from sklearn.metrics import mean_absolute_error
-
+from lifelines.utils import concordance_index
+from scipy.stats import pearsonr, spearmanr
+Regression = ["fluorescence", "stability", "beta", "ppi_affinity", "tap", "sabdab_chen", "crispr"]
 class Classifier(nn.Sequential):
 	def __init__(self, model_protein, **config):
 		super(Classifier, self).__init__()
@@ -163,6 +167,82 @@ class PPI_Model:
 			self.config['num_workers'] = 0
 		if 'decay' not in self.config.keys():
 			self.config['decay'] = 0
+
+	def test_LLM(self, data, data_2, y_label, dataset_name, repurposing_mode=False):
+		model = None
+		if self.target_encoding == 'BioMistral':
+			model = BioMistral(dataset_name)
+		elif self.target_encoding == 'BioT5_plus':
+			model = BioT5_plus(dataset_name)
+		elif self.target_encoding == "ChemLLM_7B":
+			model = ChemLLM_7B(dataset_name)
+		elif self.target_encoding == "LlaSMol":
+			model = LlaSMol(dataset_name)
+		elif self.target_encoding == "ChemDFM":
+			model = ChemDFM(dataset_name)
+
+		y_pred = model.inference(data, data_2)
+		if self.binary:
+			if repurposing_mode:
+				return y_pred
+
+			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
+																									  y_pred), y_pred
+		elif self.multi:
+			if repurposing_mode:
+				return y_pred
+
+			return accuracy_score(y_label, y_pred), average_precision_score(y_label, y_pred, average='macro'), f1_score(
+				y_label,
+				y_pred, average='macro'), y_pred
+
+		else:
+			if repurposing_mode:
+				return y_pred
+			elif self.config['use_spearmanr']:
+				return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), \
+					spearmanr(y_label, y_pred)[0], \
+					spearmanr(y_label, y_pred)[1], \
+					concordance_index(y_label, y_pred), y_pred
+			return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), \
+				pearsonr(y_label, y_pred)[0], \
+				pearsonr(y_label, y_pred)[1], \
+				concordance_index(y_label, y_pred), y_pred
+
+	def LLM_test_and_log(self, data, data_2, y_label, dataset_name, repurposing_mode, verbose=True):
+		if self.binary:
+			auc, auprc, f1, logits = self.test_LLM(data, data_2, y_label, dataset_name)
+			test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+			float2str = lambda x: '%0.4f' % x
+			test_table.add_row(list(map(float2str, [auc, auprc, f1])))
+			wandb.log({"TEST AUROC": auc, "TEST AUPRC": auprc, "TEST F1": f1})
+			if verbose:
+				print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
+		elif self.multi:
+			acc, auprc, f1, logits = self.test_LLM(data, data_2, y_label, dataset_name)
+			test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+			float2str = lambda x: '%0.4f' % x
+			test_table.add_row(list(map(float2str, [acc, auprc, f1])))
+			wandb.log({"TEST Accuracy": acc, "TEST AUPRC": auprc, "TEST F1": f1})
+			if verbose:
+				print('Testing Accuracy: ' + str(acc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
+		else:
+			mae, mse, r2, p_val, CI, logits = self.test_LLM(data, data_2, y_label, dataset_name)
+			test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+			float2str = lambda x: '%0.4f' % x
+			test_table.add_row(list(map(float2str, [mae, mse, r2, p_val, CI])))
+			wandb.log({"TEST MSE": mse, "MAE": mae, "TEST R2": r2, "TEST p_val": p_val, "TEST Concordance Index": CI})
+			if verbose:
+				if self.config['use_spearmanr']:
+					print('Testing MSE: ' + str(mse) + ' , MAE: ' + str(mae) + ' , Spearman Correlation: ' + str(r2)
+						  + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI))
+				else:
+					print('Testing MSE: ' + str(mse) + ' , MAE: ' + str(mae) + ' , Pearson Correlation: ' + str(r2)
+						  + ' with p-value: ' + str(f"{p_val:.2E}") + ' , Concordance Index: ' + str(CI))
+
+		prettytable_file = os.path.join(self.result_folder, "test_markdowntable.txt")
+		with open(prettytable_file, 'w') as fp:
+			fp.write(test_table.get_string())
 
 	def test_(self, data_generator, model, repurposing_mode = False, test = False):
 		y_pred = []
