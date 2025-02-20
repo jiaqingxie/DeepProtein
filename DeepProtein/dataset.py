@@ -226,6 +226,58 @@ class Solubility(Dataset):
 
 
 
+### --------------------- Folding dataset ---------------------------- ##
+class Fold(Dataset):
+
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'test_superfamily_holdout'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'test_superfamily_holdout']")
+
+        data_path = Path(data_path)
+        data_file = f'remote_homology/remote_homology_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+        print(self.__getitem__(0))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        item = self.data[index]
+        protein_orig = item['primary']
+        target = item['fold_label']
+        return protein_orig, target
+
+
+class SecondaryStructure(Dataset):
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 in_memory: bool = False):
+        if split not in ('train', 'valid', 'cb513'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'valid', 'cb513']")
+
+        data_path = Path(data_path)
+        data_file = f'secondary_structure/secondary_structure_{split}.lmdb'
+        self.data = dataset_factory(data_path / data_file, in_memory)
+        print(self.__getitem__(0))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        item = self.data[index]
+        protein_orig = item['primary']
+        target = item['ss3']
+        mask = item['valid_mask']
+        return protein_orig, target, mask
+
+
+
 ### ----------------------- PPI ------------------------------- ###
 
 class PPI_Affinity(Dataset):
