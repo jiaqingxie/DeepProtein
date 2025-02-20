@@ -200,6 +200,13 @@ class Protein_Prediction:
 
             return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
                                                                                                       y_pred), y_pred
+        elif self.multi:
+            if repurposing_mode:
+                return y_pred
+
+            return accuracy_score(y_label, y_pred), average_precision_score(y_label, y_pred, average='macro'), f1_score(y_label,
+                                                                                y_pred, average='macro'), y_pred
+
         else:
             if repurposing_mode:
                 return y_pred
@@ -223,6 +230,14 @@ class Protein_Prediction:
             wandb.log({"TEST AUROC": auc, "TEST AUPRC": auprc, "TEST F1": f1})
             if verbose:
                 print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
+        elif self.multi:
+            acc, auprc, f1, logits = self.test_LLM(data, y_label, dataset_name)
+            test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+            float2str = lambda x: '%0.4f' % x
+            test_table.add_row(list(map(float2str, [acc, auprc, f1])))
+            wandb.log({"TEST Accuracy": acc, "TEST AUPRC": auprc, "TEST F1": f1})
+            if verbose:
+                print('Testing Accuracy: ' + str(acc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
         else:
             mae, mse, r2, p_val, CI, logits = self.test_LLM(data, y_label, dataset_name)
             test_table = PrettyTable(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
@@ -310,7 +325,8 @@ class Protein_Prediction:
                     plt.figure(0)
                     plot_confusion_matrix(multi_outputs, y_label, confusion_matrix_file, self.target_encoding)
 
-            return accuracy_score(y_label, multi_outputs), average_precision_score(y_label, multi_y_pred, average='macro'), f1_score(y_label,
+            multi_outputs = multi_outputs
+            return accuracy_score(y_label, multi_outputs), 0, f1_score(y_label,
                                                                                 multi_outputs, average='macro'), multi_y_pred
 
 
