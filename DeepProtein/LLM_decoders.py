@@ -5,7 +5,8 @@ from DeepProtein.instruction import get_example
 import torch
 import re
 from tqdm import tqdm
-
+import math, sys
+import rdkit.Chem as Chem
 
 Regression = ["fluorescence", "stability", "beta", "ppi_affinity", "tap", "sabdab_chen", "crispr"]
 class BioMistral():
@@ -161,19 +162,23 @@ class LlaSMol():
         from LlaSMol.generation import LlaSMolGeneration
         self.generator = LlaSMolGeneration('osunlp/LlaSMol-Mistral-7B')
 
-    def inference(self, data):
+    def inference(self, data, data_2 = None):
         ans = []
-        for _data in data:
-            prompt = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
+        for _data in tqdm(data):
+            # In LlaSMol model, we should transform the protein sequence to SMILES string.
+            # Which is like <SMILES> C1CCOC1 </SMILES> as presented in https://github.com/OSU-NLP-Group/LLM4Chem
+
+            prompt = f"What is the {self.aim} of the given protein sequence <PROTEIN> {_data} <PROTEIN>? {self.instruction}"
+            if data_2 is not None:
+                prompt = f"What is the {self.aim} between sequence <PROTEIN> {_data} <PROTEIN> and sequence <PROTEIN> {data_2} <PROTEIN>? {self.instruction}"
             try:
-                answer = self.generator.generate(prompt)[0]['output'][0]
+                answer = self.generator.generate(prompt, max_input_tokens=len(prompt))[0]['output'][0]
                 if "insoluble" in answer:
                     answer = "0"
                 elif "soluble" in answer:
                     answer = "1"
             except:
-                answer = "0.5"
-            print(answer)
+                answer = 0
             if self.dataset_name in Regression:
                 num = float(extract_num(answer, True, False))
             else:
@@ -221,13 +226,21 @@ class ChemDFM():
 
 import re
 
-def extract_num(input_string, _float = False, _int = False):
+
+
+def extract_num(input_string, _float=False, _int=False):
     pattern = r'[+-]?\d+(?:\.\d+)?'
     numbers = re.findall(pattern, input_string)
     if numbers:
+        value = float(numbers[0])
         if _float:
-            return float(numbers[0])
-        else:
-            return int(float(numbers[0]))
+            return value
+        if _int:
+            if math.isinf(value):
+                return sys.maxsize
+            else:
+                return int(value)
+
+        return int(value)
     else:
         return 0
