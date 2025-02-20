@@ -135,58 +135,139 @@ class Protein_Prediction:
         if not os.path.exists(self.result_folder):
             os.mkdir(self.result_folder)
         self.binary = config['binary']
-        # self.multi = config['multi']
+        self.multi = config['multi']
         if 'num_workers' not in self.config.keys():
             self.config['num_workers'] = 0
         if 'decay' not in self.config.keys():
             self.config['decay'] = 0
 
     def test_(self, data_generator, model, repurposing_mode=False, test=False, verbose=True):
-        label_lst, prediction_lst = [], []
+        """
+        Evaluate the model on a given data generator.
+
+        :param data_generator: An iterable that yields (v_p, labels, mask) per batch.
+        :param model: The model to be evaluated.
+        :param repurposing_mode: If True, returns raw predictions (for e.g. drug repurposing).
+        :param test: If True, can trigger additional plotting or saving of results.
+        :param verbose: If True, prints or plots additional logs.
+
+        :return: For binary:
+                   (roc_auc, pr_auc, f1, prediction_list)
+                 For multi-class:
+                   (accuracy, 0, f1_macro, y_pred_list)
+        """
         model.eval()
 
+        # For binary classification
+        label_lst, prediction_lst = [], []
+
+        # For multi-class classification
+        multi_outputs = []  # Will store raw probability distributions
+        multi_y_pred = []  # Will store the discrete predictions (argmax)
+        y_label = []  # Will store the true labels
+
         for i, (v_p, labels, mask) in enumerate(data_generator):
+            # Move input features to the GPU if needed
             if self.target_encoding in ['Transformer']:
+                # Possibly skip float conversion if already in correct dtype
                 v_p = v_p
             else:
                 v_p = v_p.float().to(self.device)
 
-            # Get the model predictions
+            # Get the model outputs (logits)
             prediction = model(v_p)
-            prediction = torch.sigmoid(prediction)
 
-            # Collect the predictions and labels considering the mask
-            for pred, label, msk in zip(prediction, labels, mask):
-                num = sum(msk.tolist())  # Number of valid entries in this sequence
-                pred = pred.tolist()[:num]  # Truncate predictions up to 'num'
-                label = label.tolist()[:num]  # Truncate labels up to 'num'
+            # ---------------------- Binary Classification ---------------------- #
+            if self.binary:
+                # Apply sigmoid for binary classification
+                prediction = torch.sigmoid(prediction)
 
-                label_lst.extend(label)
-                prediction_lst.extend(pred)
+                # Collect the predictions and labels using the mask
+                for pred, label, msk in zip(prediction, labels, mask):
+                    num = sum(msk.tolist())  # how many valid entries in this sequence
+                    pred = pred.tolist()[:num]
+                    label = label.tolist()[:num]
+                    label_lst.extend(label)
+                    prediction_lst.extend(pred)
 
-        # Determine the threshold for binary classification (90th percentile)
-        sort_pred = copy.deepcopy(prediction_lst)
-        sort_pred.sort()
-        threshold = sort_pred[int(len(sort_pred) * 0.9)]
-        float2binary = lambda x: 0 if x < threshold else 1
-        binary_pred_lst = list(map(float2binary, prediction_lst))
+            # --------------------- Multi-Class Classification --------------------- #
+            elif self.multi:
+                # Apply softmax for multi-class classification
+                prediction = F.softmax(prediction, dim=-1)
 
+                # Collect the predictions and labels using the mask
+                for pred, label, msk in zip(prediction, labels, mask):
+                    num = sum(msk.tolist())  # how many valid entries in this sequence
+
+                    # pred is shape [num_classes] if it's a single classification
+                    # or [seq_len, num_classes] if there's a sequence dimension.
+                    # We'll truncate by 'num' the same way as in binary:
+                    truncated_pred = pred[:num]
+                    truncated_label = label[:num]
+
+                    # Get discrete predictions
+                    # If truncated_pred is shape [num, num_classes], do argmax over dim=-1
+                    # If it's a single item shape [num_classes], then `truncated_pred.unsqueeze(0)` may be needed.
+                    # For consistency, assume a [seq_len, num_classes] shape:
+                    predicted_classes = truncated_pred.argmax(dim=-1)
+
+                    # Store raw probabilities (flattened) and predicted classes
+                    multi_outputs.extend(truncated_pred.cpu().numpy().tolist())
+                    multi_y_pred.extend(predicted_classes.cpu().numpy().tolist())
+                    y_label.extend(truncated_label.cpu().numpy().tolist())
+
+        # Switch back to train mode after evaluation
         model.train()
+
+        # ------------------------- Return for Binary ------------------------- #
         if self.binary:
             if repurposing_mode:
+                # Return continuous predictions (useful for further processing)
                 return prediction_lst
-            ## ROC-AUC curve
-            if test:
-                if verbose:
-                    roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
-                    plt.figure(0)
-                    roc_curve(label_lst, binary_pred_lst, roc_auc_file, self.target_encoding)
-                    plt.figure(1)
-                    pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
-                    prauc_curve(label_lst, binary_pred_lst, pr_auc_file, self.target_encoding)
 
-            return roc_auc_score(label_lst, binary_pred_lst), average_precision_score(label_lst, binary_pred_lst), f1_score(label_lst, binary_pred_lst), prediction_lst
+            # Determine the threshold for binary classification (90th percentile)
+            sort_pred = copy.deepcopy(prediction_lst)
+            sort_pred.sort()
+            threshold = sort_pred[int(len(sort_pred) * 0.9)]
+            float2binary = lambda x: 0 if x < threshold else 1
+            binary_pred_lst = list(map(float2binary, prediction_lst))
 
+            # If test mode, optionally plot or save AUC curves
+            if test and verbose:
+                roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
+                plt.figure(0)
+                roc_curve(label_lst, binary_pred_lst, roc_auc_file, self.target_encoding)
+                plt.figure(1)
+                pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
+                prauc_curve(label_lst, binary_pred_lst, pr_auc_file, self.target_encoding)
+
+            # Compute binary metrics
+            return (
+                roc_auc_score(label_lst, binary_pred_lst),
+                average_precision_score(label_lst, binary_pred_lst),
+                f1_score(label_lst, binary_pred_lst),
+                prediction_lst
+            )
+
+        # ------------------------ Return for Multi-Class --------------------- #
+        elif self.multi:
+            if repurposing_mode:
+                # Return raw probability distributions (if needed for repurposing)
+                return multi_outputs
+
+            # If test mode, optionally plot a confusion matrix
+            if test and verbose:
+                confusion_matrix_file = os.path.join(self.result_folder, "confusion_matrix.jpg")
+                plt.figure(0)
+                # Usually you'd pass discrete predictions vs. true labels:
+                plot_confusion_matrix(multi_y_pred, y_label, confusion_matrix_file, self.target_encoding)
+
+            # Compute multi-class metrics
+            acc = accuracy_score(y_label, multi_y_pred)
+            f1_macro = f1_score(y_label, multi_y_pred, average='macro')
+
+            # Return (accuracy, 0, macro-F1, predicted_labels)
+            return acc, 0, f1_macro, multi_y_pred
         else:
             raise NotImplementedError("Not implemented yet")
 
@@ -253,6 +334,8 @@ class Protein_Prediction:
         # early stopping
         if self.binary:
             max_auc = 0
+        elif self.multi:
+            max_acc = 0
         else:
             max_MSE = 10000
         model_max = copy.deepcopy(self.model)
@@ -261,6 +344,8 @@ class Protein_Prediction:
         valid_metric_header = ["# epoch"]
         if self.binary:
             valid_metric_header.extend(["AUROC", "AUPRC", "F1"])
+        elif self.multi:
+            valid_metric_header.extend(["Acc", "AUPRC", "F1"])
         else:
             valid_metric_header.extend(["MAE", "MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
         table = PrettyTable(valid_metric_header)
@@ -302,6 +387,22 @@ class Protein_Prediction:
 
                     # print(label.shape)
                     loss = criterion(score, label)
+                elif self.multi:
+
+                    if score.dim() > 2:
+                        score = score
+
+                    if label.dim() > 1 and label.size(-1) == 1:
+
+                        label = label.squeeze(-1)
+
+                    criterion = torch.nn.CrossEntropyLoss()
+
+                    # probs = torch.softmax(score, dim=-1)
+                    # predicted_labels = torch.argmax(probs, dim=-1)
+
+                    loss = criterion(score.view(-1, 3), label.view(-1).long())
+
                 else:
                     raise NotImplementedError("Not Implemented for non-binary settings")
 
@@ -336,6 +437,18 @@ class Protein_Prediction:
                     if verbose:
                         print('Validation at Epoch ' + str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
                               ' , AUPRC: ' + str(auprc)[:7] + ' , F1: ' + str(f1)[:7])
+                elif self.multi:
+
+                    acc, auprc, f1, logits = self.test_(validation_generator, self.model)
+                    lst = ["epoch " + str(epo)] + list(map(float2str, [acc, auprc, f1]))
+                    valid_metric_record.append(lst)
+                    if acc > max_acc:
+                        model_max = copy.deepcopy(self.model)
+                        max_acc = acc
+                    wandb.log({"epoch": epo + 1, "Accuracy": acc, "AUPRC": auprc, "F1": f1})
+                    if verbose:
+                        print('Validation at Epoch ' + str(epo + 1) + ' , Accuracy: ' + str(acc)[:7] + \
+                              ' , AUPRC: ' + str(auprc)[:7] + ' , F1: ' + str(f1)[:7])
 
                 else:
                    raise NotImplementedError("Not Implemented Yet")
@@ -359,7 +472,13 @@ class Protein_Prediction:
                 wandb.log({"TEST AUROC": auc, "TEST AUPRC": auprc, "TEST F1": f1})
                 if verbose:
                     print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
-
+            elif self.multi:
+                acc, auprc, f1, logits = self.test_(testing_generator, model_max, test=True, verbose=verbose)
+                test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+                test_table.add_row(list(map(float2str, [acc, auprc, f1])))
+                wandb.log({"TEST Accuracy": acc, "TEST AUPRC": auprc, "TEST F1": f1})
+                if verbose:
+                    print('Testing Accuracy: ' + str(acc) + ' , AUPRC: ' + str(auprc) + ' , F1: ' + str(f1))
             else:
                 raise NotImplementedError("Not Implemented Yet")
 
