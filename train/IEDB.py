@@ -61,9 +61,9 @@ if __name__ == "__main__":
     vocab_set = vocab_set.union(test_vocab)
     vocab_lst = list(vocab_set)
 
-    # train_data = standardize_data(train_data, vocab_lst, X)
-    # valid_data = standardize_data(valid_data, vocab_lst, X)
-    # test_data = standardize_data(test_data, vocab_lst, X)
+    train_data = standardize_data(train_data, vocab_lst, X)
+    valid_data = standardize_data(valid_data, vocab_lst, X)
+    test_data = standardize_data(test_data, vocab_lst, X)
 
     if target_encoding == "prot_bert":
         from transformers import BertModel, BertTokenizer
