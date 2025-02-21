@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/stability_ChemLLM_7B.out
-#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/stability_ChemLLM_7B.err
+#SBATCH --output=/cluster/project/sachan/jiaxie/dp/results/stability_LlaSMol.out
+#SBATCH --error=/cluster/project/sachan/jiaxie/dp/results/stability_LlaSMol.err
 #SBATCH --mem-per-cpu=20G
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus=rtx_3090:1
-#SBATCH --time=16:00:00
+#SBATCH --time=04:00:00
 
 module load eth_proxy
 export TRANSFORMERS_CACHE=/cluster/scratch/jiaxie/.cache
@@ -15,7 +15,7 @@ source activate /cluster/scratch/jiaxie/deepprotein
 
 cd /cluster/project/sachan/jiaxie/DeepProtein
 
-method="ChemLLM_7B"
+method="LlaSMol"
 SEED=7
 wandb_proj="DeepPurposePP"
 LR=1e-4

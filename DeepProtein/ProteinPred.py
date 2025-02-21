@@ -199,7 +199,7 @@ class Protein_Prediction:
                 return y_pred
 
             return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
-                                                                                                      y_pred), y_pred
+                                                                                                      y_pred, average='macro'), y_pred
         elif self.multi:
             if repurposing_mode:
                 return y_pred
@@ -207,6 +207,8 @@ class Protein_Prediction:
             return accuracy_score(y_label, y_pred), 0, f1_score(y_label,y_pred, average='macro'), y_pred
 
         else:
+            y_label = y_label.squeeze()
+            y_pred = y_pred.squeeze()
             if repurposing_mode:
                 return y_pred
             elif self.config['use_spearmanr']:
