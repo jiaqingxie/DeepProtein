@@ -26,10 +26,13 @@ class BioMistral():
                                                           device_map="auto",trust_remote_code=True)
         self.instruction, self.aim = get_example(dataset_name)
         self.newline_token_id = self.tokenizer.encode("<b>", add_special_tokens=False)
-    def inference(self, data):
+    def inference(self, data, data_2=None):
         ans = []
         for _data in tqdm(data):
             inputs = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
+            if data_2 is not None:
+                inputs = f"What is the {self.aim} between sequence <PROTEIN> {_data} </PROTEIN> and sequence <PROTEIN> {data_2} </PROTEIN>? {self.instruction}"
+
             inputs = self.tokenizer(inputs, return_tensors="pt").to("cuda")
             with torch.no_grad():
                 outputs = self.model.generate(
@@ -136,10 +139,13 @@ class ChemLLM_7B():
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
         return response
 
-    def inference(self, data):
+    def inference(self, data, data_2=None):
         ans = []
+        idx = 0
         for _data in data:
             prompt = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
+            if data_2 is not None:
+                prompt = f"What is the {self.aim} between sequence {_data} and sequence {data_2[idx]}? {self.instruction}"
             response = self.generate_response(
                 self.model, self.tokenizer,
                 instruction=self.instruction,
@@ -151,6 +157,7 @@ class ChemLLM_7B():
             else:
                 num = float(extract_num(response, False, True))
             ans.append(num)
+            idx += 1
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
 
@@ -162,17 +169,19 @@ class LlaSMol():
         from LlaSMol.generation import LlaSMolGeneration
         self.generator = LlaSMolGeneration('osunlp/LlaSMol-Mistral-7B')
 
-    def inference(self, data, data_2 = None):
+    def inference(self, data, data_2=None):
         ans = []
+        idx = 0
         for _data in tqdm(data):
             # In LlaSMol model, we should transform the protein sequence to SMILES string.
             # Which is like <SMILES> C1CCOC1 </SMILES> as presented in https://github.com/OSU-NLP-Group/LLM4Chem
 
-            prompt = f"What is the {self.aim} of the given protein sequence <PROTEIN> {_data} <PROTEIN>? {self.instruction}"
+            prompt = f"What is the {self.aim} of the given protein sequence <PROTEIN> {_data} </PROTEIN>? {self.instruction}"
             if data_2 is not None:
-                prompt = f"What is the {self.aim} between sequence <PROTEIN> {_data} <PROTEIN> and sequence <PROTEIN> {data_2} <PROTEIN>? {self.instruction}"
+                prompt = f"What is the {self.aim} between sequence <PROTEIN> {_data} </PROTEIN> and sequence <PROTEIN> {data_2[idx]} </PROTEIN>? {self.instruction}"
             try:
                 answer = self.generator.generate(prompt, max_input_tokens=len(prompt))[0]['output'][0]
+                print(answer)
                 if "insoluble" in answer:
                     answer = "0"
                 elif "soluble" in answer:
@@ -184,6 +193,7 @@ class LlaSMol():
             else:
                 num = float(extract_num(answer, False, True))
             ans.append(num)
+            idx += 1
         ans_tensor = torch.tensor(ans).unsqueeze(0).T
         return ans_tensor
 
