@@ -212,9 +212,9 @@ class Protein_Prediction:
                     predicted_classes = truncated_pred.argmax(dim=-1)
 
                     # Store raw probabilities (flattened) and predicted classes
-                    multi_outputs.extend(truncated_pred.cpu().numpy().tolist())
-                    multi_y_pred.extend(predicted_classes.cpu().numpy().tolist())
-                    y_label.extend(truncated_label.cpu().numpy().tolist())
+                    multi_outputs.extend(truncated_pred.cpu().detach().numpy().tolist())
+                    multi_y_pred.extend(predicted_classes.cpu().detach().numpy().tolist())
+                    y_label.extend(truncated_label.cpu().detach().numpy().tolist())
 
         # Switch back to train mode after evaluation
         model.train()
