@@ -163,6 +163,7 @@ class PPI_Model:
 		if not os.path.exists(self.result_folder):
 			os.mkdir(self.result_folder)            
 		self.binary = config['binary']
+		self.multi = config['multi']
 		if 'num_workers' not in self.config.keys():
 			self.config['num_workers'] = 0
 		if 'decay' not in self.config.keys():
@@ -209,7 +210,7 @@ class PPI_Model:
 				pearsonr(y_label, y_pred)[1], \
 				concordance_index(y_label, y_pred), y_pred
 
-	def LLM_test_and_log(self, data, data_2, y_label, dataset_name, repurposing_mode, verbose=True):
+	def LLM_test_and_log(self, data, data_2, y_label, dataset_name, verbose=True):
 		if self.binary:
 			auc, auprc, f1, logits = self.test_LLM(data, data_2, y_label, dataset_name)
 			test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
