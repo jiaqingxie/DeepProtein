@@ -140,6 +140,7 @@ class ESM_1B_Predictor(nn.Module):
         v = F.relu(v)
         return v
 
+
 class ESM_2_Predictor(nn.Module):
     def __init__(self, encoding, **config):
         super(ESM_2_Predictor, self).__init__()
@@ -153,6 +154,7 @@ class ESM_2_Predictor(nn.Module):
         v = self.fc1(v.float())
         v = F.relu(v)
         return v
+
 
 class Prot_T5_Predictor(nn.Module):
     def __init__(self, encoding, **config):
