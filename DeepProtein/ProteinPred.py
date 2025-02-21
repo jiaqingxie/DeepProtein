@@ -204,8 +204,7 @@ class Protein_Prediction:
             if repurposing_mode:
                 return y_pred
 
-            return accuracy_score(y_label, y_pred), average_precision_score(y_label, y_pred, average='macro'), f1_score(y_label,
-                                                                                y_pred, average='macro'), y_pred
+            return accuracy_score(y_label, y_pred), 0, f1_score(y_label,y_pred, average='macro'), y_pred
 
         else:
             if repurposing_mode:
