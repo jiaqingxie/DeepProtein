@@ -15,5 +15,15 @@ def get_example(dataset_name):
 
         "tap": ["You should return a floating-point number.", "developability"],
 
+        "SAbDab_Chen": ["You should return a floating-point number.", "developability"],
+
+        "CRISPR": ["You should return a floating-point number.", "repair outcome"],
+
+        "ppi_affinity": ["You should return a floating-point number.", "activity of protein-protein interaction"],
+
+        "yeast_ppi": ["You should return an integer (0 or 1) where 0 is weak and 1 is strong", "activity of protein-protein interaction"],
+
+        "human_ppi": ["You should return an integer (0 or 1) where 0 is weak and 1 is strong", "activity of protein-protein interaction"],
+
     }
     return instruction_list[dataset_name]
