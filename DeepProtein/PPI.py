@@ -187,8 +187,8 @@ class PPI_Model:
 			if repurposing_mode:
 				return y_pred
 
-			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label,
-																									  y_pred), y_pred
+			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred, average='macro'), f1_score(y_label,
+																									  y_pred, average='macro'), y_pred
 		elif self.multi:
 			if repurposing_mode:
 				return y_pred
