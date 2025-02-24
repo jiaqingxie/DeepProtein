@@ -29,7 +29,7 @@ class BioMistral():
     def inference(self, data, data_2=None):
         ans = []
         for _data in tqdm(data):
-            inputs = f"What is the {self.aim} of the given protein sequence {_data}? {self.instruction}"
+            inputs = f"What is the {self.aim} of the given protein sequence <PROTEIN> {_data} </PROTEIN>? {self.instruction}"
             if data_2 is not None:
                 inputs = f"What is the {self.aim} between sequence <PROTEIN> {_data} </PROTEIN> and sequence <PROTEIN> {data_2} </PROTEIN>? {self.instruction}"
 
@@ -37,7 +37,7 @@ class BioMistral():
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
-                    max_new_tokens=512,
+                    max_new_tokens=128,
                     top_p=1,
                     pad_token_id=self.tokenizer.eos_token_id,
                     eos_token_id=self.newline_token_id
@@ -123,7 +123,7 @@ class ChemLLM_7B():
 
         # Encode the input
         inputs = tokenizer(formatted_prompt, return_tensors="pt").to("cuda")
-
+        input_length = inputs["input_ids"].shape[1]
         # Generate response
         with torch.no_grad():
             outputs = model.generate(
@@ -136,7 +136,9 @@ class ChemLLM_7B():
             )
 
         # Decode and return the response
-        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        full_token_ids = outputs[0]
+        generated_token_ids = full_token_ids[input_length:]
+        response = tokenizer.decode(generated_token_ids, skip_special_tokens=True)
         return response
 
     def inference(self, data, data_2=None):
