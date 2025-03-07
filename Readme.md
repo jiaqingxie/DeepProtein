@@ -718,19 +718,22 @@ these years for encoding protein graphs.
 
 Currently, we support the following encodings:
 
-| Protein Encodings  | Description                                     |
-|-----------------|-------------------------------------------------|
-| CNN             | Convolutional Neural Network on SMILES          |
-| CNN_RNN         | A GRU/LSTM on top of a CNN on SMILES            |
-| Transformer     | Transformer Encoder on ESPF                     |
-| MPNN            | Message-passing neural network                  |
-| DGL_GCN         | Graph Convolutional Network                     |
-| DGL_NeuralFP    | Neural Fingerprint                              |
-| DGL_AttentiveFP | Attentive FP, Xiong et al. 2020                 |
-| DGL_GAT         | Graph Attention Network                         |
-| PAGTN           | Path Augmented Graph Transformer Network        |
-| Graphormer      | Do Transformers Really Perform Bad, Ying et al. |
-
+| Protein Encodings | Description                                     |
+|-------------------|-------------------------------------------------|
+| CNN               | Convolutional Neural Network on SMILES          |
+| CNN_RNN           | A GRU/LSTM on top of a CNN on SMILES            |
+| Transformer       | Transformer Encoder on ESPF                     |
+| MPNN              | Message-passing neural network                  |
+| DGL_GCN           | Graph Convolutional Network                     |
+| DGL_NeuralFP      | Neural Fingerprint                              |
+| DGL_AttentiveFP   | Attentive FP, Xiong et al. 2020                 |
+| DGL_GAT           | Graph Attention Network                         |
+| PAGTN             | Path Augmented Graph Transformer Network        |
+| Graphormer        | Do Transformers Really Perform Bad, Ying et al. |
+| ESM-1             | Evolutionary Scale Modeling version 1           |
+| ESM-2             | Evolutionary Scale Modeling version 2           |
+| Prot-T5           | ProtTrans (1)                                   |
+| Prot-Bert         | ProtTrans (2)                                   |
 
 Note that we've tried EGT, however, it would lead to memory error if we want to 
 construct a large batched edge feature matrix therefore we ignore the implementation of EGT.
