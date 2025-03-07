@@ -232,9 +232,6 @@ python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj De
   <summary>Click here for the code!</summary>
 
 ```python
-### package import
-import os, sys, argparse, torch, wandb
-
 ### Our library DeepProtein
 from DeepProtein.load_dataset import *
 import DeepProtein.ProteinPred as models
