@@ -89,31 +89,31 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
 
 Checkout some demos & tutorials to start, which are available in Google Colab:
 
-| Name                                                                                          | Description                                                        |
-|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
-| [Dataset Tutorial](https://colab.research.google.com/drive/1-irfVeXjuwF-bVONN9xTj9dr6eRLET6Y?usp=sharing)                                                   | Tutorial on how to use the dataset loader and read customized data |
-| [Single Protein Regression](DEMO/lactamase_Protein_Property.ipynb)                            | Example of CNN on Beta-lactamase property prediction               |
-| [Single Protein Classification](DEMO/lactamase_Protein_Property.ipynb)                        | Example of ProtT5 on SubCellular property prediction               |
-| [Protein Pair Regression](DEMO/ppi_affinity_PPI.ipynb)                                        | Example of CNN on PPI Affinity prediction                          |
-| [Protein Pair Classification](DEMO/ppi_affinity_PPI.ipynb)                                    | Example of CNN on PPI Affinity prediction                          |
-| [Residual-Level Classification](DEMO/ppi_affinity_PPI.ipynb)                                  | Example of CNN on PPI Affinity prediction                          |
-| [Inference of DeepProtT5 models on Protein Structure Prediction](DEMO/ppi_affinity_PPI.ipynb) | Example of CNN on PPI Affinity prediction                          |
-| [Personalized data ](DEMO/ppi_affinity_PPI.ipynb)                                             | Example of CNN on PPI Affinity prediction                          |
+| Name                                                                                                                                       | Description                                                        |
+|--------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| [Dataset Tutorial](https://colab.research.google.com/drive/1-irfVeXjuwF-bVONN9xTj9dr6eRLET6Y?usp=sharing)                                  | Tutorial on how to use the dataset loader and read customized data |
+| [Single Protein Regression](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                         | Example of CNN on Beta-lactamase property prediction               |
+| [Single Protein Classification](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                     | Example of ProtT5 on SubCellular property prediction               |
+| [Protein Pair Regression](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                           | Example of Transformer on PPI Affinity prediction                  |
+| [Protein Pair Classification](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                       | Example of ProtT5 on Human_PPI Affinity prediction                 |
+| [Residual-Level Classification](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                     | Example of Token_CNN on PDB prediction                             |
+| [Inference of DeepProtT5 models on all above tasks](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing) | Example of DeepProtT5 on Fold Structure prediction                 |
+| [Personalized data ](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                                | Example of personalized data load and train                        |
 
 ## Example
 
 We give two examples for each case study. One is trained with fixed parameters (a) and one is trained with argument. The argument list is given below.
 
 
-| Argument  | Description                                     |
-|-----------------|-------------------------------------------------|
-| target_encoding             | 'CNN' / 'Transformer' for sequential learning, or 'DGL_GCN' for 'DGL_AttentiveFP' for structure learning. Current available protein encoding belongs to this full list: ['CNN', 'Transformer', 'CNN_RNN', 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'Graphormer']. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer']  |
-| seed         | For paper: 7 / 42 /100. You could try your own seed.            |
-| wandb_proj     | The name of your wandb project that you wish to save the results into.                     |
-| lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning.                  |
-| epochs         | Number of training epochs. Generally setting 60 - 100 epochs leads to convergence.                     |
-| compute_pos_enc *    | Compute positional encoding for using graph transformers. We dont recommend add this inductive bias into GNN as GNN itself already encoded it. This don't work effectively on large scale graphs with dgl so the implementation is still under test.                           |
-| batch_size | Batch size of 8 - 32 is good for protein sequence learning.                |
+| Argument  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| target_encoding             | 'CNN' / 'Transformer' for sequential learning, or 'DGL_GCN' for 'DGL_AttentiveFP' for structure learning. Current available protein encoding belongs to this full list: ['CNN', 'Transformer', 'CNN_RNN', 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'Graphormer', 'prot_t5', 'esm_1b', 'esm_2', 'prot_bert']. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer'] |
+| seed         | For paper: 7 / 42 /100. You could try your own seed.                                                                                                                                                                                                                                                                                                                                                                                                       |
+| wandb_proj     | The name of your wandb project that you wish to save the results into.                                                                                                                                                                                                                                                                                                                                                                                     |
+| lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning.                                                                                                                                                                                                                                                                                                                                                                           |
+| epochs         | Number of training epochs. Generally setting 60 - 100 epochs leads to convergence.                                                                                                                                                                                                                                                                                                                                                                         |
+| compute_pos_enc *    | Compute positional encoding for using graph transformers. We dont recommend add this inductive bias into GNN as GNN itself already encoded it. This don't work effectively on large scale graphs with dgl so the implementation is still under test.                                                                                                                                                                                                       |
+| batch_size | Batch size of 8 - 32 is good for protein sequence learning.                                                                                                                                                                                                                                                                                                                                                                                                |
 
 
 
