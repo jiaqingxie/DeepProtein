@@ -621,54 +621,18 @@ pip install PyTDC
   <summary>Click here for the code!</summary>
 
 ```python
-### package import
-import os, sys, argparse, torch, wandb
-
-
 ### Our library DeepProtein
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.ProteinPred as models
-from tdc.utils import retrieve_label_name_list
-from tdc.single_pred import Develop, CRISPROutcome
 
 ### Load CRISPR Leenay Dataset
-label_list = retrieve_label_name_list('Leenay')
-
-data = CRISPROutcome(name='Leenay', label_name=label_list[0])
-split = data.get_split()
-
-train_GuideSeq, y_train = list(split['train']['GuideSeq']), list(split['train']['Y'])
-val_GuideSeq, y_valid = list(split['valid']['GuideSeq']), list(split['valid']['Y'])
-test_GuideSeq, y_test = list(split['test']['GuideSeq']), list(split['test']['Y'])
-
-train_CRISPR = list(zip(train_GuideSeq, y_train))
-valid_CRISPR = list(zip(val_GuideSeq, y_valid))
-test_CRISPR = list(zip(test_GuideSeq, y_test))
-
+train, val, test = load_single_dataset("CRISPR", None, 'CNN')
 
 ### Train Valid Test Split
-target_encoding = 'CNN'
-train_protein_1, train_target, train_protein_idx = collate_fn(train_CRISPR, graph=False, unsqueeze=True)
-valid_protein_1, valid_target, valid_protein_idx = collate_fn(valid_CRISPR, graph=False, unsqueeze=True)
-test_protein_1, test_target, test_protein_idx = collate_fn(test_CRISPR, graph=False, unsqueeze=True)
 
-train, _, _ = data_process(X_target=train_protein_1, y=train_target,
-                               target_encoding=target_encoding,
-                               split_method='random', frac=[0.99998, 1e-5, 1e-5],
-                               random_seed=1)
-_, val, _ = data_process(X_target=valid_protein_1, y=valid_target,
-                            target_encoding=target_encoding,
-                            split_method='random', frac=[1e-5, 0.99998, 1e-5],
-                            random_seed=1)
-
-_, _, test = data_process(X_target=test_protein_1, y=test_target,
-                            target_encoding=target_encoding,
-                            split_method='random', frac=[1e-5, 1e-5, 0.99998],
-                            random_seed=1)
 
 ### Load configuration for model
-config = generate_config(target_encoding=target_encoding,
+config = generate_config(target_encoding='CNN',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
                          LR=0.0001,
@@ -676,12 +640,11 @@ config = generate_config(target_encoding=target_encoding,
                          )
 config['binary'] = False
 config['multi'] = False
-torch.manual_seed(args.seed)
+torch.manual_seed(42)
 model = models.model_initialize(**config)
 
-
 ### Train our model
-model.train(train_set, valid_set, test_set, batch_size=batch_size)
+model.train(train, val, test, batch_size=32)
 
 ```
 
