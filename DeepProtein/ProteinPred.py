@@ -158,6 +158,8 @@ class Protein_Prediction:
         elif target_encoding == 'prot_t5':
             self.model_protein = Prot_T5_Predictor('protein', **config)
 
+
+
         elif target_encoding in ['BioMistral', 'BioT5_plus', 'ChemLLM_7B', 'LlaSMol', 'ChemDFM']:
             self.model_protein = Prot_Bert_Predictor('protein', **config)
 
