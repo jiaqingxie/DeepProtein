@@ -170,6 +170,9 @@ class Prot_T5_Predictor(nn.Module):
         v = F.relu(v)
         return v
 
+
+
+
 class CNN(nn.Sequential):
     def __init__(self, encoding, **config):
         super(CNN, self).__init__()
