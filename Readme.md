@@ -58,13 +58,7 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 
 ## Installation
 
-For simplicity, you could just do pip install in your environment.
-```bash
-pip install -r requirements.txt
-```
-
-
-We also recommend you follow the instructions on how DeepPurpose's dependencies are installed.
+We recommend you follow the instructions on how DeepPurpose's dependencies are installed.
 ```bash
 conda create -n DeepProtein python=3.9
 conda activate DeepProtein
@@ -83,24 +77,28 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
 1. If you want to use GPU, then first find a matched torch version, then install duel with cuda version. We give an example of torch 2.3.0 with cuda 11.8:
     ```bash
    pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu118
-   conda install -c dglteam/label/th23_cu118 dgl
+   pip install  dgl -f https://data.dgl.ai/wheels/torch-2.3/cu118/repo.html
    ```
 2. If you are not using a GPU, then follow this:
     ```bash
     pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cpu
-    conda install -c dglteam/label/th23_cpu dgl
+    pip install  dgl -f https://data.dgl.ai/wheels/torch-2.3/repo.html
     ```
 
 ## Demos
 
-Checkout some demos & tutorials to start:
+Checkout some demos & tutorials to start, which are available in Google Colab:
 
-| Name | Description |
-|-----------------|-------------|
-| [Dataset Tutorial](DEMO/load_dataset.ipynb) | Tutorial on how to use the dataset loader and read customized data|
-| [Protein Property Prediction Tutorial](DEMO/lactamase_Protein_Property.ipynb)| Example of CNN on Beta-lactamase property prediction|
-| [Protein Protein Interaction Tutorial](DEMO/ppi_affinity_PPI.ipynb)| Example of CNN on PPI Affinity prediction|
-
+| Name                                                                                          | Description                                                        |
+|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| [Dataset Tutorial](https://colab.research.google.com/drive/1-irfVeXjuwF-bVONN9xTj9dr6eRLET6Y?usp=sharing)                                                   | Tutorial on how to use the dataset loader and read customized data |
+| [Single Protein Regression](DEMO/lactamase_Protein_Property.ipynb)                            | Example of CNN on Beta-lactamase property prediction               |
+| [Single Protein Classification](DEMO/lactamase_Protein_Property.ipynb)                        | Example of ProtT5 on SubCellular property prediction               |
+| [Protein Pair Regression](DEMO/ppi_affinity_PPI.ipynb)                                        | Example of CNN on PPI Affinity prediction                          |
+| [Protein Pair Classification](DEMO/ppi_affinity_PPI.ipynb)                                    | Example of CNN on PPI Affinity prediction                          |
+| [Residual-Level Classification](DEMO/ppi_affinity_PPI.ipynb)                                  | Example of CNN on PPI Affinity prediction                          |
+| [Inference of DeepProtT5 models on Protein Structure Prediction](DEMO/ppi_affinity_PPI.ipynb) | Example of CNN on PPI Affinity prediction                          |
+| [Personalized data ](DEMO/ppi_affinity_PPI.ipynb)                                             | Example of CNN on PPI Affinity prediction                          |
 
 ## Example
 
@@ -147,7 +145,7 @@ model = models.model_initialize(**config)
 
 ### Train our model
 model.train(train, val, test, compute_pos_enc = False)
-
+model.model
 ```
 
 </details>
