@@ -42,7 +42,8 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 ---
 
 ## News
-- [03/25] DeepProtein: Files under the train folders are now simplified.
+- [03/25] DeepProtein now supports Fold and Secondary Structure Dataset
+- [03/25] DeepProtein: Files under the train folders are now simplified, also code in Readme.md file.
 - [03/25] DeepProtein has now released DeepProtT5 Series Models, which can be found at https://huggingface.co/collections/jiaxie/protlm-67bba5b973db936ce90e7d54
 - [02/25] DeepProtein now supported BioMistral, BioT5+, ChemLLM_7B, ChemDFM, and LlaSMol on some tasks
 - [12/24] The documentation of DeepProtein is still under construction. It's at https://deepprotein.readthedocs.io/
@@ -57,7 +58,13 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 
 ## Installation
 
-First, we recommend you follow the instructions on how DeepPurpose's dependencies are installed.
+For simplicity, you could just do pip install in your environment.
+```bash
+pip install -r requirements.txt
+```
+
+
+We also recommend you follow the instructions on how DeepPurpose's dependencies are installed.
 ```bash
 conda create -n DeepProtein python=3.9
 conda activate DeepProtein
@@ -742,6 +749,8 @@ We provided the data under the folder DeepProtein/data (Besides TDC) and the fol
 | PPI_Affinity | PEER | LMDB | Protein-Protein Interaction |
 | Human_PPI | PEER | LMDB | Protein-Protein Interaction |
 | Yeast_PPI | PEER | LMDB | Protein-Protein Interaction |
+| Fold | PEER | LMDB |Protein Structure Prediction |
+| Secondary Structure | PEER | LMDB |Protein Structure Prediction |
 | IEDB | TDC | PICKLE | Antigen Epitope Prediction  |
 | PDB-Jespersen | TDC | PICKLE | Antigen Epitope Prediction |
 | SAbDab-Liberis | TDC | PICKLE | Antibody Paratope Prediction |
