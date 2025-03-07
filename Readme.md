@@ -517,57 +517,15 @@ pip install PyTDC
   <summary>Click here for the code!</summary>
 
 ```python
-### package import
-import os, sys, argparse, torch, wandb
-
-
 ### Our library DeepProtein
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.PPI as models
-from tdc.utils import retrieve_label_name_list
-from tdc.single_pred import Develop
 
 ### Load TAP Dataset
-label_list = retrieve_label_name_list('TAP')
-
-data = Develop(name='TAP', label_name=label_list[0])
-split = data.get_split()
-
-train_antibody_1, train_antibody_2 = to_two_seq(split, 'train', 'Antibody')
-valid_antibody_1, valid_antibody_2 = to_two_seq(split, 'valid', 'Antibody')
-test_antibody_1, test_antibody_2 = to_two_seq(split, 'test', 'Antibody')
-
-y_train, y_valid, y_test = split['train']['Y'], split['valid']['Y'], split['test']['Y']
-
-train_TAP = list(zip(train_antibody_1, train_antibody_2, y_train))
-valid_TAP = list(zip(valid_antibody_1, valid_antibody_2, y_valid))
-test_TAP = list(zip(test_antibody_1, test_antibody_2, y_test))
-
-
-### Train Valid Test Split
-target_encoding = 'CNN'
-train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train_TAP, graph=False, unsqueeze=False)
-valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid_TAP, graph=False, unsqueeze=False)
-test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test_TAP, graph=False, unsqueeze=False)
-
-train, _, _ = data_process(X_target=train_protein_1, X_target_=train_protein_2, y=train_target,
-                               target_encoding=target_encoding,
-                               split_method='random', frac=[0.99998, 1e-5, 1e-5],
-                               random_seed=1)
-
-_, val, _ = data_process(X_target=valid_protein_1, X_target_=valid_protein_2, y=valid_target,
-                            target_encoding=target_encoding,
-                            split_method='random', frac=[1e-5, 0.99998, 1e-5],
-                            random_seed=1)
-
-_, _, test = data_process(X_target=test_protein_1, X_target_=test_protein_2, y=test_target,
-                            target_encoding=target_encoding,
-                            split_method='random', frac=[1e-5, 1e-5, 0.99998],
-                            random_seed=1)
+train, val, test = load_pair_dataset("TAP", None, 'CNN')
 
 ### Load configuration for model
-config = generate_config(target_encoding=target_encoding,
+config = generate_config(target_encoding='CNN',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
                          LR=0.0001,
@@ -575,13 +533,12 @@ config = generate_config(target_encoding=target_encoding,
                          )
 config['binary'] = False
 config['multi'] = False
-torch.manual_seed(args.seed)
+torch.manual_seed(42)
 model = models.model_initialize(**config)
 
 
 ### Train our model
-model.train(train_set, valid_set, test_set, batch_size=batch_size)
-
+model.train(train, val, test, batch_size=32)
 ```
 
 </details>
@@ -628,9 +585,6 @@ import DeepProtein.ProteinPred as models
 ### Load CRISPR Leenay Dataset
 train, val, test = load_single_dataset("CRISPR", None, 'CNN')
 
-### Train Valid Test Split
-
-
 ### Load configuration for model
 config = generate_config(target_encoding='CNN',
                          cls_hidden_dims=[1024, 1024],
@@ -645,7 +599,6 @@ model = models.model_initialize(**config)
 
 ### Train our model
 model.train(train, val, test, batch_size=32)
-
 ```
 
 </details>
