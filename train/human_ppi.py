@@ -47,7 +47,7 @@ if __name__ == '__main__':
                              LR = lr,
                              batch_size = batch_size,
                             )
-
+    config['multi'] = False
     config['binary'] = True
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
