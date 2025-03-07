@@ -42,6 +42,8 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 ---
 
 ## News
+- [03/25] DeepProtein: Files under the train folders are now simplified.
+- [03/25] DeepProtein has now released DeepProtT5 Series Models, which can be found at https://huggingface.co/collections/jiaxie/protlm-67bba5b973db936ce90e7d54
 - [02/25] DeepProtein now supported BioMistral, BioT5+, ChemLLM_7B, ChemDFM, and LlaSMol on some tasks
 - [12/24] The documentation of DeepProtein is still under construction. It's at https://deepprotein.readthedocs.io/
 - [12/24] DeepProtein is going to be supported with pretrained shallow DL models.
