@@ -125,43 +125,24 @@ We give two examples for each case study. One is trained with fixed parameters (
   <summary>Click here for the code!</summary>
 
 ```python
-import os, sys, argparse, torch, wandb
-
 ### Our library DeepProtein
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.ProteinPred as models
 
 ### Load Beta lactamase dataset
 path = os.getcwd()
-train_beta = Beta_lactamase(path + '/DeepProtein/data', 'train')
-valid_beta = Beta_lactamase(path + '/DeepProtein/data', 'valid')
-test_beta = Beta_lactamase(path + '/DeepProtein/data', 'test')
+train, val, test = load_single_dataset("Beta", path, 'CNN')
 
-train_protein_processed, train_target, train_protein_idx = collate_fn(train_beta)
-valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_beta)
-test_protein_processed, test_target, test_protein_idx = collate_fn(test_beta)
-
-### Train Valid Test Split
-target_encoding = 'CNN'
-train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, 
-    target_encoding=target_encoding, split_method='random', frac=[0.99998, 1e-5, 1e-5])
-
-_, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target,        
-    target_encoding=target_encoding, split_method='random', frac=[1e-5, 0.99998, 1e-5])
-
-_, _, test = utils.data_process(X_target=test_protein_processed, y=test_target,         
-    target_encoding=target_encoding,split_method='random', frac=[1e-5, 1e-5, 0.99998])
                             
 ### Load configuration for model
-config = generate_config(target_encoding=target_encoding,
+config = generate_config(target_encoding='CNN',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
                          LR=0.0001,
                          batch_size=32,
                          )
 config['multi'] = False
-torch.manual_seed(args.seed)
+torch.manual_seed(42)
 model = models.model_initialize(**config)
 
 ### Train our model
@@ -197,49 +178,23 @@ python train/beta.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein
   <summary>Click here for the code!</summary>
 
 ```python
-### package import
-import os, sys, argparse, torch, wandb
-
 ### Our library DeepProtein
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.PPI as models
 
 ### Load PPI Affinity dataset
 path = os.getcwd()
-train_ppi = PPI_Affinity(path + '/DeepProtein/data', 'train')
-valid_ppi = PPI_Affinity(path + '/DeepProtein/data', 'valid')
-test_ppi = PPI_Affinity(path + '/DeepProtein/data', 'test')
-
-train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train_ppi, graph=False, unsqueeze=False)
-valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid_ppi, graph=False, unsqueeze=False)
-test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test_ppi, graph=False, unsqueeze=False)
-
-### Train Valid Test Split
-target_encoding = 'CNN'
-train, _, _ = data_process(X_target = train_protein_1, X_target_ = train_protein_2, y = train_target,
-                target_encoding = target_encoding,
-                split_method='random', frac=[0.99998, 1e-5, 1e-5],
-                random_seed = 1)
-_, val, _ = data_process(X_target = valid_protein_1, X_target_ = valid_protein_2, y = valid_target,
-                target_encoding = target_encoding,
-                split_method='random',frac=[1e-5, 0.99998, 1e-5],
-                random_seed = 1)
-
-_, _, test = data_process(X_target = test_protein_1, X_target_ = test_protein_2, y = test_target,
-                target_encoding = target_encoding,
-                split_method='random',frac=[1e-5, 1e-5, 0.99998],
-                random_seed = 1)
+train, val, test = load_pair_dataset("IEDB", path, 'CNN')
                             
 ### Load configuration for model
-config = generate_config(target_encoding=target_encoding,
+config = generate_config(target_encoding='CNN',
                          cls_hidden_dims=[512],
                          train_epoch=20,
                          LR=0.0001,
                          batch_size=32,
                          )
 # config['multi'] = False
-torch.manual_seed(args.seed)
+torch.manual_seed(42)
 model = models.model_initialize(**config)
 
 ### Train our model
@@ -281,33 +236,15 @@ python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj De
 import os, sys, argparse, torch, wandb
 
 ### Our library DeepProtein
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.ProteinPred as models
 
 ### Load Subcellular Dataset
 path = os.getcwd()
-train_sub = Subcellular(path + '/DeepProtein/data', 'train')
-valid_sub = Subcellular(path + '/DeepProtein/data', 'valid')
-test_sub = Subcellular(path + '/DeepProtein/data', 'test')
-
-train_protein_processed, train_target, train_protein_idx = collate_fn(train_sub)
-valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_sub)
-test_protein_processed, test_target, test_protein_idx = collate_fn(test_sub)
-
-### Train Valid Test Split
-target_encoding = 'CNN'
-train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, 
-    target_encoding=target_encoding, split_method='random', frac=[0.99998, 1e-5, 1e-5])
-
-_, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target,        
-    target_encoding=target_encoding, split_method='random', frac=[1e-5, 0.99998, 1e-5])
-
-_, _, test = utils.data_process(X_target=test_protein_processed, y=test_target,         
-    target_encoding=target_encoding,split_method='random', frac=[1e-5, 1e-5, 0.99998])
+train, val, test = load_single_dataset("SubCellular", path, 'CNN')
                             
 ### Load configuration for model
-config = generate_config(target_encoding=target_encoding,
+config = generate_config(target_encoding='CNN',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
                          LR=0.0001,
@@ -316,7 +253,7 @@ config = generate_config(target_encoding=target_encoding,
 config['binary'] = False
 config['multi'] = True
 config['classes'] = 10
-torch.manual_seed(args.seed)
+torch.manual_seed(42)
 model = models.model_initialize(**config)
 
 ### Train our model
@@ -355,42 +292,15 @@ pip install PyTDC
   <summary>Click here for the code!</summary>
 
 ```python
-### package import
-import os, sys, argparse, torch, wandb
-
 ### Our library DeepProtein
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.TokenPred as models
-from tdc.single_pred import Epitope
 
 ### Load Epitope  Dataset
-data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
-data = data_class(name=name)
-split = data.get_split()
-
-train_data, valid_data, test_data = split['train'], split['valid'], split['test']
-vocab_set = set()
-
-train_vocab, train_positive_ratio = data2vocab(train_data, train_data, X)
-valid_vocab, valid_positive_ratio = data2vocab(valid_data, train_data, X)
-test_vocab, test_positive_ratio = data2vocab(test_data, train_data, X)
-
-vocab_set = train_vocab.union(valid_vocab)
-vocab_set = vocab_set.union(test_vocab)
-vocab_lst = list(vocab_set)
-
-### Train Valid Test Split
-train_data = standardize_data(train_data, vocab_lst, X)
-valid_data = standardize_data(valid_data, vocab_lst, X)
-test_data = standardize_data(test_data, vocab_lst, X)
-
-train_set = data_process_loader_Token_Protein_Prediction(train_data)
-valid_set = data_process_loader_Token_Protein_Prediction(valid_data)
-test_set = data_process_loader_Token_Protein_Prediction(test_data)
+train, val, test = load_residue_dataset("IEDB", None, 'Token_CNN')
 
 ### Load configuration for model
-config = generate_config(target_encoding=target_encoding,
+config = generate_config(target_encoding='Token_CNN',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
                          LR=0.0001,
@@ -400,12 +310,11 @@ config['multi'] = False
 config['binary'] = True
 config['token'] = True
 config['in_channels'] = 24
-torch.manual_seed(args.seed)
+torch.manual_seed(42)
 model = models.model_initialize(**config)
 
-
 ### Train our model
-model.train(train_set, valid_set, test_set, batch_size=batch_size)
+model.train(train, val, test, batch_size=32)
 
 ```
 
@@ -435,43 +344,15 @@ pip install PyTDC
   <summary>Click here for the code!</summary>
 
 ```python
-### package import
-import os, sys, argparse, torch, wandb 
-
 ### Our library DeepProtein
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import * 
 import DeepProtein.TokenPred as models
-from tdc.single_pred import Paratope
 
 ### Load Paratope Dataset
-data_class, name, X = Paratope, 'SAbDab_Liberis', 'Antibody'
-data = data_class(name=name)
-split = data.get_split()
-train_data, valid_data, test_data = split['train'], split['valid'], split['test']
-vocab_set = set()
-
-train_vocab, train_positive_ratio = data2vocab(train_data, train_data, X)
-valid_vocab, valid_positive_ratio = data2vocab(valid_data, train_data, X)
-test_vocab, test_positive_ratio = data2vocab(test_data, train_data, X)
-
-vocab_set = train_vocab.union(valid_vocab)
-vocab_set = vocab_set.union(test_vocab)
-vocab_lst = list(vocab_set)
-
-
-
-### Train Valid Test Split
-train_data = standardize_data(train_data, vocab_lst, X)
-valid_data = standardize_data(valid_data, vocab_lst, X)
-test_data = standardize_data(test_data, vocab_lst, X)
-
-train_set = data_process_loader_Token_Protein_Prediction(train_data)
-valid_set = data_process_loader_Token_Protein_Prediction(valid_data)
-test_set = data_process_loader_Token_Protein_Prediction(test_data)
+train, val, test = load_residue_dataset("SAbDab_Liberis", None, 'Token_CNN')
 
 ### Load configuration for model
-config = generate_config(target_encoding=target_encoding,
+config = generate_config(target_encoding='Token_CNN',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
                          LR=0.0001,
@@ -481,12 +362,11 @@ config['multi'] = False
 config['binary'] = True
 config['token'] = True
 config['in_channels'] = 20
-torch.manual_seed(args.seed)
+torch.manual_seed(42)
 model = models.model_initialize(**config)
 
-
 ### Train our model
-model.train(train_set, valid_set, test_set, batch_size=batch_size)
+model.train(train, val, test, batch_size=32)
 
 ```
 
