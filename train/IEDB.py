@@ -1,19 +1,14 @@
 import os
 import sys
 import argparse
-import torch
 import wandb
-
 
 module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.TokenPred as models
-
-from tdc.single_pred import Epitope
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with DeepProtein")
@@ -43,85 +38,7 @@ if __name__ == "__main__":
     wandb.init(project=wandb_project, name=job_name)
     wandb.config.update(args)
 
-    # path = os.getcwd()
-
-    data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
-    # data_class, name, X = Epitope, 'PDB_Jespersen', 'Antigen'
-
-    data = data_class(name=name)
-    split = data.get_split()
-    train_data, valid_data, test_data = split['train'], split['valid'], split['test']
-    vocab_set = set()
-
-    train_vocab, train_positive_ratio = data2vocab(train_data, train_data, X)
-    valid_vocab, valid_positive_ratio = data2vocab(valid_data, train_data, X)
-    test_vocab, test_positive_ratio = data2vocab(test_data, train_data, X)
-
-    vocab_set = train_vocab.union(valid_vocab)
-    vocab_set = vocab_set.union(test_vocab)
-    vocab_lst = list(vocab_set)
-
-    train_data = standardize_data(train_data, vocab_lst, X)
-    valid_data = standardize_data(valid_data, vocab_lst, X)
-    test_data = standardize_data(test_data, vocab_lst, X)
-
-    if target_encoding == "prot_bert":
-        from transformers import BertModel, BertTokenizer
-
-        tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
-        embedding_model = BertModel.from_pretrained("Rostlab/prot_bert").to("cuda")
-        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
-                                                         target_encoding, X)
-        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
-                                                         target_encoding, X)
-        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
-                                                        target_encoding, X)
-
-    elif target_encoding == "esm_1b":
-        from transformers import EsmTokenizer, EsmModel
-
-        tokenizer = EsmTokenizer.from_pretrained("facebook/esm1b_t33_650M_UR50S")
-        embedding_model = EsmModel.from_pretrained("facebook/esm1b_t33_650M_UR50S").to("cuda")
-        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
-                                               target_encoding, X)
-        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
-                                               target_encoding, X)
-        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
-                                              target_encoding, X)
-
-    elif target_encoding == "esm_2":
-        from transformers import EsmTokenizer, EsmModel
-
-        tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D")
-        embedding_model = EsmModel.from_pretrained("facebook/esm2_t33_650M_UR50D").to("cuda")
-        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
-                                               target_encoding, X)
-        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
-                                               target_encoding, X)
-        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
-                                              target_encoding, X)
-
-    elif target_encoding == "prot_t5":
-        from transformers import T5Tokenizer, T5EncoderModel
-
-        tokenizer = T5Tokenizer.from_pretrained("Rostlab/prot_t5_xl_uniref50", do_lower_case=False)
-        embedding_model = T5EncoderModel.from_pretrained("Rostlab/prot_t5_xl_uniref50").to("cuda")
-        train_data = standardize_data_llm_mean(train_data, tokenizer, embedding_model,
-                                               target_encoding, X)
-        valid_data = standardize_data_llm_mean(valid_data, tokenizer, embedding_model,
-                                               target_encoding, X)
-        test_data = standardize_data_llm_mean(test_data, tokenizer, embedding_model,
-                                              target_encoding, X)
-
-
-
-    train_set = data_process_loader_Token_Protein_Prediction(train_data)
-    valid_set = data_process_loader_Token_Protein_Prediction(valid_data)
-    test_set = data_process_loader_Token_Protein_Prediction(test_data)
-
-
-
-
+    train, val, test = load_residue_dataset("IEDB", None, target_encoding)
 
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
@@ -135,6 +52,6 @@ if __name__ == "__main__":
     config['in_channels'] = 24
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
-    model.train(train_set, valid_set, test_set, batch_size=batch_size)
+    model.train(train, val, test, batch_size=batch_size)
 
 

@@ -1,7 +1,6 @@
 import os
 import sys
 import argparse
-import torch
 import wandb
 
 
@@ -9,10 +8,8 @@ module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.TokenPred as models
-from DeepProtein.utils import get_hf_model_embedding
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Protein Prediction with DeepProtein")
@@ -43,22 +40,7 @@ if __name__ == "__main__":
 
     path = os.getcwd()
 
-    #  Test on Secondary Structure
-    train_data = SecondaryStructure(path + '/DeepProtein/data', 'train')
-    valid_data = SecondaryStructure(path + '/DeepProtein/data', 'valid')
-    test_data = SecondaryStructure(path + '/DeepProtein/data', 'cb513')
-
-    train_vocab, train_positive_ratio = data2vocab_dataset(train_data)
-    valid_vocab, valid_positive_ratio = data2vocab_dataset(valid_data)
-    test_vocab, test_positive_ratio = data2vocab_dataset(test_data)
-
-    vocab_set = train_vocab.union(valid_vocab)
-    vocab_set = vocab_set.union(test_vocab)
-    vocab_lst = list(vocab_set)
-
-    train_data = standardize_data_dataset(train_data, vocab_lst)
-    valid_data = standardize_data_dataset(valid_data, vocab_lst)
-    test_data = standardize_data_dataset(test_data, vocab_lst)
+    train, val, test = load_residue_dataset("Secondary", path, target_encoding)
 
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
@@ -74,9 +56,6 @@ if __name__ == "__main__":
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
 
-    train = data_process_loader_Token_Protein_Prediction(train_data)
-    valid = data_process_loader_Token_Protein_Prediction(valid_data)
-    test = data_process_loader_Token_Protein_Prediction(test_data)
-    model.train(train, valid, test, batch_size=batch_size)
+    model.train(train, val, test, batch_size=batch_size)
 
 

@@ -1,15 +1,14 @@
 import os
 import sys
 import argparse
-import torch
+
 import wandb
 
 module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from DeepProtein.dataset import *
-import DeepProtein.utils as utils
+from DeepProtein.load_dataset import *
 import DeepProtein.ProteinPred as models
 
 
@@ -43,82 +42,7 @@ if __name__ == "__main__":
 
     path = os.getcwd()
 
-    train_fluo = BinarySubcellular(path + '/DeepProtein/data', 'train')
-    valid_fluo = BinarySubcellular(path + '/DeepProtein/data', 'valid')
-    test_fluo = BinarySubcellular(path + '/DeepProtein/data', 'test')
-
-    if target_encoding in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo, graph=True)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo, graph=True)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo, graph=True)
-
-    else:
-        train_protein_processed, train_target, train_protein_idx = collate_fn(train_fluo)
-        valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid_fluo)
-        test_protein_processed, test_target, test_protein_idx = collate_fn(test_fluo)
-
-    if target_encoding == "prot_bert":
-        from transformers import BertModel, BertTokenizer
-
-        tokenizer = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
-        embedding_model = BertModel.from_pretrained("Rostlab/prot_bert").to("cuda")
-        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
-                                                        target_encoding)
-
-    elif target_encoding == "esm_1b":
-        from transformers import EsmTokenizer, EsmModel
-
-        tokenizer = EsmTokenizer.from_pretrained("facebook/esm1b_t33_650M_UR50S")
-        embedding_model = EsmModel.from_pretrained("facebook/esm1b_t33_650M_UR50S").to("cuda")
-        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
-                                                        target_encoding)
-
-    elif target_encoding == "esm_2":
-        from transformers import EsmTokenizer, EsmModel
-
-        tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D")
-        embedding_model = EsmModel.from_pretrained("facebook/esm2_t33_650M_UR50D").to("cuda")
-        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
-                                                        target_encoding)
-
-    elif target_encoding == "prot_t5":
-        from transformers import T5Tokenizer, T5EncoderModel
-
-        tokenizer = T5Tokenizer.from_pretrained("Rostlab/prot_t5_xl_uniref50", do_lower_case=False)
-        embedding_model = T5EncoderModel.from_pretrained("Rostlab/prot_t5_xl_uniref50").to("cuda")
-        train_protein_processed = get_hf_model_embedding(train_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        valid_protein_processed = get_hf_model_embedding(valid_protein_processed, tokenizer, embedding_model,
-                                                         target_encoding)
-        test_protein_processed = get_hf_model_embedding(test_protein_processed, tokenizer, embedding_model,
-                                                        target_encoding)
-
-    train, _, _ = utils.data_process(X_target=train_protein_processed, y=train_target, target_encoding=target_encoding,
-                                     # drug_encoding= drug_encoding,
-                                     split_method='random', frac=[0.99998, 1e-5, 1e-5],
-                                     random_seed=1)
-
-    _, val, _ = utils.data_process(X_target=valid_protein_processed, y=valid_target, target_encoding=target_encoding,
-                                   # drug_encoding= drug_encoding,
-                                   split_method='random', frac=[1e-5, 0.99998, 1e-5],
-                                   random_seed=1)
-
-    _, _, test = utils.data_process(X_target=test_protein_processed, y=test_target, target_encoding=target_encoding,
-                                    # drug_encoding= drug_encoding,
-                                    split_method='random', frac=[1e-5, 1e-5, 0.99998],
-                                    random_seed=1)
+    train, val, test = load_single_dataset("SubCellular_Binary", path, target_encoding)
 
     config = generate_config(target_encoding=target_encoding,
                              cls_hidden_dims=[1024, 1024],
@@ -129,7 +53,6 @@ if __name__ == "__main__":
     
     config['binary'] = True
     config['multi'] = False
-    # config['classes'] = 10
 
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
