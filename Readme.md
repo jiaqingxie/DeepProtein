@@ -64,6 +64,8 @@ pip install lmdb seaborn wandb pydantic DeepPurpose
 pip install transformers bitsandbytes 
 pip install accelerate>=0.26.0
 pip install SentencePiece einops rdchiral peft
+pip install numpy==1.23.5 pandas==1.5.3 scikit-learn==1.2.2
+pip install datasets
 conda install -c conda-forge pytdc
 ```
 
