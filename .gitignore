@@ -5,3 +5,4 @@ DeepProtein.egg-info/
 __pycache__
 .idea/
 .vscode/
+plot/wandb/training_curves_fixed_bottom_legend.png
