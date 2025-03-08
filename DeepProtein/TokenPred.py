@@ -141,6 +141,7 @@ class Protein_Prediction:
         if 'decay' not in self.config.keys():
             self.config['decay'] = 0
 
+
     def test_(self, data_generator, model, repurposing_mode=False, test=False, verbose=True):
         """
         Evaluate the model on a given data generator.
