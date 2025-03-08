@@ -99,7 +99,7 @@ Checkout some demos & tutorials to start, which are available in Google Colab:
 | [Protein Pair Classification](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                       | Example of ProtT5 on Human_PPI Affinity prediction                 |
 | [Residual-Level Classification](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                     | Example of Token_CNN on PDB prediction                             |
 | [Inference of DeepProtT5 models on all above tasks](https://colab.research.google.com/drive/1k0xFLNajWwX8nd5Q2y9YtkvpL_hyRGRB?usp=sharing) | Example of DeepProtT5 on Fold Structure prediction                 |
-| [Personalized data ](https://colab.research.google.com/drive/1RD9qTpkP7m5oSHhjTD7gJQNw6wfLzJrY?usp=sharing)                                | Example of personalized data load and train                        |
+| [Personalized data ](https://colab.research.google.com/drive/1eFJ31UdQLuCMDTVXSC7lCVu4RUCTdKL3?usp=sharing)                                | Example of personalized data load and train                        |
 
 ## Example
 
