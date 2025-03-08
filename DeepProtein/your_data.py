@@ -38,10 +38,10 @@ def read_protein_aim_file(filename, sep=","):
 
             if len(parts) == 2:
                 p1, aim = parts
-                data_list.append((p1, aim))
+                data_list.append((p1, float(aim)))
             elif len(parts) == 3:
                 p1, p2, aim = parts
-                data_list.append((p1, p2, aim))
+                data_list.append((p1, p2, float(aim)))
             else:
                 print(f"Warning: {line}")
 
