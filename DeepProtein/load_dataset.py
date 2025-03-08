@@ -8,8 +8,9 @@ from tdc.single_pred import Develop, CRISPROutcome
 from tdc.single_pred import Epitope, Paratope
 from DeepProtein.dataset import *
 import DeepProtein.utils as utils
+from DeepProtein.your_data import *
 
-def load_single_dataset(dataset_name, path, method):
+def load_single_dataset(dataset_name, path, method, your_file=None):
     # loading single
     if dataset_name == "Beta":
         train = Beta_lactamase(path + '/DeepProtein/data', 'train')
@@ -49,6 +50,9 @@ def load_single_dataset(dataset_name, path, method):
         train = list(zip(train_GuideSeq, y_train))
         valid = list(zip(val_GuideSeq, y_valid))
         test = list(zip(test_GuideSeq, y_test))
+    elif dataset_name == "Custom":
+        data_2col = read_protein_aim_file(your_file, sep=",")
+        train, valid, test = split_data(data_2col, ratio=(0.5, 0.3, 0.2), shuffle=True)
 
     #### deal with targeting (sequence-based and structure-based):
 
@@ -120,7 +124,7 @@ def load_single_dataset(dataset_name, path, method):
                                     random_seed=1)
     return train, val, test
 
-def load_pair_dataset(dataset_name, path, method):
+def load_pair_dataset(dataset_name, path, method, your_file=None):
     # loading pair
     if dataset_name == "PPI_Affinity":
         train = PPI_Affinity(path + '/DeepProtein/data', 'train')
@@ -155,6 +159,9 @@ def load_pair_dataset(dataset_name, path, method):
         train = list(zip(train_antibody_1, train_antibody_2, y_train))
         valid = list(zip(valid_antibody_1, valid_antibody_2, y_valid))
         test = list(zip(test_antibody_1, test_antibody_2, y_test))
+    elif dataset_name == "Custom":
+        data_2col = read_protein_aim_file(your_file, sep=",")
+        train, valid, test = split_data(data_2col, ratio=(0.5, 0.3, 0.2), shuffle=True)
 
     #### deal with targeting (sequence-based and structure-based):
     if method in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
