@@ -42,6 +42,8 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 ---
 
 ## News
+- [03/25] DeepProtein now published three notebooks of dataset loading, training and inference with DeepProtT5 (colab).
+- [03/25] DeepProtein is now under the second round review at Bioinformatics.
 - [03/25] DeepProtein now supports Fold and Secondary Structure Dataset
 - [03/25] DeepProtein: Files under the train folders are now simplified, also code in Readme.md file.
 - [03/25] DeepProtein has now released DeepProtT5 Series Models, which can be found at https://huggingface.co/collections/jiaxie/protlm-67bba5b973db936ce90e7d54
@@ -51,7 +53,6 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 - [12/24] DeepProtein now supports BioMistral-7B model, working on [BioT5+, BioT5, ChemLLM, and LlaSMol]
 - [12/24] DeepProtein now supports four new Protein Language Models: ESM-1-650M, ESM-2-650M, Prot-Bert and Prot-T5 Models for Protein Function Prediction.
 - [11/24] DeepProtein is accepted at NeurIPS AI4DrugX as Spotlight. It's under revision at Bioinformatics.
-- [09/24] DeepProtein is online. 
 
 
 ---
