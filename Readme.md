@@ -3,7 +3,7 @@
 ---
 
 <h3 align="center">
-  [DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning](https://arxiv.org/abs/2410.02023, NeurIPS 2024 AIDrugX Spotlight)
+  [DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning](https://arxiv.org/abs/2410.02023, Bioinformatics)
 </h3>
 
 <h4 align="center">
