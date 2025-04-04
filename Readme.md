@@ -42,6 +42,7 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 ---
 
 ## News
+- [04/25] DeepProtein is accepted at Bioinformatics (under publication).
 - [03/25] DeepProtein now published three notebooks of dataset loading, training and inference with DeepProtT5 (colab).
 - [03/25] DeepProtein is now under the second round review at Bioinformatics.
 - [03/25] DeepProtein now supports Fold and Secondary Structure Dataset
