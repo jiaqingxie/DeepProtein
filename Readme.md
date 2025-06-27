@@ -558,11 +558,13 @@ We provided the data under the folder DeepProtein/data (Besides TDC) and the fol
 ## Cite Us
 If you found this package useful, please cite [our paper](https://arxiv.org/abs/2410.02023):
 ```
-@article{xie2024deepprotein,
+@article{xie2025deepprotein,
   title={DeepProtein: Deep Learning Library and Benchmark for Protein Sequence Learning},
-  author={Xie, Jiaqing and Zhao, Yue and Fu, Tianfan},
-  journal={arxiv},
-  year={2024}
+  author={Xie, Jiaqing and Fu, Tianfan},
+  journal={Bioinformatics},
+  pages={btaf165},
+  year={2025},
+  publisher={Oxford University Press}
 }
 ```
 
