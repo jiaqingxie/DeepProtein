@@ -87,7 +87,7 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
     pip install torch-geometric
     ```
 
-DeepProtein 2.0 removes the DGL requirement from the core package. Phase II adds torch-geometric support for single-protein graph encoders including `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`. Legacy `DGL_*` graph encoders are kept as unsupported compatibility stubs, and pair/PPI graph encoders are still pending migration.
+DeepProtein 2.0 removes the DGL requirement from the core package. Phases II and III add torch-geometric support for both single-protein and pair/PPI graph encoders, including `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`. Legacy `DGL_*` graph encoders are kept as unsupported compatibility stubs.
 
 ## Demos
 
@@ -111,7 +111,7 @@ We give two examples for each case study. One is trained with fixed parameters (
 
 | Argument  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| target_encoding             | DeepProtein 2.0 supports torch-only protein encoders such as 'CNN', 'Transformer', 'CNN_RNN', 'prot_t5', 'esm_1b', 'esm_2', and 'prot_bert', plus single-protein torch-geometric graph encoders 'PyG_GCN', 'PyG_GAT', 'PyG_GraphSAGE', 'PyG_GIN', 'PyG_ChebNet', and 'PyG_TAGConv'. Legacy graph encoders such as 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', and 'Graphormer' are not available in the v2 runtime. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer'] |
+| target_encoding             | DeepProtein 2.0 supports torch-only protein encoders such as 'CNN', 'Transformer', 'CNN_RNN', 'prot_t5', 'esm_1b', 'esm_2', and 'prot_bert', plus torch-geometric graph encoders 'PyG_GCN', 'PyG_GAT', 'PyG_GraphSAGE', 'PyG_GIN', 'PyG_ChebNet', and 'PyG_TAGConv' for both single-protein and pair/PPI tasks. Legacy graph encoders such as 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', and 'Graphormer' are not available in the v2 runtime. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer'] |
 | seed         | For paper: 7 / 42 /100. You could try your own seed.                                                                                                                                                                                                                                                                                                                                                                                                       |
 | wandb_proj     | The name of your wandb project that you wish to save the results into.                                                                                                                                                                                                                                                                                                                                                                                     |
 | lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning.                                                                                                                                                                                                                                                                                                                                                                           |
@@ -186,13 +186,13 @@ import DeepProtein.PPI as models
 
 ### Load PPI Affinity dataset
 path = os.getcwd()
-train, val, test = load_pair_dataset("IEDB", path, 'CNN')
+train, val, test = load_pair_dataset("PPI_Affinity", path, 'PyG_GCN')
                             
 ### Load configuration for model
-config = generate_config(target_encoding='CNN',
+config = generate_config(target_encoding='PyG_GCN',
                          cls_hidden_dims=[512],
                          train_epoch=20,
-                         LR=0.0001,
+                         LR=0.00001,
                          batch_size=32,
                          )
 # config['multi'] = False
@@ -205,7 +205,7 @@ model.train(train, val, test)
 ```
 </details>
 
-Pair/PPI graph methods are still being migrated to torch-geometric, so only sequence-based encoders are currently supported for this setting.
+Pair/PPI graph methods are now available through torch-geometric. `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv` all share the same encoder tower across the two proteins.
 
 
 <details>
@@ -220,7 +220,7 @@ python train/ppi_affinity.py --target_encoding CNN --seed 42 --wandb_proj DeepPr
   <summary>GNN Case</summary>
 
 ```python 
-python train/ppi_affinity.py --target_encoding CNN --seed 42 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+python train/ppi_affinity.py --target_encoding PyG_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
 ```
 
 </details>
@@ -399,13 +399,13 @@ from DeepProtein.load_dataset import *
 import DeepProtein.PPI as models
 
 ### Load TAP Dataset
-train, val, test = load_pair_dataset("TAP", None, 'CNN')
+train, val, test = load_pair_dataset("TAP", None, 'PyG_GAT')
 
 ### Load configuration for model
-config = generate_config(target_encoding='CNN',
+config = generate_config(target_encoding='PyG_GAT',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
-                         LR=0.0001,
+                         LR=0.00001,
                          batch_size=32,
                          )
 config['binary'] = False
@@ -422,7 +422,7 @@ model.train(train, val, test, batch_size=32)
 
 
 
-Pair/PPI graph methods are still being migrated to torch-geometric, so only sequence-based encoders are currently supported for this setting.
+Pair/PPI graph methods are also available for TAP-style pair tasks through the same `PyG_*` encoder family.
 
 <details>
   <summary>CNN Case</summary>
@@ -437,7 +437,7 @@ python train/TAP.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr
   <summary>GNN Case</summary>
 
 ```python 
-python train/TAP.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+python train/TAP.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
 ```
 
 </details>
@@ -482,7 +482,7 @@ model.train(train, val, test, batch_size=32)
 
 If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True.
 
-(b) If you wish to use arguments, this could be trained in one line. Single-protein torch-geometric methods such as `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv` are available currently.
+(b) If you wish to use arguments, this could be trained in one line. Torch-geometric methods such as `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv` are available currently for both single-protein and pair/PPI tasks.
 
 <details>
   <summary>CNN Case</summary>

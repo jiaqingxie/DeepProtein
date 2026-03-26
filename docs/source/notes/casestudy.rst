@@ -36,7 +36,14 @@ CNN Case:
 
   $ python train/ppi_affinity.py --target_encoding CNN --seed 42 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
 
-Graph encoder support for PPI is still under migration. Please use sequence-based encoders for now.
+GNN Case:
+
+.. code-block:: bash
+
+
+  $ python train/ppi_affinity.py --target_encoding PyG_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+
+Pair/PPI torch-geometric support is now available for `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`.
 
 
 1c. Protein Localization Prediction
@@ -94,6 +101,13 @@ CNN Case:
 
 
   $ python train/TAP.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr 0.0001 --epochs 100
+
+GNN Case:
+
+.. code-block:: bash
+
+
+  $ python train/TAP.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
 
 
 

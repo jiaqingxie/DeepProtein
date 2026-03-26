@@ -150,14 +150,28 @@ def pyg_protein_collate_func(batch):
     from torch_geometric.data import Batch
 
     graphs, labels = zip(*batch)
+    return Batch.from_data_list(list(graphs)), _stack_label_tensors(labels)
+
+
+def _stack_label_tensors(labels):
     label_tensors = []
     for label in labels:
         label_tensor = torch.as_tensor(label, dtype=torch.float32)
         if label_tensor.dim() == 0:
             label_tensor = label_tensor.unsqueeze(0)
         label_tensors.append(label_tensor)
+    return torch.stack(label_tensors, dim=0)
 
-    return Batch.from_data_list(list(graphs)), torch.stack(label_tensors, dim=0)
+
+def pyg_ppi_collate_func(batch):
+    from torch_geometric.data import Batch
+
+    graph_1, graph_2, labels = zip(*batch)
+    return (
+        Batch.from_data_list(list(graph_1)),
+        Batch.from_data_list(list(graph_2)),
+        _stack_label_tensors(labels),
+    )
 
 
 def create_var(tensor, requires_grad=None):
@@ -917,13 +931,8 @@ class data_process_PPI_loader(data.Dataset):
         self.config = config
         raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_PPI_loader')
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT',
-                                              'Graphormer']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+        if self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            self.fc = smiles_to_pyg_data
 
     def __len__(self):
         'Denotes the total number of samples'
@@ -935,15 +944,14 @@ class data_process_PPI_loader(data.Dataset):
         v_d = self.df.iloc[index]['target_encoding_1']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_d = protein_2_embed(v_d)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+        elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            v_d = self.fc(v_d)
 
         v_p = self.df.iloc[index]['target_encoding_2']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
-            v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
-            # v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+        elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            v_p = self.fc(v_p)
         y = self.labels[index]
         return v_d, v_p, y
 

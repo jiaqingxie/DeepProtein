@@ -127,11 +127,6 @@ def load_single_dataset(dataset_name, path, method, your_file=None):
 
 def load_pair_dataset(dataset_name, path, method, your_file=None):
     utils.raise_if_legacy_graph_encoding(method, context='load_pair_dataset')
-    if method in utils.PYG_TARGET_ENCODINGS:
-        raise NotImplementedError(
-            "Pair/PPI torch_geometric encoders have not been migrated yet. "
-            "Phase II only supports single-protein graph tasks."
-        )
     # loading pair
     if dataset_name == "PPI_Affinity":
         train = PPI_Affinity(path + '/DeepProtein/data', 'train')
