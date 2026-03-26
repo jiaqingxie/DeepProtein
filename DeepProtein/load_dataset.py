@@ -11,6 +11,7 @@ import DeepProtein.utils as utils
 from DeepProtein.your_data import *
 
 def load_single_dataset(dataset_name, path, method, your_file=None):
+    utils.raise_if_legacy_graph_encoding(method, context='load_single_dataset')
     # loading single
     if dataset_name == "Beta":
         train = Beta_lactamase(path + '/DeepProtein/data', 'train')
@@ -56,7 +57,7 @@ def load_single_dataset(dataset_name, path, method, your_file=None):
 
     #### deal with targeting (sequence-based and structure-based):
 
-    if method in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP',  'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+    if method in utils.PYG_TARGET_ENCODINGS:
         if dataset_name in ["CRISPR", "Stability"]:
             train_protein_processed, train_target, train_protein_idx = collate_fn(train, graph=True, unsqueeze=False)
             valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid, graph=True, unsqueeze=False)
@@ -125,6 +126,12 @@ def load_single_dataset(dataset_name, path, method, your_file=None):
     return train, val, test
 
 def load_pair_dataset(dataset_name, path, method, your_file=None):
+    utils.raise_if_legacy_graph_encoding(method, context='load_pair_dataset')
+    if method in utils.PYG_TARGET_ENCODINGS:
+        raise NotImplementedError(
+            "Pair/PPI torch_geometric encoders have not been migrated yet. "
+            "Phase II only supports single-protein graph tasks."
+        )
     # loading pair
     if dataset_name == "PPI_Affinity":
         train = PPI_Affinity(path + '/DeepProtein/data', 'train')
@@ -164,7 +171,7 @@ def load_pair_dataset(dataset_name, path, method, your_file=None):
         train, valid, test = split_data(data_2col, ratio=(0.5, 0.3, 0.2), shuffle=True)
 
     #### deal with targeting (sequence-based and structure-based):
-    if method in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+    if method in utils.PYG_TARGET_ENCODINGS:
         train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train, graph=True, unsqueeze= False)
         valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid, graph=True, unsqueeze= False)
         test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test, graph=True, unsqueeze= False)

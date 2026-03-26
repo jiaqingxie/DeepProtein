@@ -63,11 +63,11 @@ def model_initialize(**config):
 
 
 def dgl_collate_func(x):
-	x1, x2, y = zip(*x)
-	import dgl
-	x1 = dgl.batch(x1)
-	x2 = dgl.batch(x2)
-	return x1, x2, torch.tensor(y)
+	raise NotImplementedError(
+		"Legacy DGL graph batching is not available in DeepProtein 2.0 phase 1. "
+		"Please switch to a torch-only encoder or wait for the torch_geometric "
+		"graph backend."
+	)
 
 def model_pretrained(path_dir = None, model = None):
 	if model is not None:
@@ -119,24 +119,8 @@ class PPI_Model:
 			self.model_protein = CNN_RNN('protein', **config)
 		elif target_encoding == 'Transformer':
 			self.model_protein = transformer('protein', **config)
-		elif target_encoding == 'DGL_GCN':
-			self.model_protein = DGL_GCN(in_feats=74,
-										 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-										 activation=[config['gnn_activation']] * config['gnn_num_layers'],
-										 predictor_dim=config['hidden_dim_drug'])
-		elif target_encoding == 'DGL_GAT':
-			self.model_protein = DGL_GAT(in_feats=74,
-										 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-										 activation=[config['gnn_activation']] * config['gnn_num_layers'],
-										 predictor_dim=config['hidden_dim_drug'])
-		elif target_encoding == 'DGL_NeuralFP':
-			self.model_protein = DGL_NeuralFP(in_feats=74,
-											  hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-											  max_degree=config['neuralfp_max_degree'],
-											  activation=[config['gnn_activation']] * config['gnn_num_layers'],
-											  predictor_hidden_size=config['neuralfp_predictor_hid_dim'],
-											  predictor_dim=config['hidden_dim_drug'],
-											  predictor_activation=config['neuralfp_predictor_activation'])
+		elif target_encoding in LEGACY_DGL_TARGET_ENCODINGS:
+			raise_if_legacy_graph_encoding(target_encoding, context='PPI_Model')
 		elif target_encoding == 'prot_bert':
 			self.model_protein = Prot_Bert_Predictor('protein', **config)
 
@@ -250,7 +234,7 @@ class PPI_Model:
 		y_label = []
 		model.eval()
 		for i, (v_d, v_p, label) in enumerate(data_generator):
-			if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
+			if self.target_encoding == 'Transformer':
 				v_d = v_d
 				v_p = v_p
 			else:
@@ -323,9 +307,6 @@ class PPI_Model:
 	    		'num_workers': self.config['num_workers'],
 	    		'drop_last': False}
 
-		if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-									'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-			params['collate_fn'] = dgl_collate_func
 		# print(data_process_PPI_loader(train.index.values, train.Label.values, train, **self.config).__getitem__(0))
 		training_generator = data.DataLoader(data_process_PPI_loader(train.index.values, train.Label.values, train, **self.config), **params)
 		validation_generator = data.DataLoader(data_process_PPI_loader(val.index.values, val.Label.values, val, **self.config), **params)
@@ -337,9 +318,6 @@ class PPI_Model:
 					'num_workers': self.config['num_workers'],
 					'drop_last': False,
 					'sampler':SequentialSampler(info)}
-			if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-										'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-				params_test['collate_fn'] = dgl_collate_func
 			testing_generator = data.DataLoader(data_process_PPI_loader(test.index.values, test.Label.values, test, **self.config), **params_test)
 
 		# early stopping
@@ -362,7 +340,7 @@ class PPI_Model:
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
+				if self.target_encoding == 'Transformer':
 					v_d = v_d
 					v_p = v_p
 				else:
@@ -497,9 +475,6 @@ class PPI_Model:
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
 
-		if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-									'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-			params['collate_fn'] = dgl_collate_func
 		generator = data.DataLoader(info, **params)
 
 		score = self.test_(generator, self.model, repurposing_mode = True)

@@ -29,7 +29,6 @@ from zipfile import ZipFile
 import os
 import sys
 import pathlib
-import dgl
 import re
 
 this_dir = str(pathlib.Path(__file__).parent.absolute())
@@ -56,6 +55,109 @@ idx2word_p = sub_csv['index'].values
 words2idx_p = dict(zip(idx2word_p, range(0, len(idx2word_p))))
 
 from .chemutils import get_mol, atom_features, bond_features, MAX_NB
+
+LEGACY_DGL_DRUG_ENCODINGS = {
+    'DGL_GCN',
+    'DGL_GIN',
+    'DGL_NeuralFP',
+    'DGL_GIN_AttrMasking',
+    'DGL_GIN_ContextPred',
+    'DGL_AttentiveFP',
+}
+
+LEGACY_DGL_TARGET_ENCODINGS = {
+    'DGL_GCN',
+    'DGL_GAT',
+    'DGL_NeuralFP',
+    'DGL_AttentiveFP',
+    'DGL_MPNN',
+    'PAGTN',
+    'EGT',
+    'Graphormer',
+}
+
+LEGACY_DGL_ENCODINGS = LEGACY_DGL_DRUG_ENCODINGS | LEGACY_DGL_TARGET_ENCODINGS
+
+PYG_TARGET_ENCODINGS = {
+    'PyG_GCN',
+    'PyG_GAT',
+    'PyG_GraphSAGE',
+    'PyG_GIN',
+    'PyG_ChebNet',
+    'PyG_TAGConv',
+}
+
+PROTEIN_PASSTHROUGH_ENCODINGS = LEGACY_DGL_TARGET_ENCODINGS | PYG_TARGET_ENCODINGS | {
+    'prot_bert',
+    'esm_1b',
+    'esm_2',
+    'prot_t5',
+}
+
+
+def raise_if_legacy_graph_encoding(encoding, context='This workflow'):
+    if encoding not in LEGACY_DGL_ENCODINGS:
+        return
+
+    raise NotImplementedError(
+        f"{context} uses the legacy DGL/dgllife encoder '{encoding}', "
+        "which has not been migrated to the torch_geometric backend yet. "
+        "DeepProtein 2.0 phase 1 currently supports the torch-only sequence "
+        "and language-model encoders only."
+    )
+
+
+def is_pyg_target_encoding(encoding):
+    return encoding in PYG_TARGET_ENCODINGS
+
+
+def mol_to_pyg_data(mol):
+    from torch_geometric.data import Data
+
+    atom_tensors = [atom_features(atom).float() for atom in mol.GetAtoms()]
+    if atom_tensors:
+        x = torch.stack(atom_tensors, dim=0)
+    else:
+        x = torch.zeros((1, ATOM_FDIM), dtype=torch.float32)
+
+    edge_pairs = []
+    edge_attrs = []
+    for bond in mol.GetBonds():
+        begin_idx = bond.GetBeginAtomIdx()
+        end_idx = bond.GetEndAtomIdx()
+        bond_feat = bond_features(bond).float()
+        edge_pairs.extend([[begin_idx, end_idx], [end_idx, begin_idx]])
+        edge_attrs.extend([bond_feat, bond_feat.clone()])
+
+    if edge_pairs:
+        edge_index = torch.tensor(edge_pairs, dtype=torch.long).t().contiguous()
+        edge_attr = torch.stack(edge_attrs, dim=0)
+    else:
+        edge_index = torch.empty((2, 0), dtype=torch.long)
+        edge_attr = torch.empty((0, BOND_FDIM), dtype=torch.float32)
+
+    return Data(x=x, edge_index=edge_index, edge_attr=edge_attr)
+
+
+def smiles_to_pyg_data(smiles):
+    mol = get_mol(smiles)
+    if mol is None:
+        raise ValueError(f"Failed to build a molecular graph from SMILES: {smiles}")
+    return mol_to_pyg_data(mol)
+
+
+def pyg_protein_collate_func(batch):
+    from torch_geometric.data import Batch
+
+    graphs, labels = zip(*batch)
+    label_tensors = []
+    for label in labels:
+        label_tensor = torch.as_tensor(label, dtype=torch.float32)
+        if label_tensor.dim() == 0:
+            label_tensor = label_tensor.unsqueeze(0)
+        label_tensors.append(label_tensor)
+
+    return Batch.from_data_list(list(graphs)), torch.stack(label_tensors, dim=0)
 
 
 def create_var(tensor, requires_grad=None):
@@ -509,8 +611,7 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-    elif target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT',
-                             'Graphormer', 'prot_bert', 'esm_1b', 'esm_2', 'prot_t5']:
+    elif target_encoding in PROTEIN_PASSTHROUGH_ENCODINGS:
         df_data[save_column_name] = df_data[column_name]
     # elif target_encoding == 'MPNN':
     #     unique = pd.Series(df_data[column_name].unique()).apply(smiles2mpnnfeature)
@@ -709,6 +810,8 @@ class data_process_loader(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_loader')
+        raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_loader')
 
         if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_MPNN', 'EGT', 'Graphormer']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
@@ -758,6 +861,7 @@ class data_process_DDI_loader(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_DDI_loader')
 
         if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
@@ -811,6 +915,7 @@ class data_process_PPI_loader(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_PPI_loader')
 
         if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT',
                                               'Graphormer']:
@@ -851,6 +956,7 @@ class data_process_loader_Property_Prediction(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_loader_Property_Prediction')
 
         if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
             from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
@@ -899,21 +1005,10 @@ class data_process_loader_Protein_Prediction(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_loader_Protein_Prediction')
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT',
-                                              'Graphormer']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['target_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+        if self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            self.fc = smiles_to_pyg_data
 
 
     def __len__(self):
@@ -928,9 +1023,8 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
-                                                'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-            v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+        elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            v_p = self.fc(v_p)
 
         y = self.labels[index]
 
@@ -1110,6 +1204,8 @@ def generate_config(drug_encoding=None, target_encoding=None,
                     gnn_hid_dim_drug=64,
                     gnn_num_layers=3,
                     gnn_activation=F.relu,
+                    pyg_gat_heads=4,
+                    pyg_cheb_k=3,
                     neuralfp_max_degree=10,
                     neuralfp_predictor_hid_dim=128,
                     neuralfp_predictor_activation=torch.tanh,
@@ -1263,6 +1359,13 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
         base_config['gnn_activation'] = gnn_activation
+    elif target_encoding in PYG_TARGET_ENCODINGS:
+        base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+        base_config['gnn_num_layers'] = gnn_num_layers
+        base_config['gnn_activation'] = gnn_activation
+        base_config['hidden_dim_protein'] = hidden_dim_protein
+        base_config['pyg_gat_heads'] = pyg_gat_heads
+        base_config['pyg_cheb_k'] = pyg_cheb_k
     elif target_encoding == 'DGL_GAT':
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
@@ -1850,19 +1953,10 @@ class GraphDataset(Dataset):
 
 # compute positional encodings for graph transformers
 def compute_pos(generator, params, method="Laplacian"):
-    """ Return a new Dataset"""
-    modified_graphs = []
-    modified_labels = []
-
-    if method == 'Laplacian':
-        for graph, label in generator:
-            graph.ndata['PE'] = dgl.laplacian_pe(graph, k=74)
-            modified_graphs.append(graph)
-            modified_labels.append(label)
-
-    modified_dataset = list(zip(modified_graphs, modified_labels))
-    modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels), **params)
-    return modified_generator
+    raise NotImplementedError(
+        "Graph positional encodings still depend on the legacy DGL backend "
+        "and have not been migrated to torch_geometric yet."
+    )
 
 def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):
     ans = []

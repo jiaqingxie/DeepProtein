@@ -34,16 +34,18 @@ First time usage: setup conda environment
    $ conda install -c conda-forge pytdc
    $ 
    $
-   $ ## Choice 1: Torch 2.3.0 + CUDA Version 11.8 and DGL 2.3.0 + CUDA Version 11.8  
+   $ ## Choice 1: Torch 2.3.0 + CUDA Version 11.8
    $ pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu118
-   $ conda install -c dglteam/label/th23_cu118 dgl
+   $ pip install torch-geometric
    $ 
-   $ ## Choice 2: Torch 2.3.0 + CPU and DGL 2.3.0 + CPU
+   $ ## Choice 2: Torch 2.3.0 + CPU
    $ pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cpu
-   $ conda install -c dglteam/label/th23_cpu dgl
+   $ pip install torch-geometric
    $ 
    $ pip install -r requirements.txt
    $ conda deactivate ### exit
+
+DeepProtein 2.0 phase 1 removes DGL from the core installation path. The legacy graph encoders are being migrated to a torch-geometric backend, so the currently supported v2 workflows are the torch-only sequence and language-model encoders.
 
 
 Another Choice is to use python virtual env where it have saved plenty of space on package management.
