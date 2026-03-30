@@ -64,90 +64,94 @@ class PyGPositionalEncodingSmokeTests(unittest.TestCase):
             data_file = Path(tmpdir) / "single.csv"
             self._write_custom_single_file(data_file)
 
-            train, val, test = load_single_dataset(
-                "Custom",
-                str(self.repo_root),
-                "PyG_GCN",
-                your_file=str(data_file),
-            )
-            config = generate_config(
-                target_encoding="PyG_GCN",
-                cls_hidden_dims=[16],
-                train_epoch=1,
-                LR=1e-5,
-                batch_size=2,
-                result_folder=str(Path(tmpdir) / "single_results"),
-            )
-            config["binary"] = False
-            config["multi"] = False
-            config["num_workers"] = 0
+            for method in ("PyG_GCN", "PyG_GraphGPS"):
+                with self.subTest(encoder=method):
+                    train, val, test = load_single_dataset(
+                        "Custom",
+                        str(self.repo_root),
+                        method,
+                        your_file=str(data_file),
+                    )
+                    config = generate_config(
+                        target_encoding=method,
+                        cls_hidden_dims=[16],
+                        train_epoch=1,
+                        LR=1e-5,
+                        batch_size=2,
+                        result_folder=str(Path(tmpdir) / f"single_results_{method}"),
+                    )
+                    config["binary"] = False
+                    config["multi"] = False
+                    config["num_workers"] = 0
 
-            dataset = data_process_loader_Protein_Prediction(
-                train.index.values,
-                train.Label.values,
-                train,
-                **{**config, "compute_pos_enc": True},
-            )
-            graph, _label = dataset[0]
-            self.assertTrue(hasattr(graph, "pe"))
-            self.assertEqual(graph.pe.shape[1], config["pyg_pos_enc_dim"])
+                    dataset = data_process_loader_Protein_Prediction(
+                        train.index.values,
+                        train.Label.values,
+                        train,
+                        **{**config, "compute_pos_enc": True},
+                    )
+                    graph, _label = dataset[0]
+                    self.assertTrue(hasattr(graph, "pe"))
+                    self.assertEqual(graph.pe.shape[1], config["pyg_pos_enc_dim"])
 
-            run = wandb.init(mode="disabled", reinit=True)
-            try:
-                model = protein_models.model_initialize(**config)
-                model.train(train, val, test, verbose=False, compute_pos_enc=True)
-                preds = model.predict(test)
-            finally:
-                wandb.finish()
+                    run = wandb.init(mode="disabled", reinit=True)
+                    try:
+                        model = protein_models.model_initialize(**config)
+                        model.train(train, val, test, verbose=False, compute_pos_enc=True)
+                        preds = model.predict(test)
+                    finally:
+                        wandb.finish()
 
-            self.assertIsNotNone(run)
-            self.assertEqual(len(preds), len(test))
+                    self.assertIsNotNone(run)
+                    self.assertEqual(len(preds), len(test))
 
     def test_ppi_train_with_compute_pos_enc(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             data_file = Path(tmpdir) / "pair.csv"
             self._write_custom_pair_file(data_file)
 
-            train, val, test = load_pair_dataset(
-                "Custom",
-                str(self.repo_root),
-                "PyG_GCN",
-                your_file=str(data_file),
-            )
-            config = generate_config(
-                target_encoding="PyG_GCN",
-                cls_hidden_dims=[16],
-                train_epoch=1,
-                LR=1e-5,
-                batch_size=2,
-                result_folder=str(Path(tmpdir) / "ppi_results"),
-            )
-            config["binary"] = False
-            config["multi"] = False
-            config["num_workers"] = 0
+            for method in ("PyG_GCN", "PyG_GraphGPS"):
+                with self.subTest(encoder=method):
+                    train, val, test = load_pair_dataset(
+                        "Custom",
+                        str(self.repo_root),
+                        method,
+                        your_file=str(data_file),
+                    )
+                    config = generate_config(
+                        target_encoding=method,
+                        cls_hidden_dims=[16],
+                        train_epoch=1,
+                        LR=1e-5,
+                        batch_size=2,
+                        result_folder=str(Path(tmpdir) / f"ppi_results_{method}"),
+                    )
+                    config["binary"] = False
+                    config["multi"] = False
+                    config["num_workers"] = 0
 
-            dataset = data_process_PPI_loader(
-                train.index.values,
-                train.Label.values,
-                train,
-                **{**config, "compute_pos_enc": True},
-            )
-            graph_1, graph_2, _label = dataset[0]
-            self.assertTrue(hasattr(graph_1, "pe"))
-            self.assertTrue(hasattr(graph_2, "pe"))
-            self.assertEqual(graph_1.pe.shape[1], config["pyg_pos_enc_dim"])
-            self.assertEqual(graph_2.pe.shape[1], config["pyg_pos_enc_dim"])
+                    dataset = data_process_PPI_loader(
+                        train.index.values,
+                        train.Label.values,
+                        train,
+                        **{**config, "compute_pos_enc": True},
+                    )
+                    graph_1, graph_2, _label = dataset[0]
+                    self.assertTrue(hasattr(graph_1, "pe"))
+                    self.assertTrue(hasattr(graph_2, "pe"))
+                    self.assertEqual(graph_1.pe.shape[1], config["pyg_pos_enc_dim"])
+                    self.assertEqual(graph_2.pe.shape[1], config["pyg_pos_enc_dim"])
 
-            run = wandb.init(mode="disabled", reinit=True)
-            try:
-                model = ppi_models.model_initialize(**config)
-                model.train(train, val, test, verbose=False, compute_pos_enc=True)
-                preds = model.predict(test)
-            finally:
-                wandb.finish()
+                    run = wandb.init(mode="disabled", reinit=True)
+                    try:
+                        model = ppi_models.model_initialize(**config)
+                        model.train(train, val, test, verbose=False, compute_pos_enc=True)
+                        preds = model.predict(test)
+                    finally:
+                        wandb.finish()
 
-            self.assertIsNotNone(run)
-            self.assertEqual(len(preds), len(test))
+                    self.assertIsNotNone(run)
+                    self.assertEqual(len(preds), len(test))
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ GNN Case:
 
   $ python train/ppi_affinity.py --target_encoding PyG_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 
-Pair/PPI torch-geometric support is now available for `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`, including optional Laplacian positional encoding with ``compute_pos_enc=True``.
+Pair/PPI torch-geometric support is now available for `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, `PyG_TAGConv`, and `PyG_GraphGPS`, including optional Laplacian positional encoding with ``compute_pos_enc=True``.
 
 
 1c. Protein Localization Prediction

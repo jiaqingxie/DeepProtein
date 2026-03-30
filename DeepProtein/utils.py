@@ -87,6 +87,7 @@ PYG_TARGET_ENCODINGS = {
     'PyG_GIN',
     'PyG_ChebNet',
     'PyG_TAGConv',
+    'PyG_GraphGPS',
 }
 
 PROTEIN_PASSTHROUGH_ENCODINGS = LEGACY_DGL_TARGET_ENCODINGS | PYG_TARGET_ENCODINGS | {
@@ -1189,6 +1190,11 @@ def generate_config(drug_encoding=None, target_encoding=None,
                     pyg_cheb_k=3,
                     pyg_pos_enc_dim=8,
                     pyg_pos_enc_method='Laplacian',
+                    pyg_graphgps_channels=64,
+                    pyg_graphgps_layers=3,
+                    pyg_graphgps_heads=4,
+                    pyg_graphgps_dropout=0.1,
+                    pyg_graphgps_attn_type='multihead',
                     neuralfp_max_degree=10,
                     neuralfp_predictor_hid_dim=128,
                     neuralfp_predictor_activation=torch.tanh,
@@ -1214,6 +1220,11 @@ def generate_config(drug_encoding=None, target_encoding=None,
                    'compute_pos_enc': False,
                    'pyg_pos_enc_dim': pyg_pos_enc_dim,
                    'pyg_pos_enc_method': pyg_pos_enc_method,
+                   'pyg_graphgps_channels': pyg_graphgps_channels,
+                   'pyg_graphgps_layers': pyg_graphgps_layers,
+                   'pyg_graphgps_heads': pyg_graphgps_heads,
+                   'pyg_graphgps_dropout': pyg_graphgps_dropout,
+                   'pyg_graphgps_attn_type': pyg_graphgps_attn_type,
                    }
     if not os.path.exists(base_config['result_folder']):
         os.makedirs(base_config['result_folder'])
@@ -1354,6 +1365,11 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['pyg_cheb_k'] = pyg_cheb_k
         base_config['pyg_pos_enc_dim'] = pyg_pos_enc_dim
         base_config['pyg_pos_enc_method'] = pyg_pos_enc_method
+        base_config['pyg_graphgps_channels'] = pyg_graphgps_channels
+        base_config['pyg_graphgps_layers'] = pyg_graphgps_layers
+        base_config['pyg_graphgps_heads'] = pyg_graphgps_heads
+        base_config['pyg_graphgps_dropout'] = pyg_graphgps_dropout
+        base_config['pyg_graphgps_attn_type'] = pyg_graphgps_attn_type
     elif target_encoding == 'DGL_GAT':
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers

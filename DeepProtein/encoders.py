@@ -704,6 +704,93 @@ class PyG_TAGConv(_PyGGraphEncoderBase):
         return TAGConv(in_feats, out_feats)
 
 
+class PyG_GraphGPS(nn.Module):
+    def __init__(
+        self,
+        in_feats,
+        edge_in_feats,
+        channels=64,
+        num_layers=3,
+        heads=4,
+        dropout=0.1,
+        attn_type='multihead',
+        predictor_dim=None,
+        pos_enc_dim=0,
+    ):
+        super().__init__()
+        from torch_geometric.nn import GINEConv, GPSConv, global_max_pool, global_mean_pool
+
+        if channels < 2:
+            raise ValueError("PyG_GraphGPS requires `channels >= 2`.")
+
+        self.channels = channels
+        self.pos_enc_dim = pos_enc_dim
+        self.edge_encoder = nn.Linear(edge_in_feats, channels)
+        self.global_mean_pool = global_mean_pool
+        self.global_max_pool = global_max_pool
+
+        if pos_enc_dim > 0:
+            pe_hidden_dim = min(max(1, channels // 4), channels - 1)
+            self.node_encoder = nn.Linear(in_feats, channels - pe_hidden_dim)
+            self.pe_norm = nn.BatchNorm1d(pos_enc_dim)
+            self.pe_encoder = nn.Linear(pos_enc_dim, pe_hidden_dim)
+        else:
+            self.node_encoder = nn.Linear(in_feats, channels)
+            self.pe_norm = None
+            self.pe_encoder = None
+
+        self.convs = nn.ModuleList()
+        for _ in range(num_layers):
+            local_nn = nn.Sequential(
+                nn.Linear(channels, channels),
+                nn.ReLU(),
+                nn.Linear(channels, channels),
+            )
+            local_conv = GINEConv(local_nn, edge_dim=channels)
+            self.convs.append(
+                GPSConv(
+                    channels=channels,
+                    conv=local_conv,
+                    heads=heads,
+                    dropout=dropout,
+                    attn_type=attn_type,
+                    attn_kwargs={'dropout': dropout},
+                )
+            )
+
+        self.transform = nn.Linear(channels * 2, predictor_dim)
+
+    def _encode_nodes(self, x, pe):
+        x = self.node_encoder(x)
+        if self.pe_encoder is None:
+            return x
+
+        if pe is None:
+            pe = torch.zeros((x.size(0), self.pos_enc_dim), dtype=x.dtype, device=x.device)
+        pe = self.pe_norm(pe.float())
+        pe = self.pe_encoder(pe)
+        return torch.cat((x, pe), dim=1)
+
+    def forward(self, bg):
+        bg = bg.to(device)
+        x = self._encode_nodes(bg.x.float(), getattr(bg, 'pe', None))
+        edge_attr = getattr(bg, 'edge_attr', None)
+        if edge_attr is not None:
+            edge_attr = self.edge_encoder(edge_attr.float())
+        batch = getattr(bg, 'batch', None)
+        if batch is None:
+            batch = torch.zeros(x.size(0), dtype=torch.long, device=x.device)
+
+        for conv in self.convs:
+            x = conv(x, bg.edge_index, batch=batch, edge_attr=edge_attr)
+
+        graph_feats = torch.cat(
+            [self.global_mean_pool(x, batch), self.global_max_pool(x, batch)],
+            dim=1,
+        )
+        return self.transform(graph_feats)
+
+
 class DGL_GCN(nn.Module):
     ## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gcn_predictor.py#L16
     def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):

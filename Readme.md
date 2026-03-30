@@ -34,7 +34,7 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 
 In practice, the current 2.0 line focuses on:
 
-1. **Torch-only core runtime**: the maintained graph workflow now runs through `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`.
+1. **Torch-only core runtime**: the maintained graph workflow now runs through `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, `PyG_TAGConv`, and the PyG-native graph transformer `PyG_GraphGPS`.
 2. **Unified task coverage**: single-protein, pair/PPI, and residue-level tasks stay under one library surface.
 3. **Practical training entry points**: CLI scripts, dataset loaders, and smoke tests are aligned to the v2 runtime.
 
@@ -95,7 +95,7 @@ A version of torch 2.1+ is required to be installed since Jul requires a version
     pip install torch-geometric
     ```
 
-DeepProtein 2.0 removes the DGL requirement from the core package. Phases II and III add torch-geometric support for both single-protein and pair/PPI graph encoders, including `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`. Phase V adds optional Laplacian positional encoding for the `PyG_*` graph path through `compute_pos_enc=True`. Legacy `DGL_*` graph encoders are kept as unsupported compatibility stubs.
+DeepProtein 2.0 removes the DGL requirement from the core package. Phases II and III add torch-geometric support for both single-protein and pair/PPI graph encoders, including `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, `PyG_TAGConv`, and the PyG-native graph transformer `PyG_GraphGPS`. Phase V adds optional Laplacian positional encoding for the `PyG_*` graph path through `compute_pos_enc=True`. Phase VI introduces the first PyG graph transformer path via `GPSConv`, while `Exphormer` and `GRIT` remain future work. Legacy `DGL_*` graph encoders are kept as unsupported compatibility stubs.
 
 ## Demos
 
@@ -119,7 +119,7 @@ We give two examples for each case study. One is trained with fixed parameters (
 
 | Argument  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| target_encoding             | DeepProtein 2.0 supports torch-only protein encoders such as 'CNN', 'Transformer', 'CNN_RNN', 'prot_t5', 'esm_1b', 'esm_2', and 'prot_bert', plus torch-geometric graph encoders 'PyG_GCN', 'PyG_GAT', 'PyG_GraphSAGE', 'PyG_GIN', 'PyG_ChebNet', and 'PyG_TAGConv' for both single-protein and pair/PPI tasks. Legacy graph encoders such as 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', and 'Graphormer' are not available in the v2 runtime. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer'] |
+| target_encoding             | DeepProtein 2.0 supports torch-only protein encoders such as 'CNN', 'Transformer', 'CNN_RNN', 'prot_t5', 'esm_1b', 'esm_2', and 'prot_bert', plus torch-geometric graph encoders 'PyG_GCN', 'PyG_GAT', 'PyG_GraphSAGE', 'PyG_GIN', 'PyG_ChebNet', 'PyG_TAGConv', and 'PyG_GraphGPS' for both single-protein and pair/PPI tasks. `PyG_GraphGPS` is the current graph transformer entry point based on PyG `GPSConv`. Legacy graph encoders such as 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', and 'Graphormer' are not available in the v2 runtime. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer'] |
 | seed         | For paper: 7 / 42 /100. You could try your own seed.                                                                                                                                                                                                                                                                                                                                                                                                       |
 | wandb_proj     | The name of your wandb project that you wish to save the results into.                                                                                                                                                                                                                                                                                                                                                                                     |
 | lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning.                                                                                                                                                                                                                                                                                                                                                                           |
@@ -213,7 +213,7 @@ model.train(train, val, test, compute_pos_enc = True)
 ```
 </details>
 
-Pair/PPI graph methods are now available through torch-geometric. `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv` all share the same encoder tower across the two proteins, and can optionally consume Laplacian positional encoding with `compute_pos_enc=True`.
+Pair/PPI graph methods are now available through torch-geometric. `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, `PyG_TAGConv`, and `PyG_GraphGPS` all share the same encoder tower across the two proteins, and can optionally consume Laplacian positional encoding with `compute_pos_enc=True`.
 
 
 <details>
@@ -430,7 +430,7 @@ model.train(train, val, test, batch_size=32)
 
 
 
-Pair/PPI graph methods are also available for TAP-style pair tasks through the same `PyG_*` encoder family, including optional Laplacian positional encoding via `compute_pos_enc=True`.
+Pair/PPI graph methods are also available for TAP-style pair tasks through the same `PyG_*` encoder family, including `PyG_GraphGPS` and optional Laplacian positional encoding via `compute_pos_enc=True`.
 
 <details>
   <summary>CNN Case</summary>
@@ -490,7 +490,7 @@ model.train(train, val, test, batch_size=32)
 
 If you want to use structure learning methods such as graph neural network, choose a `PyG_*` encoder and optionally enable `compute_pos_enc=True`.
 
-(b) If you wish to use arguments, this could be trained in one line. Torch-geometric methods such as `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv` are available currently for both single-protein and pair/PPI tasks.
+(b) If you wish to use arguments, this could be trained in one line. Torch-geometric methods such as `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, `PyG_TAGConv`, and `PyG_GraphGPS` are available currently for both single-protein and pair/PPI tasks.
 
 <details>
   <summary>CNN Case</summary>
@@ -511,7 +511,7 @@ python train/CRISPR.py --target_encoding PyG_GraphSAGE --seed 7 --wandb_proj Dee
 </details>
 
 ## Encodings
-Thanks to DeepPurpose and torch-geometric, we could borrow and extend several graph encodings for DeepProtein 2.0. The current PyG migration focuses on typical message-passing methods for protein graph encoding, while the older DGL-specific transformer-style methods remain deferred.
+Thanks to DeepPurpose and torch-geometric, we could borrow and extend several graph encodings for DeepProtein 2.0. The current PyG migration focuses on both message-passing methods and a first PyG-native graph transformer path via `PyG_GraphGPS` / `GPSConv`, while the older DGL-specific transformer-style methods remain deferred.
 
 Currently, we support the following encodings:
 
@@ -527,6 +527,7 @@ Currently, we support the following encodings:
 | PyG_GIN           | Graph Isomorphism Network                       |
 | PyG_ChebNet       | Chebyshev Spectral Graph Network                |
 | PyG_TAGConv       | Topology Adaptive Graph Convolution             |
+| PyG_GraphGPS      | PyG GraphGPS / GPSConv graph transformer        |
 | PAGTN             | Path Augmented Graph Transformer Network        |
 | Graphormer        | Do Transformers Really Perform Bad, Ying et al. |
 | ESM-1             | Evolutionary Scale Modeling version 1           |
@@ -534,9 +535,7 @@ Currently, we support the following encodings:
 | Prot-T5           | ProtTrans (1)                                   |
 | Prot-Bert         | ProtTrans (2)                                   |
 
-Note that we've tried EGT, however, it would lead to memory error if we want to 
-construct a large batched edge feature matrix therefore we ignore the implementation of EGT.
-This could be solved if applied to small graphs so it will be our future work. 
+`PyG_GraphGPS` is the maintained graph transformer path in DeepProtein 2.0 and follows the PyG `GPSConv` design. `Exphormer` and `GRIT` are planned for later phases, while legacy DGL `Graphormer` / `EGT` remain unsupported in the torch-only runtime.
 
 ## Data
 We provided the data under the folder DeepProtein/data (Besides TDC) and the folder data (TDC). 

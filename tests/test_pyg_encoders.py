@@ -7,6 +7,7 @@ from DeepProtein.encoders import (
     PyG_ChebNet,
     PyG_GAT,
     PyG_GCN,
+    PyG_GraphGPS,
     PyG_GIN,
     PyG_GraphSAGE,
     PyG_TAGConv,
@@ -81,6 +82,15 @@ class PyGEncoderSmokeTests(unittest.TestCase):
                 activation=F.relu,
                 predictor_dim=16,
             ),
+            "PyG_GraphGPS": PyG_GraphGPS(
+                in_feats=ATOM_FDIM,
+                edge_in_feats=BOND_FDIM,
+                channels=16,
+                num_layers=2,
+                heads=2,
+                dropout=0.1,
+                predictor_dim=16,
+            ),
         }
 
         for name, encoder in encoder_specs.items():
@@ -133,6 +143,16 @@ class PyGEncoderSmokeTests(unittest.TestCase):
                 in_feats=ATOM_FDIM,
                 hidden_feats=[8, 8],
                 activation=F.relu,
+                predictor_dim=16,
+                pos_enc_dim=4,
+            ),
+            "PyG_GraphGPS": PyG_GraphGPS(
+                in_feats=ATOM_FDIM,
+                edge_in_feats=BOND_FDIM,
+                channels=16,
+                num_layers=2,
+                heads=2,
+                dropout=0.1,
                 predictor_dim=16,
                 pos_enc_dim=4,
             ),

@@ -152,6 +152,18 @@ class Protein_Prediction:
                 predictor_dim=config['hidden_dim_protein'],
                 pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
             )
+        elif target_encoding == 'PyG_GraphGPS':
+            self.model_protein = PyG_GraphGPS(
+                in_feats=ATOM_FDIM,
+                edge_in_feats=BOND_FDIM,
+                channels=config.get('pyg_graphgps_channels', 64),
+                num_layers=config.get('pyg_graphgps_layers', 3),
+                heads=config.get('pyg_graphgps_heads', 4),
+                dropout=config.get('pyg_graphgps_dropout', 0.1),
+                attn_type=config.get('pyg_graphgps_attn_type', 'multihead'),
+                predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+            )
         elif target_encoding in LEGACY_DGL_TARGET_ENCODINGS:
             raise_if_legacy_graph_encoding(target_encoding, context='Protein_Prediction')
         elif target_encoding == 'prot_bert':
