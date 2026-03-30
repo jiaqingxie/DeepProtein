@@ -79,9 +79,9 @@ def model_pretrained(path_dir=None, model=None):
 
 def dgl_collate_func(x):
     raise NotImplementedError(
-        "Legacy DGL graph batching is not available in DeepProtein 2.0 phase 1. "
-        "Please switch to a torch-only encoder or wait for the torch_geometric "
-        "graph backend."
+        "Legacy DGL graph batching is not available in DeepProtein 2.0. "
+        "Please switch to one of the migrated `PyG_*` graph encoders or a "
+        "supported sequence / language-model encoder."
     )
 
 
@@ -434,8 +434,8 @@ class Protein_Prediction:
 
         if compute_pos_enc:
             raise NotImplementedError(
-                "Graph positional encodings have not been migrated to the "
-                "torch_geometric backend yet."
+                "Graph positional encodings are not available in the current "
+                "torch_geometric runtime yet. Please keep `compute_pos_enc=False`."
             )
 
 

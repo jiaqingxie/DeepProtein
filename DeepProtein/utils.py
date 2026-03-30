@@ -40,6 +40,7 @@ MAX_BOND = MAX_ATOM * 2
 vocab_path = f"{this_dir}/ESPF/drug_codes_chembl_freq_1500.txt"
 bpe_codes_drug = codecs.open(vocab_path)
 dbpe = BPE(bpe_codes_drug, merges=-1, separator='')
+bpe_codes_drug.close()
 sub_csv = pd.read_csv(f"{this_dir}/ESPF/subword_units_map_chembl_freq_1500.csv")
 
 idx2word_d = sub_csv['index'].values
@@ -48,6 +49,7 @@ words2idx_d = dict(zip(idx2word_d, range(0, len(idx2word_d))))
 vocab_path = f"{this_dir}/ESPF/protein_codes_uniprot_2000.txt"
 bpe_codes_protein = codecs.open(vocab_path)
 pbpe = BPE(bpe_codes_protein, merges=-1, separator='')
+bpe_codes_protein.close()
 # sub_csv = pd.read_csv(dataFolder + '/subword_units_map_protein.csv')
 sub_csv = pd.read_csv(f"{this_dir}/ESPF/subword_units_map_uniprot_2000.csv")
 
@@ -100,10 +102,10 @@ def raise_if_legacy_graph_encoding(encoding, context='This workflow'):
         return
 
     raise NotImplementedError(
-        f"{context} uses the legacy DGL/dgllife encoder '{encoding}', "
-        "which has not been migrated to the torch_geometric backend yet. "
-        "DeepProtein 2.0 phase 1 currently supports the torch-only sequence "
-        "and language-model encoders only."
+        f"{context} uses the unsupported legacy DGL/dgllife encoder '{encoding}'. "
+        "DeepProtein 2.0 now supports torch_geometric-based `PyG_*` graph "
+        "encoders for the migrated single-protein and pair/PPI workflows, "
+        "while legacy `DGL_*`, `PAGTN`, `EGT`, and `Graphormer` remain unavailable."
     )
 
 
@@ -827,27 +829,6 @@ class data_process_loader(data.Dataset):
         raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_loader')
         raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_loader')
 
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_MPNN', 'EGT', 'Graphormer']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
-            from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
-            self.node_featurizer = PretrainAtomFeaturizer()
-            self.edge_featurizer = PretrainBondFeaturizer()
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
     def __len__(self):
         'Denotes the total number of samples'
         return len(self.list_IDs)
@@ -858,8 +839,6 @@ class data_process_loader(data.Dataset):
         v_d = self.df.iloc[index]['drug_encoding']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_d = drug_2_embed(v_d)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         v_p = self.df.iloc[index]['target_encoding']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
@@ -877,27 +856,6 @@ class data_process_DDI_loader(data.Dataset):
         self.config = config
         raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_DDI_loader')
 
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
-            from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
-            self.node_featurizer = PretrainAtomFeaturizer()
-            self.edge_featurizer = PretrainBondFeaturizer()
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
     def __len__(self):
         'Denotes the total number of samples'
         return len(self.list_IDs)
@@ -908,15 +866,9 @@ class data_process_DDI_loader(data.Dataset):
         v_d = self.df.iloc[index]['drug_encoding_1']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_d = drug_2_embed(v_d)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred',
-                                              'DGL_AttentiveFP']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         v_p = self.df.iloc[index]['drug_encoding_2']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_p = drug_2_embed(v_p)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred',
-                                              'DGL_AttentiveFP']:
-            v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
         return v_d, v_p, y
 
@@ -966,27 +918,6 @@ class data_process_loader_Property_Prediction(data.Dataset):
         self.config = config
         raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_loader_Property_Prediction')
 
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
-            from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
-            self.node_featurizer = PretrainAtomFeaturizer()
-            self.edge_featurizer = PretrainBondFeaturizer()
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
     def __len__(self):
         'Denotes the total number of samples'
         return len(self.list_IDs)
@@ -998,8 +929,6 @@ class data_process_loader_Property_Prediction(data.Dataset):
         v_d = self.df.iloc[index]['drug_encoding']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_d = drug_2_embed(v_d)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
 
         return v_d, y
@@ -1962,8 +1891,9 @@ class GraphDataset(Dataset):
 # compute positional encodings for graph transformers
 def compute_pos(generator, params, method="Laplacian"):
     raise NotImplementedError(
-        "Graph positional encodings still depend on the legacy DGL backend "
-        "and have not been migrated to torch_geometric yet."
+        "Graph positional encodings are still not available in the DeepProtein "
+        "2.0 torch_geometric runtime. Please keep `compute_pos_enc=False` "
+        "for both single-protein and pair/PPI PyG workflows."
     )
 
 def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):

@@ -692,6 +692,7 @@ class DGL_GCN(nn.Module):
     ## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gcn_predictor.py#L16
     def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):
         super(DGL_GCN, self).__init__()
+        raise_if_legacy_graph_encoding('DGL_GCN', context='Encoder initialization')
         from dgllife.model.gnn.gcn import GCN
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
 
@@ -714,6 +715,7 @@ class DGL_GCN(nn.Module):
 class DGL_GAT(nn.Module):
     def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):
         super(DGL_GAT, self).__init__()
+        raise_if_legacy_graph_encoding('DGL_GAT', context='Encoder initialization')
         from dgllife.model.gnn.gat import GAT
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
 
@@ -736,6 +738,7 @@ class DGL_NeuralFP(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gat_predictor.py
 	def __init__(self, in_feats, hidden_feats=None, max_degree = None, activation=None, predictor_hidden_size = None, predictor_activation = None, predictor_dim=None):
 		super(DGL_NeuralFP, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_NeuralFP', context='Encoder initialization')
 		from dgllife.model.gnn.nf import NFGNN
 		from dgllife.model.readout.sum_and_max import SumAndMax
 
@@ -765,6 +768,7 @@ class DGL_GIN_AttrMasking(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
 	def __init__(self, predictor_dim=None):
 		super(DGL_GIN_AttrMasking, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_GIN_AttrMasking', context='Encoder initialization')
 		from dgllife.model import load_pretrained
 		from dgl.nn.pytorch.glob import AvgPooling
 
@@ -793,6 +797,7 @@ class DGL_GIN_ContextPred(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
 	def __init__(self, predictor_dim=None):
 		super(DGL_GIN_ContextPred, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_GIN_ContextPred', context='Encoder initialization')
 		from dgllife.model import load_pretrained
 		from dgl.nn.pytorch.glob import AvgPooling
 
@@ -822,6 +827,7 @@ class DGL_AttentiveFP(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/attentivefp_predictor.py#L17
 	def __init__(self, node_feat_size, edge_feat_size, num_layers = 2, num_timesteps = 2, graph_feat_size = 200, predictor_dim=None):
 		super(DGL_AttentiveFP, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_AttentiveFP', context='Encoder initialization')
 		from dgllife.model.gnn import AttentiveFPGNN
 		from dgllife.model.readout import AttentiveFPReadout
 
@@ -849,6 +855,7 @@ class DGL_MPNN(nn.Module):
     def __init__(self, node_feat_size, edge_feat_size, num_timesteps=2, graph_feat_size=200,
                  predictor_dim=None):
         super(DGL_MPNN, self).__init__()
+        raise_if_legacy_graph_encoding('DGL_MPNN', context='Encoder initialization')
         from dgllife.model.gnn import MPNNGNN
         from dgl.nn.pytorch.glob import AvgPooling
         from dgllife.model.readout.sum_and_max import SumAndMax
@@ -875,6 +882,7 @@ class PAGTN(nn.Module):
     def __init__(self, node_feat_size, node_hid_size, edge_feat_size, graph_feat_size=200,
                  predictor_dim=None):
         super(PAGTN, self).__init__()
+        raise_if_legacy_graph_encoding('PAGTN', context='Encoder initialization')
         from dgllife.model.gnn import PAGTNGNN
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
         from dgllife.model.readout.sum_and_max import SumAndMax
@@ -936,6 +944,7 @@ class Graphormer(nn.Module):
     def __init__(self, node_feat_size, node_hid_size, graph_feat_size=200,
                  predictor_dim=None):
         super(Graphormer, self).__init__()
+        raise_if_legacy_graph_encoding('Graphormer', context='Encoder initialization')
         from dgl.nn.pytorch.gt import GraphormerLayer
         from dgl.nn.pytorch.glob import MaxPooling
         from dgllife.model.readout.sum_and_max import SumAndMax

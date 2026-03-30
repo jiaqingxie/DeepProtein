@@ -64,9 +64,9 @@ def model_initialize(**config):
 
 def dgl_collate_func(x):
 	raise NotImplementedError(
-		"Legacy DGL graph batching is not available in DeepProtein 2.0 phase 1. "
-		"Please switch to a torch-only encoder or wait for the torch_geometric "
-		"graph backend."
+		"Legacy DGL graph batching is not available in DeepProtein 2.0. "
+		"Please switch to one of the migrated `PyG_*` graph encoders or a "
+		"supported sequence / language-model encoder."
 	)
 
 def model_pretrained(path_dir = None, model = None):
