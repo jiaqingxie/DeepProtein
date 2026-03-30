@@ -39,7 +39,7 @@ html_theme_options = {
 }
 
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-html_logo = '../build/html/_images/deepprotein_logo.png'
+html_logo = '_static/deepprotein_logo.png'
 # html_context = {
 #     'css_files': [
 #   	   'https://fonts.googleapis.com/css?family=Raleway',
