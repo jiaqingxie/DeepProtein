@@ -31,19 +31,22 @@ First time usage: setup conda environment
    $ ## Install necessary packages
    $ pip install git+https://github.com/bp-kelley/descriptastorus
    $ pip install lmdb seaborn wandb pydantic DeepPurpose
+   $ ## Optional: install pytdc only if you need TDC-backed datasets such as TAP, CRISPR, IEDB, or SAbDab
    $ conda install -c conda-forge pytdc
    $ 
    $
-   $ ## Choice 1: Torch 2.3.0 + CUDA Version 11.8 and DGL 2.3.0 + CUDA Version 11.8  
+   $ ## Choice 1: Torch 2.3.0 + CUDA Version 11.8
    $ pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu118
-   $ conda install -c dglteam/label/th23_cu118 dgl
+   $ pip install torch-geometric
    $ 
-   $ ## Choice 2: Torch 2.3.0 + CPU and DGL 2.3.0 + CPU
+   $ ## Choice 2: Torch 2.3.0 + CPU
    $ pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cpu
-   $ conda install -c dglteam/label/th23_cpu dgl
+   $ pip install torch-geometric
    $ 
    $ pip install -r requirements.txt
    $ conda deactivate ### exit
+
+DeepProtein 2.0 removes DGL from the core installation path. Phases II and III add torch-geometric support for both single-protein and pair/PPI graph encoders through the `PyG_*` family, while legacy `DGL_*`, `PAGTN`, `EGT`, and `Graphormer` paths remain unsupported. Phase V further enables optional Laplacian positional encoding on the `PyG_*` path via ``compute_pos_enc=True``.
 
 
 Another Choice is to use python virtual env where it have saved plenty of space on package management.
@@ -59,7 +62,7 @@ Another Choice is to use python virtual env where it have saved plenty of space 
    $  
    $ ## You will find a folder named DeepProtein under your current env_path
    $ ## Then you source the activate similar to conda activate:
-   $ source env_path/DeepProtein/activate
+   $ source env_path/DeepProtein/bin/activate
    $ 
    $ ## Your will see sth. like (DeepProtein)(base) and this means the env is correctly activated
    $ ## Install the packages as above
@@ -81,16 +84,16 @@ If you use conda env, then
    $ ##  Activate conda environment
    $
    $
-   $ conda deactivate ### exit
+   $ deactivate ### exit
 
 If you use python virtual env, then 
 
 .. code-block:: bash
 
-   $ source env_path/DeepProtein/activate
+   $ source env_path/DeepProtein/bin/activate
    $ ##  Activate python virtual environment where you saved it.
    $ ##  In default we assume you use Linux / MacOS, otherwise remove "source"
    $ ##  Just:
-   $ env_path/DeepProtein/activate
+   $ env_path/DeepProtein/bin/activate
    $
-   $ conda deactivate ### exit
+   $ deactivate ### exit

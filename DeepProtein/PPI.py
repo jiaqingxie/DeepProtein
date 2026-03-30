@@ -63,11 +63,11 @@ def model_initialize(**config):
 
 
 def dgl_collate_func(x):
-	x1, x2, y = zip(*x)
-	import dgl
-	x1 = dgl.batch(x1)
-	x2 = dgl.batch(x2)
-	return x1, x2, torch.tensor(y)
+	raise NotImplementedError(
+		"Legacy DGL graph batching is not available in DeepProtein 2.0. "
+		"Please switch to one of the migrated `PyG_*` graph encoders or a "
+		"supported sequence / language-model encoder."
+	)
 
 def model_pretrained(path_dir = None, model = None):
 	if model is not None:
@@ -119,24 +119,58 @@ class PPI_Model:
 			self.model_protein = CNN_RNN('protein', **config)
 		elif target_encoding == 'Transformer':
 			self.model_protein = transformer('protein', **config)
-		elif target_encoding == 'DGL_GCN':
-			self.model_protein = DGL_GCN(in_feats=74,
-										 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-										 activation=[config['gnn_activation']] * config['gnn_num_layers'],
-										 predictor_dim=config['hidden_dim_drug'])
-		elif target_encoding == 'DGL_GAT':
-			self.model_protein = DGL_GAT(in_feats=74,
-										 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-										 activation=[config['gnn_activation']] * config['gnn_num_layers'],
-										 predictor_dim=config['hidden_dim_drug'])
-		elif target_encoding == 'DGL_NeuralFP':
-			self.model_protein = DGL_NeuralFP(in_feats=74,
-											  hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-											  max_degree=config['neuralfp_max_degree'],
-											  activation=[config['gnn_activation']] * config['gnn_num_layers'],
-											  predictor_hidden_size=config['neuralfp_predictor_hid_dim'],
-											  predictor_dim=config['hidden_dim_drug'],
-											  predictor_activation=config['neuralfp_predictor_activation'])
+		elif target_encoding == 'PyG_GCN':
+			self.model_protein = PyG_GCN(
+				in_feats=ATOM_FDIM,
+				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+				activation=config['gnn_activation'],
+				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+			)
+		elif target_encoding == 'PyG_GAT':
+			self.model_protein = PyG_GAT(
+				in_feats=ATOM_FDIM,
+				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+				activation=config['gnn_activation'],
+				predictor_dim=config['hidden_dim_protein'],
+				heads=config.get('pyg_gat_heads', 4),
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+			)
+		elif target_encoding == 'PyG_GraphSAGE':
+			self.model_protein = PyG_GraphSAGE(
+				in_feats=ATOM_FDIM,
+				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+				activation=config['gnn_activation'],
+				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+			)
+		elif target_encoding == 'PyG_GIN':
+			self.model_protein = PyG_GIN(
+				in_feats=ATOM_FDIM,
+				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+				activation=config['gnn_activation'],
+				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+			)
+		elif target_encoding == 'PyG_ChebNet':
+			self.model_protein = PyG_ChebNet(
+				in_feats=ATOM_FDIM,
+				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+				activation=config['gnn_activation'],
+				predictor_dim=config['hidden_dim_protein'],
+				cheb_k=config.get('pyg_cheb_k', 3),
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+			)
+		elif target_encoding == 'PyG_TAGConv':
+			self.model_protein = PyG_TAGConv(
+				in_feats=ATOM_FDIM,
+				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+				activation=config['gnn_activation'],
+				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+			)
+		elif target_encoding in LEGACY_DGL_TARGET_ENCODINGS:
+			raise_if_legacy_graph_encoding(target_encoding, context='PPI_Model')
 		elif target_encoding == 'prot_bert':
 			self.model_protein = Prot_Bert_Predictor('protein', **config)
 
@@ -250,19 +284,22 @@ class PPI_Model:
 		y_label = []
 		model.eval()
 		for i, (v_d, v_p, label) in enumerate(data_generator):
-			if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
+			if self.target_encoding == 'Transformer':
 				v_d = v_d
 				v_p = v_p
+			elif self.target_encoding in PYG_TARGET_ENCODINGS:
+				v_d = v_d.to(self.device)
+				v_p = v_p.to(self.device)
 			else:
 				v_d = v_d.float().to(self.device)  
 				v_p = v_p.float().to(self.device)                             
-			score = self.model(v_d, v_p)
+			score = model(v_d, v_p)
 			if self.binary:
 				m = torch.nn.Sigmoid()
 				logits = torch.squeeze(m(score)).detach().cpu().numpy()
 			else:
 				logits = torch.squeeze(score).detach().cpu().numpy()
-			label_ids = label.to('cpu').numpy()
+			label_ids = label.view(-1).to('cpu').numpy()
 			y_label = y_label + label_ids.flatten().tolist()
 			y_pred = y_pred + logits.flatten().tolist()
 			outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
@@ -285,7 +322,12 @@ class PPI_Model:
 				return y_pred
 			return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
-	def train(self, train, val, test = None, verbose = True):
+	def train(self, train, val, test = None, verbose = True, compute_pos_enc = False):
+		self.config['compute_pos_enc'] = compute_pos_enc
+		if compute_pos_enc and self.target_encoding not in PYG_TARGET_ENCODINGS:
+			raise NotImplementedError(
+				"`compute_pos_enc=True` is currently supported only for `PyG_*` pair/PPI encoders."
+			)
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 			self.config['binary'] = True
@@ -323,23 +365,22 @@ class PPI_Model:
 	    		'num_workers': self.config['num_workers'],
 	    		'drop_last': False}
 
-		if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-									'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-			params['collate_fn'] = dgl_collate_func
+		if self.target_encoding in PYG_TARGET_ENCODINGS:
+			params['collate_fn'] = pyg_ppi_collate_func
+
 		# print(data_process_PPI_loader(train.index.values, train.Label.values, train, **self.config).__getitem__(0))
 		training_generator = data.DataLoader(data_process_PPI_loader(train.index.values, train.Label.values, train, **self.config), **params)
 		validation_generator = data.DataLoader(data_process_PPI_loader(val.index.values, val.Label.values, val, **self.config), **params)
 		
 		if test is not None:
-			info = data_process_loader(test.index.values, test.Label.values, test, **self.config)
+			info = data_process_PPI_loader(test.index.values, test.Label.values, test, **self.config)
 			params_test = {'batch_size': BATCH_SIZE,
 					'shuffle': False,
 					'num_workers': self.config['num_workers'],
 					'drop_last': False,
 					'sampler':SequentialSampler(info)}
-			if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-										'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-				params_test['collate_fn'] = dgl_collate_func
+			if self.target_encoding in PYG_TARGET_ENCODINGS:
+				params_test['collate_fn'] = pyg_ppi_collate_func
 			testing_generator = data.DataLoader(data_process_PPI_loader(test.index.values, test.Label.values, test, **self.config), **params_test)
 
 		# early stopping
@@ -362,15 +403,18 @@ class PPI_Model:
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
+				if self.target_encoding == 'Transformer':
 					v_d = v_d
 					v_p = v_p
+				elif self.target_encoding in PYG_TARGET_ENCODINGS:
+					v_d = v_d.to(self.device)
+					v_p = v_p.to(self.device)
 				else:
 					v_d = v_d.float().to(self.device)
 					v_p = v_p.float().to(self.device)                 
                
 				score = self.model(v_d, v_p)
-				label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
+				label = label.float().to(self.device).view(-1)
 
 				if self.binary:
 					loss_fct = torch.nn.BCELoss()
@@ -489,7 +533,7 @@ class PPI_Model:
 			pd.DataFrame
 		'''
 		print('predicting...')
-		self.model.to(device)
+		self.model.to(self.device)
 		info = data_process_PPI_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
@@ -497,9 +541,9 @@ class PPI_Model:
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
 
-		if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-									'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-			params['collate_fn'] = dgl_collate_func
+		if self.target_encoding in PYG_TARGET_ENCODINGS:
+			params['collate_fn'] = pyg_ppi_collate_func
+
 		generator = data.DataLoader(info, **params)
 
 		score = self.test_(generator, self.model, repurposing_mode = True)

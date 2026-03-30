@@ -578,10 +578,137 @@ class MPNN(nn.Sequential):
         return output
 
 
+def _normalize_graph_activations(activation, num_layers):
+    if isinstance(activation, (list, tuple)):
+        activations = list(activation)
+    else:
+        activations = [activation] * num_layers
+
+    if len(activations) < num_layers:
+        activations.extend([activations[-1]] * (num_layers - len(activations)))
+    return activations
+
+
+class _PyGGraphEncoderBase(nn.Module):
+    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, pos_enc_dim=0):
+        super().__init__()
+        from torch_geometric.nn import global_max_pool, global_mean_pool
+
+        self.hidden_feats = hidden_feats or [64, 64, 64]
+        self.activations = _normalize_graph_activations(activation or F.relu, len(self.hidden_feats))
+        self.convs = nn.ModuleList()
+        self.pos_encoder = nn.Linear(pos_enc_dim, in_feats) if pos_enc_dim > 0 else None
+        self.global_mean_pool = global_mean_pool
+        self.global_max_pool = global_max_pool
+
+        input_dim = in_feats
+        for hidden_dim in self.hidden_feats:
+            self.convs.append(self._build_conv(input_dim, hidden_dim))
+            input_dim = hidden_dim
+
+        self.transform = nn.Linear(self.hidden_feats[-1] * 2, predictor_dim)
+
+    def _build_conv(self, in_feats, out_feats):
+        raise NotImplementedError
+
+    def _apply_conv(self, conv, x, edge_index):
+        return conv(x, edge_index)
+
+    def forward(self, bg):
+        bg = bg.to(device)
+        x = bg.x
+        pe = getattr(bg, 'pe', None)
+        if self.pos_encoder is not None and pe is not None:
+            x = x + self.pos_encoder(pe.float())
+        edge_index = bg.edge_index
+        batch = getattr(bg, 'batch', None)
+        if batch is None:
+            batch = torch.zeros(x.size(0), dtype=torch.long, device=x.device)
+
+        for conv, activation in zip(self.convs, self.activations):
+            x = self._apply_conv(conv, x, edge_index)
+            if activation is not None:
+                x = activation(x)
+
+        graph_feats = torch.cat(
+            [self.global_mean_pool(x, batch), self.global_max_pool(x, batch)],
+            dim=1,
+        )
+        return self.transform(graph_feats)
+
+
+class PyG_GCN(_PyGGraphEncoderBase):
+    def _build_conv(self, in_feats, out_feats):
+        from torch_geometric.nn import GCNConv
+
+        return GCNConv(in_feats, out_feats)
+
+
+class PyG_GAT(_PyGGraphEncoderBase):
+    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, heads=4, pos_enc_dim=0):
+        self.heads = heads
+        super().__init__(
+            in_feats=in_feats,
+            hidden_feats=hidden_feats,
+            activation=activation,
+            predictor_dim=predictor_dim,
+            pos_enc_dim=pos_enc_dim,
+        )
+
+    def _build_conv(self, in_feats, out_feats):
+        from torch_geometric.nn import GATConv
+
+        return GATConv(in_feats, out_feats, heads=self.heads, concat=False)
+
+
+class PyG_GraphSAGE(_PyGGraphEncoderBase):
+    def _build_conv(self, in_feats, out_feats):
+        from torch_geometric.nn import SAGEConv
+
+        return SAGEConv(in_feats, out_feats)
+
+
+class PyG_GIN(_PyGGraphEncoderBase):
+    def _build_conv(self, in_feats, out_feats):
+        from torch_geometric.nn import GINConv
+
+        gin_mlp = nn.Sequential(
+            nn.Linear(in_feats, out_feats),
+            nn.ReLU(),
+            nn.Linear(out_feats, out_feats),
+        )
+        return GINConv(gin_mlp)
+
+
+class PyG_ChebNet(_PyGGraphEncoderBase):
+    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, cheb_k=3, pos_enc_dim=0):
+        self.cheb_k = cheb_k
+        super().__init__(
+            in_feats=in_feats,
+            hidden_feats=hidden_feats,
+            activation=activation,
+            predictor_dim=predictor_dim,
+            pos_enc_dim=pos_enc_dim,
+        )
+
+    def _build_conv(self, in_feats, out_feats):
+        from torch_geometric.nn import ChebConv
+
+        return ChebConv(in_feats, out_feats, K=self.cheb_k)
+
+
+class PyG_TAGConv(_PyGGraphEncoderBase):
+    def _build_conv(self, in_feats, out_feats):
+        from torch_geometric.nn import TAGConv
+
+        return TAGConv(in_feats, out_feats)
+
+
 class DGL_GCN(nn.Module):
     ## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gcn_predictor.py#L16
     def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):
         super(DGL_GCN, self).__init__()
+        raise_if_legacy_graph_encoding('DGL_GCN', context='Encoder initialization')
         from dgllife.model.gnn.gcn import GCN
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
 
@@ -604,6 +731,7 @@ class DGL_GCN(nn.Module):
 class DGL_GAT(nn.Module):
     def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):
         super(DGL_GAT, self).__init__()
+        raise_if_legacy_graph_encoding('DGL_GAT', context='Encoder initialization')
         from dgllife.model.gnn.gat import GAT
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
 
@@ -626,6 +754,7 @@ class DGL_NeuralFP(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gat_predictor.py
 	def __init__(self, in_feats, hidden_feats=None, max_degree = None, activation=None, predictor_hidden_size = None, predictor_activation = None, predictor_dim=None):
 		super(DGL_NeuralFP, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_NeuralFP', context='Encoder initialization')
 		from dgllife.model.gnn.nf import NFGNN
 		from dgllife.model.readout.sum_and_max import SumAndMax
 
@@ -655,6 +784,7 @@ class DGL_GIN_AttrMasking(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
 	def __init__(self, predictor_dim=None):
 		super(DGL_GIN_AttrMasking, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_GIN_AttrMasking', context='Encoder initialization')
 		from dgllife.model import load_pretrained
 		from dgl.nn.pytorch.glob import AvgPooling
 
@@ -683,6 +813,7 @@ class DGL_GIN_ContextPred(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
 	def __init__(self, predictor_dim=None):
 		super(DGL_GIN_ContextPred, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_GIN_ContextPred', context='Encoder initialization')
 		from dgllife.model import load_pretrained
 		from dgl.nn.pytorch.glob import AvgPooling
 
@@ -712,6 +843,7 @@ class DGL_AttentiveFP(nn.Module):
 	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/attentivefp_predictor.py#L17
 	def __init__(self, node_feat_size, edge_feat_size, num_layers = 2, num_timesteps = 2, graph_feat_size = 200, predictor_dim=None):
 		super(DGL_AttentiveFP, self).__init__()
+		raise_if_legacy_graph_encoding('DGL_AttentiveFP', context='Encoder initialization')
 		from dgllife.model.gnn import AttentiveFPGNN
 		from dgllife.model.readout import AttentiveFPReadout
 
@@ -739,6 +871,7 @@ class DGL_MPNN(nn.Module):
     def __init__(self, node_feat_size, edge_feat_size, num_timesteps=2, graph_feat_size=200,
                  predictor_dim=None):
         super(DGL_MPNN, self).__init__()
+        raise_if_legacy_graph_encoding('DGL_MPNN', context='Encoder initialization')
         from dgllife.model.gnn import MPNNGNN
         from dgl.nn.pytorch.glob import AvgPooling
         from dgllife.model.readout.sum_and_max import SumAndMax
@@ -765,6 +898,7 @@ class PAGTN(nn.Module):
     def __init__(self, node_feat_size, node_hid_size, edge_feat_size, graph_feat_size=200,
                  predictor_dim=None):
         super(PAGTN, self).__init__()
+        raise_if_legacy_graph_encoding('PAGTN', context='Encoder initialization')
         from dgllife.model.gnn import PAGTNGNN
         from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
         from dgllife.model.readout.sum_and_max import SumAndMax
@@ -826,6 +960,7 @@ class Graphormer(nn.Module):
     def __init__(self, node_feat_size, node_hid_size, graph_feat_size=200,
                  predictor_dim=None):
         super(Graphormer, self).__init__()
+        raise_if_legacy_graph_encoding('Graphormer', context='Encoder initialization')
         from dgl.nn.pytorch.gt import GraphormerLayer
         from dgl.nn.pytorch.glob import MaxPooling
         from dgllife.model.readout.sum_and_max import SumAndMax

@@ -78,10 +78,11 @@ def model_pretrained(path_dir=None, model=None):
 
 
 def dgl_collate_func(x):
-    x, y = zip(*x)
-    import dgl
-    x = dgl.batch(x)
-    return x, torch.tensor(y)
+    raise NotImplementedError(
+        "Legacy DGL graph batching is not available in DeepProtein 2.0. "
+        "Please switch to one of the migrated `PyG_*` graph encoders or a "
+        "supported sequence / language-model encoder."
+    )
 
 
 class Protein_Prediction:
@@ -101,51 +102,58 @@ class Protein_Prediction:
             self.model_protein = CNN_RNN('protein', **config)
         elif target_encoding == 'Transformer':
             self.model_protein = transformer('protein', **config)
-        elif target_encoding == 'DGL_GCN':
-            self.model_protein = DGL_GCN(in_feats=74,
-                                         hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-                                         activation=[config['gnn_activation']] * config['gnn_num_layers'],
-                                         predictor_dim=config['hidden_dim_drug'])
-        elif target_encoding == 'DGL_GAT':
-            self.model_protein = DGL_GAT(in_feats=74,
-                                         hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-                                         activation=[config['gnn_activation']] * config['gnn_num_layers'],
-                                         predictor_dim=config['hidden_dim_drug'])
-        elif target_encoding == 'DGL_NeuralFP':
-            self.model_protein = DGL_NeuralFP(in_feats = 74,
-									hidden_feats = [config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
-									max_degree = config['neuralfp_max_degree'],
-									activation = [config['gnn_activation']] * config['gnn_num_layers'],
-									predictor_hidden_size = config['neuralfp_predictor_hid_dim'],
-									predictor_dim = config['hidden_dim_drug'],
-									predictor_activation = config['neuralfp_predictor_activation'])
-        elif target_encoding == 'DGL_AttentiveFP':
-            self.model_protein = DGL_AttentiveFP(node_feat_size=39,
-                                                edge_feat_size=11,
-                                                 num_layers=config['gnn_num_layers'],
-                                                 num_timesteps=config['attentivefp_num_timesteps'],
-                                                 graph_feat_size=config['gnn_hid_dim_drug'],
-                                                 predictor_dim=config['hidden_dim_drug'],
-                                             )
-        elif target_encoding == 'DGL_MPNN':
-            self.model_protein = DGL_MPNN(node_feat_size = 74,
-                                    edge_feat_size = 13,
-                                    num_timesteps = 1,
-                                    graph_feat_size = config['gnn_hid_dim_drug'],
-                                    predictor_dim = config['hidden_dim_drug']
-        )
-        elif target_encoding == 'PAGTN':
-            self.model_protein = PAGTN(node_feat_size = 74,
-                                       node_hid_size = config['gnn_hid_dim_drug'],
-                                       edge_feat_size = 13,
-                                       graph_feat_size = config['gnn_hid_dim_drug'],
-                                       predictor_dim=config['hidden_dim_drug'])
-
-        elif target_encoding == 'Graphormer':
-            self.model_protein = Graphormer(node_feat_size=74,
-                                            node_hid_size=config['gnn_hid_dim_drug'],
-                                             graph_feat_size=config['gnn_hid_dim_drug'],
-                                             predictor_dim=config['hidden_dim_drug'])
+        elif target_encoding == 'PyG_GCN':
+            self.model_protein = PyG_GCN(
+                in_feats=ATOM_FDIM,
+                hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+                activation=config['gnn_activation'],
+                predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+            )
+        elif target_encoding == 'PyG_GAT':
+            self.model_protein = PyG_GAT(
+                in_feats=ATOM_FDIM,
+                hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+                activation=config['gnn_activation'],
+                predictor_dim=config['hidden_dim_protein'],
+                heads=config.get('pyg_gat_heads', 4),
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+            )
+        elif target_encoding == 'PyG_GraphSAGE':
+            self.model_protein = PyG_GraphSAGE(
+                in_feats=ATOM_FDIM,
+                hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+                activation=config['gnn_activation'],
+                predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+            )
+        elif target_encoding == 'PyG_GIN':
+            self.model_protein = PyG_GIN(
+                in_feats=ATOM_FDIM,
+                hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+                activation=config['gnn_activation'],
+                predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+            )
+        elif target_encoding == 'PyG_ChebNet':
+            self.model_protein = PyG_ChebNet(
+                in_feats=ATOM_FDIM,
+                hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+                activation=config['gnn_activation'],
+                predictor_dim=config['hidden_dim_protein'],
+                cheb_k=config.get('pyg_cheb_k', 3),
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+            )
+        elif target_encoding == 'PyG_TAGConv':
+            self.model_protein = PyG_TAGConv(
+                in_feats=ATOM_FDIM,
+                hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
+                activation=config['gnn_activation'],
+                predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
+            )
+        elif target_encoding in LEGACY_DGL_TARGET_ENCODINGS:
+            raise_if_legacy_graph_encoding(target_encoding, context='Protein_Prediction')
         elif target_encoding == 'prot_bert':
             self.model_protein = Prot_Bert_Predictor('protein', **config)
 
@@ -267,9 +275,10 @@ class Protein_Prediction:
         y_label = []
         model.eval()
         for i, (v_p, label) in enumerate(data_generator):
-            if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
-                                        'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+            if self.target_encoding == 'Transformer':
                 v_p = v_p
+            elif self.target_encoding in PYG_TARGET_ENCODINGS:
+                v_p = v_p.to(self.device)
             else:
                 v_p = v_p.float().to(self.device)
             score = self.model(v_p)
@@ -353,6 +362,11 @@ class Protein_Prediction:
 
 
     def train(self, train, val, test=None, verbose=True, compute_pos_enc=False):
+        self.config['compute_pos_enc'] = compute_pos_enc
+        if compute_pos_enc and self.target_encoding not in PYG_TARGET_ENCODINGS:
+            raise NotImplementedError(
+                "`compute_pos_enc=True` is currently supported only for `PyG_*` protein encoders."
+            )
 
         if len(train.Label.unique()) == 2:
             self.binary = True
@@ -393,9 +407,8 @@ class Protein_Prediction:
                   'num_workers': self.config['num_workers'],
                   'drop_last': False}
 
-        if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-                                    'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-            params['collate_fn'] = dgl_collate_func
+        if self.target_encoding in PYG_TARGET_ENCODINGS:
+            params['collate_fn'] = pyg_protein_collate_func
 
         training_generator = data.DataLoader(data_process_loader_Protein_Prediction(train.index.values,
                                                                                     train.Label.values,
@@ -422,20 +435,12 @@ class Protein_Prediction:
                            'drop_last': False,
                            'sampler': SequentialSampler(info)}
 
-            if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-                                        'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-                params_test['collate_fn'] = dgl_collate_func
+            if self.target_encoding in PYG_TARGET_ENCODINGS:
+                params_test['collate_fn'] = pyg_protein_collate_func
 
             testing_generator = data.DataLoader(
                 data_process_loader_Protein_Prediction(test.index.values, test.Label.values, test, **self.config),
                 **params_test)
-
-
-        if compute_pos_enc:
-            print("========= Computing Positional Encoding ..... =========")
-            training_generator = compute_pos(training_generator, **params)
-            validation_generator = compute_pos(validation_generator, **params)
-            testing_generator = compute_pos(testing_generator, **params)
 
 
         # early stopping
@@ -466,9 +471,10 @@ class Protein_Prediction:
         for epo in range(train_epoch):
 
             for i, (v_p, label) in enumerate(training_generator):
-                if self.target_encoding in ['Transformer', 'DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
-                                            'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+                if self.target_encoding == 'Transformer':
                     v_p = v_p
+                elif self.target_encoding in PYG_TARGET_ENCODINGS:
+                    v_p = v_p.to(self.device)
                 else:
                     # print(v_p)
                     v_p = v_p.float().to(self.device)
@@ -476,7 +482,7 @@ class Protein_Prediction:
 
 
                 score = self.model(v_p)
-                label = torch.from_numpy(np.array(label)).float().to(self.device)
+                label = label.float().to(self.device)
                 if self.binary:
                     loss_fct = torch.nn.BCELoss()
                     m = torch.nn.Sigmoid()
@@ -502,8 +508,7 @@ class Protein_Prediction:
                 else:
                     loss_fct = torch.nn.MSELoss()
                     n = torch.squeeze(score, 1)
-                    if self.target_encoding not in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-                                                    'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+                    if self.target_encoding not in LEGACY_DGL_TARGET_ENCODINGS:
                         label = torch.squeeze(label, 1)
                     loss = loss_fct(n, label)
 
@@ -654,9 +659,8 @@ class Protein_Prediction:
                   'drop_last': False,
                   'sampler': SequentialSampler(info)}
 
-        if self.target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP',
-                                    'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-            params['collate_fn'] = dgl_collate_func
+        if self.target_encoding in PYG_TARGET_ENCODINGS:
+            params['collate_fn'] = pyg_protein_collate_func
 
         generator = data.DataLoader(info, **params)
 

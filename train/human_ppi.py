@@ -51,4 +51,4 @@ if __name__ == '__main__':
     config['binary'] = True
     torch.manual_seed(args.seed)
     model = models.model_initialize(**config)
-    model.train(train, val, test)
+    model.train(train, val, test, compute_pos_enc = compute_pos)

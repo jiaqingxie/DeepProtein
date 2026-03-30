@@ -29,7 +29,6 @@ from zipfile import ZipFile
 import os
 import sys
 import pathlib
-import dgl
 import re
 
 this_dir = str(pathlib.Path(__file__).parent.absolute())
@@ -41,6 +40,7 @@ MAX_BOND = MAX_ATOM * 2
 vocab_path = f"{this_dir}/ESPF/drug_codes_chembl_freq_1500.txt"
 bpe_codes_drug = codecs.open(vocab_path)
 dbpe = BPE(bpe_codes_drug, merges=-1, separator='')
+bpe_codes_drug.close()
 sub_csv = pd.read_csv(f"{this_dir}/ESPF/subword_units_map_chembl_freq_1500.csv")
 
 idx2word_d = sub_csv['index'].values
@@ -49,6 +49,7 @@ words2idx_d = dict(zip(idx2word_d, range(0, len(idx2word_d))))
 vocab_path = f"{this_dir}/ESPF/protein_codes_uniprot_2000.txt"
 bpe_codes_protein = codecs.open(vocab_path)
 pbpe = BPE(bpe_codes_protein, merges=-1, separator='')
+bpe_codes_protein.close()
 # sub_csv = pd.read_csv(dataFolder + '/subword_units_map_protein.csv')
 sub_csv = pd.read_csv(f"{this_dir}/ESPF/subword_units_map_uniprot_2000.csv")
 
@@ -56,6 +57,155 @@ idx2word_p = sub_csv['index'].values
 words2idx_p = dict(zip(idx2word_p, range(0, len(idx2word_p))))
 
 from .chemutils import get_mol, atom_features, bond_features, MAX_NB
+
+LEGACY_DGL_DRUG_ENCODINGS = {
+    'DGL_GCN',
+    'DGL_GIN',
+    'DGL_NeuralFP',
+    'DGL_GIN_AttrMasking',
+    'DGL_GIN_ContextPred',
+    'DGL_AttentiveFP',
+}
+
+LEGACY_DGL_TARGET_ENCODINGS = {
+    'DGL_GCN',
+    'DGL_GAT',
+    'DGL_NeuralFP',
+    'DGL_AttentiveFP',
+    'DGL_MPNN',
+    'PAGTN',
+    'EGT',
+    'Graphormer',
+}
+
+LEGACY_DGL_ENCODINGS = LEGACY_DGL_DRUG_ENCODINGS | LEGACY_DGL_TARGET_ENCODINGS
+
+PYG_TARGET_ENCODINGS = {
+    'PyG_GCN',
+    'PyG_GAT',
+    'PyG_GraphSAGE',
+    'PyG_GIN',
+    'PyG_ChebNet',
+    'PyG_TAGConv',
+}
+
+PROTEIN_PASSTHROUGH_ENCODINGS = LEGACY_DGL_TARGET_ENCODINGS | PYG_TARGET_ENCODINGS | {
+    'prot_bert',
+    'esm_1b',
+    'esm_2',
+    'prot_t5',
+}
+
+
+def raise_if_legacy_graph_encoding(encoding, context='This workflow'):
+    if encoding not in LEGACY_DGL_ENCODINGS:
+        return
+
+    raise NotImplementedError(
+        f"{context} uses the unsupported legacy DGL/dgllife encoder '{encoding}'. "
+        "DeepProtein 2.0 now supports torch_geometric-based `PyG_*` graph "
+        "encoders for the migrated single-protein and pair/PPI workflows, "
+        "while legacy `DGL_*`, `PAGTN`, `EGT`, and `Graphormer` remain unavailable."
+    )
+
+
+def is_pyg_target_encoding(encoding):
+    return encoding in PYG_TARGET_ENCODINGS
+
+
+def mol_to_pyg_data(mol):
+    from torch_geometric.data import Data
+
+    atom_tensors = [atom_features(atom).float() for atom in mol.GetAtoms()]
+    if atom_tensors:
+        x = torch.stack(atom_tensors, dim=0)
+    else:
+        x = torch.zeros((1, ATOM_FDIM), dtype=torch.float32)
+
+    edge_pairs = []
+    edge_attrs = []
+    for bond in mol.GetBonds():
+        begin_idx = bond.GetBeginAtomIdx()
+        end_idx = bond.GetEndAtomIdx()
+        bond_feat = bond_features(bond).float()
+        edge_pairs.extend([[begin_idx, end_idx], [end_idx, begin_idx]])
+        edge_attrs.extend([bond_feat, bond_feat.clone()])
+
+    if edge_pairs:
+        edge_index = torch.tensor(edge_pairs, dtype=torch.long).t().contiguous()
+        edge_attr = torch.stack(edge_attrs, dim=0)
+    else:
+        edge_index = torch.empty((2, 0), dtype=torch.long)
+        edge_attr = torch.empty((0, BOND_FDIM), dtype=torch.float32)
+
+    return Data(x=x, edge_index=edge_index, edge_attr=edge_attr)
+
+
+def smiles_to_pyg_data(smiles):
+    mol = get_mol(smiles)
+    if mol is None:
+        raise ValueError(f"Failed to build a molecular graph from SMILES: {smiles}")
+    return mol_to_pyg_data(mol)
+
+
+def add_pyg_positional_encoding(graph, pos_enc_dim, method="Laplacian"):
+    if pos_enc_dim <= 0:
+        return graph
+
+    if method != "Laplacian":
+        raise NotImplementedError(
+            f"PyG positional encoding method '{method}' is not implemented yet."
+        )
+
+    num_nodes = int(graph.num_nodes)
+    pe = torch.zeros((num_nodes, pos_enc_dim), dtype=torch.float32)
+    effective_dim = min(pos_enc_dim, max(num_nodes - 1, 0))
+
+    if effective_dim > 0:
+        from torch_geometric.transforms import AddLaplacianEigenvectorPE
+
+        try:
+            transform = AddLaplacianEigenvectorPE(k=effective_dim, attr_name='pe')
+            graph = transform(graph)
+            raw_pe = getattr(graph, 'pe', None)
+            if raw_pe is not None:
+                raw_pe = raw_pe.float()
+                if raw_pe.dim() == 1:
+                    raw_pe = raw_pe.unsqueeze(1)
+                pe[:, :raw_pe.shape[1]] = raw_pe[:, :pos_enc_dim]
+        except Exception:
+            pass
+
+    graph.pe = pe
+    return graph
+
+
+def pyg_protein_collate_func(batch):
+    from torch_geometric.data import Batch
+
+    graphs, labels = zip(*batch)
+    return Batch.from_data_list(list(graphs)), _stack_label_tensors(labels)
+
+
+def _stack_label_tensors(labels):
+    label_tensors = []
+    for label in labels:
+        label_tensor = torch.as_tensor(label, dtype=torch.float32)
+        if label_tensor.dim() == 0:
+            label_tensor = label_tensor.unsqueeze(0)
+        label_tensors.append(label_tensor)
+    return torch.stack(label_tensors, dim=0)
+
+
+def pyg_ppi_collate_func(batch):
+    from torch_geometric.data import Batch
+
+    graph_1, graph_2, labels = zip(*batch)
+    return (
+        Batch.from_data_list(list(graph_1)),
+        Batch.from_data_list(list(graph_2)),
+        _stack_label_tensors(labels),
+    )
 
 
 def create_var(tensor, requires_grad=None):
@@ -509,8 +659,7 @@ def encode_protein(df_data, target_encoding, column_name='Target Sequence', save
         AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
         AA_dict = dict(zip(df_data[column_name].unique(), AA))
         df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
-    elif target_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT',
-                             'Graphormer', 'prot_bert', 'esm_1b', 'esm_2', 'prot_t5']:
+    elif target_encoding in PROTEIN_PASSTHROUGH_ENCODINGS:
         df_data[save_column_name] = df_data[column_name]
     # elif target_encoding == 'MPNN':
     #     unique = pd.Series(df_data[column_name].unique()).apply(smiles2mpnnfeature)
@@ -709,27 +858,8 @@ class data_process_loader(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
-
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN', 'DGL_MPNN', 'EGT', 'Graphormer']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
-            from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
-            self.node_featurizer = PretrainAtomFeaturizer()
-            self.edge_featurizer = PretrainBondFeaturizer()
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+        raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_loader')
+        raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_loader')
 
     def __len__(self):
         'Denotes the total number of samples'
@@ -741,8 +871,6 @@ class data_process_loader(data.Dataset):
         v_d = self.df.iloc[index]['drug_encoding']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_d = drug_2_embed(v_d)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         v_p = self.df.iloc[index]['target_encoding']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
@@ -758,27 +886,7 @@ class data_process_DDI_loader(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
-
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
-            from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
-            self.node_featurizer = PretrainAtomFeaturizer()
-            self.edge_featurizer = PretrainBondFeaturizer()
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+        raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_DDI_loader')
 
     def __len__(self):
         'Denotes the total number of samples'
@@ -790,15 +898,9 @@ class data_process_DDI_loader(data.Dataset):
         v_d = self.df.iloc[index]['drug_encoding_1']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_d = drug_2_embed(v_d)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred',
-                                              'DGL_AttentiveFP']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         v_p = self.df.iloc[index]['drug_encoding_2']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_p = drug_2_embed(v_p)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred',
-                                              'DGL_AttentiveFP']:
-            v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
         return v_d, v_p, y
 
@@ -811,14 +913,13 @@ class data_process_PPI_loader(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        self.compute_pos_enc = bool(self.config.get('compute_pos_enc', False))
+        self.pos_enc_dim = int(self.config.get('pyg_pos_enc_dim', 0))
+        self.pos_enc_method = self.config.get('pyg_pos_enc_method', 'Laplacian')
+        raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_PPI_loader')
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT',
-                                              'Graphormer']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+        if self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            self.fc = smiles_to_pyg_data
 
     def __len__(self):
         'Denotes the total number of samples'
@@ -830,15 +931,18 @@ class data_process_PPI_loader(data.Dataset):
         v_d = self.df.iloc[index]['target_encoding_1']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_d = protein_2_embed(v_d)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+        elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            v_d = self.fc(v_d)
+            if self.compute_pos_enc:
+                v_d = add_pyg_positional_encoding(v_d, self.pos_enc_dim, self.pos_enc_method)
 
         v_p = self.df.iloc[index]['target_encoding_2']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP']:
-            v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
-            # v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+        elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            v_p = self.fc(v_p)
+            if self.compute_pos_enc:
+                v_p = add_pyg_positional_encoding(v_p, self.pos_enc_dim, self.pos_enc_method)
         y = self.labels[index]
         return v_d, v_p, y
 
@@ -851,27 +955,7 @@ class data_process_loader_Property_Prediction(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
-
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
-            from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
-            self.node_featurizer = PretrainAtomFeaturizer()
-            self.edge_featurizer = PretrainBondFeaturizer()
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+        raise_if_legacy_graph_encoding(self.config.get('drug_encoding'), context='data_process_loader_Property_Prediction')
 
     def __len__(self):
         'Denotes the total number of samples'
@@ -884,8 +968,6 @@ class data_process_loader_Property_Prediction(data.Dataset):
         v_d = self.df.iloc[index]['drug_encoding']
         if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
             v_d = drug_2_embed(v_d)
-        elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_GIN']:
-            v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         y = self.labels[index]
 
         return v_d, y
@@ -899,21 +981,13 @@ class data_process_loader_Protein_Prediction(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        self.compute_pos_enc = bool(self.config.get('compute_pos_enc', False))
+        self.pos_enc_dim = int(self.config.get('pyg_pos_enc_dim', 0))
+        self.pos_enc_method = self.config.get('pyg_pos_enc_method', 'Laplacian')
+        raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_loader_Protein_Prediction')
 
-        if self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'EGT',
-                                              'Graphormer']:
-            from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
-            self.node_featurizer = CanonicalAtomFeaturizer()
-            self.edge_featurizer = CanonicalBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-
-        elif self.config['target_encoding'] == 'DGL_AttentiveFP':
-            from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
-            self.node_featurizer = AttentiveFPAtomFeaturizer()
-            self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
-            from functools import partial
-            self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+        if self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            self.fc = smiles_to_pyg_data
 
 
     def __len__(self):
@@ -928,9 +1002,10 @@ class data_process_loader_Protein_Prediction(data.Dataset):
 
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
-        elif self.config['target_encoding'] in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP',
-                                                'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
-            v_p = self.fc(smiles=v_p, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
+        elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
+            v_p = self.fc(v_p)
+            if self.compute_pos_enc:
+                v_p = add_pyg_positional_encoding(v_p, self.pos_enc_dim, self.pos_enc_method)
 
         y = self.labels[index]
 
@@ -1110,6 +1185,10 @@ def generate_config(drug_encoding=None, target_encoding=None,
                     gnn_hid_dim_drug=64,
                     gnn_num_layers=3,
                     gnn_activation=F.relu,
+                    pyg_gat_heads=4,
+                    pyg_cheb_k=3,
+                    pyg_pos_enc_dim=8,
+                    pyg_pos_enc_method='Laplacian',
                     neuralfp_max_degree=10,
                     neuralfp_predictor_hid_dim=128,
                     neuralfp_predictor_activation=torch.tanh,
@@ -1131,7 +1210,10 @@ def generate_config(drug_encoding=None, target_encoding=None,
                    'binary': False,
                    'num_workers': num_workers,
                    'cuda_id': cuda_id,
-                   'use_spearmanr': use_spearmanr
+                   'use_spearmanr': use_spearmanr,
+                   'compute_pos_enc': False,
+                   'pyg_pos_enc_dim': pyg_pos_enc_dim,
+                   'pyg_pos_enc_method': pyg_pos_enc_method,
                    }
     if not os.path.exists(base_config['result_folder']):
         os.makedirs(base_config['result_folder'])
@@ -1263,6 +1345,15 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
         base_config['gnn_activation'] = gnn_activation
+    elif target_encoding in PYG_TARGET_ENCODINGS:
+        base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+        base_config['gnn_num_layers'] = gnn_num_layers
+        base_config['gnn_activation'] = gnn_activation
+        base_config['hidden_dim_protein'] = hidden_dim_protein
+        base_config['pyg_gat_heads'] = pyg_gat_heads
+        base_config['pyg_cheb_k'] = pyg_cheb_k
+        base_config['pyg_pos_enc_dim'] = pyg_pos_enc_dim
+        base_config['pyg_pos_enc_method'] = pyg_pos_enc_method
     elif target_encoding == 'DGL_GAT':
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
@@ -1850,19 +1941,31 @@ class GraphDataset(Dataset):
 
 # compute positional encodings for graph transformers
 def compute_pos(generator, params, method="Laplacian"):
-    """ Return a new Dataset"""
-    modified_graphs = []
-    modified_labels = []
+    pos_enc_dim = int(params.get('pyg_pos_enc_dim', 0))
+    if pos_enc_dim <= 0:
+        return generator
 
-    if method == 'Laplacian':
-        for graph, label in generator:
-            graph.ndata['PE'] = dgl.laplacian_pe(graph, k=74)
-            modified_graphs.append(graph)
-            modified_labels.append(label)
+    if hasattr(generator, 'x') and hasattr(generator, 'edge_index'):
+        return add_pyg_positional_encoding(generator, pos_enc_dim, method)
 
-    modified_dataset = list(zip(modified_graphs, modified_labels))
-    modified_generator = torch.utils.data.DataLoader(GraphDataset(modified_dataset, modified_labels), **params)
-    return modified_generator
+    if hasattr(generator, 'dataset') and hasattr(generator.dataset, 'graphs'):
+        generator.dataset.graphs = [
+            add_pyg_positional_encoding(graph, pos_enc_dim, method)
+            for graph in generator.dataset.graphs
+        ]
+        return generator
+
+    if hasattr(generator, 'graphs'):
+        generator.graphs = [
+            add_pyg_positional_encoding(graph, pos_enc_dim, method)
+            for graph in generator.graphs
+        ]
+        return generator
+
+    if isinstance(generator, (list, tuple)):
+        return [add_pyg_positional_encoding(graph, pos_enc_dim, method) for graph in generator]
+
+    raise TypeError("Unsupported graph container for compute_pos in the PyG runtime.")
 
 def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):
     ans = []

@@ -31,8 +31,6 @@ datasets==2.19.2
 decorator==5.1.1
 DeepPurpose==0.1.5
 descriptastorus==2.7.0.3
-dgl==2.4.0+cu118
-dgllife==0.3.2
 dill==0.3.8
 docker-pycreds==0.4.0
 einops==0.8.1
@@ -182,6 +180,7 @@ tomli==2.2.1
 torch==2.3.0+cu118
 torchaudio==2.3.0+cu118
 torchvision==0.18.0+cu118
+torch-geometric
 tqdm==4.67.1
 traitlets==5.14.3
 transformers==4.43.4

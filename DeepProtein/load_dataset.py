@@ -3,14 +3,25 @@ import os, sys
 module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
-from tdc.utils import retrieve_label_name_list
-from tdc.single_pred import Develop, CRISPROutcome
-from tdc.single_pred import Epitope, Paratope
 from DeepProtein.dataset import *
 import DeepProtein.utils as utils
 from DeepProtein.your_data import *
 
+
+def _load_tdc_sequence_tasks():
+    from tdc.utils import retrieve_label_name_list
+    from tdc.single_pred import Develop, CRISPROutcome
+
+    return retrieve_label_name_list, Develop, CRISPROutcome
+
+
+def _load_tdc_residue_tasks():
+    from tdc.single_pred import Epitope, Paratope
+
+    return Epitope, Paratope
+
 def load_single_dataset(dataset_name, path, method, your_file=None):
+    utils.raise_if_legacy_graph_encoding(method, context='load_single_dataset')
     # loading single
     if dataset_name == "Beta":
         train = Beta_lactamase(path + '/DeepProtein/data', 'train')
@@ -41,6 +52,7 @@ def load_single_dataset(dataset_name, path, method, your_file=None):
         valid = Fold(path + '/DeepProtein/data', 'valid')
         test = Fold(path + '/DeepProtein/data', 'test_superfamily_holdout')
     elif dataset_name == "CRISPR":
+        retrieve_label_name_list, _, CRISPROutcome = _load_tdc_sequence_tasks()
         label_list = retrieve_label_name_list('Leenay')
         data = CRISPROutcome(name='Leenay', label_name=label_list[0])
         split = data.get_split()
@@ -56,7 +68,7 @@ def load_single_dataset(dataset_name, path, method, your_file=None):
 
     #### deal with targeting (sequence-based and structure-based):
 
-    if method in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP',  'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+    if method in utils.PYG_TARGET_ENCODINGS:
         if dataset_name in ["CRISPR", "Stability"]:
             train_protein_processed, train_target, train_protein_idx = collate_fn(train, graph=True, unsqueeze=False)
             valid_protein_processed, valid_target, valid_protein_idx = collate_fn(valid, graph=True, unsqueeze=False)
@@ -125,6 +137,7 @@ def load_single_dataset(dataset_name, path, method, your_file=None):
     return train, val, test
 
 def load_pair_dataset(dataset_name, path, method, your_file=None):
+    utils.raise_if_legacy_graph_encoding(method, context='load_pair_dataset')
     # loading pair
     if dataset_name == "PPI_Affinity":
         train = PPI_Affinity(path + '/DeepProtein/data', 'train')
@@ -139,6 +152,7 @@ def load_pair_dataset(dataset_name, path, method, your_file=None):
         valid = Yeast_PPI(path + '/DeepProtein/data', 'valid')
         test = Yeast_PPI(path + '/DeepProtein/data', 'test')
     elif dataset_name == "TAP":
+        retrieve_label_name_list, Develop, _ = _load_tdc_sequence_tasks()
         label_list = retrieve_label_name_list('TAP')
         data = Develop(name='TAP', label_name=label_list[0])
         split = data.get_split()
@@ -150,6 +164,7 @@ def load_pair_dataset(dataset_name, path, method, your_file=None):
         valid = list(zip(valid_antibody_1, valid_antibody_2, y_valid))
         test = list(zip(test_antibody_1, test_antibody_2, y_test))
     elif dataset_name == "SAbDab_Chen":
+        _, Develop, _ = _load_tdc_sequence_tasks()
         data = Develop(name='SAbDab_Chen')
         split = data.get_split()
         train_antibody_1, train_antibody_2 = to_two_seq(split, 'train', 'Antibody', sep=",")
@@ -164,7 +179,7 @@ def load_pair_dataset(dataset_name, path, method, your_file=None):
         train, valid, test = split_data(data_2col, ratio=(0.5, 0.3, 0.2), shuffle=True)
 
     #### deal with targeting (sequence-based and structure-based):
-    if method in ['DGL_GAT', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_MPNN', 'PAGTN', 'EGT', 'Graphormer']:
+    if method in utils.PYG_TARGET_ENCODINGS:
         train_protein_1, train_protein_2, train_target, train_protein_idx = collate_fn_ppi(train, graph=True, unsqueeze= False)
         valid_protein_1, valid_protein_2, valid_target, valid_protein_idx = collate_fn_ppi(valid, graph=True, unsqueeze= False)
         test_protein_1, test_protein_2, test_target, test_protein_idx = collate_fn_ppi(test, graph=True, unsqueeze= False)
@@ -219,16 +234,19 @@ def load_pair_dataset(dataset_name, path, method, your_file=None):
 def load_residue_dataset(dataset_name, path, method):
     # loading residue
     if dataset_name == "PDB":
+        Epitope, _ = _load_tdc_residue_tasks()
         data_class, name, X = Epitope, 'PDB_Jespersen', 'Antigen'
         data = data_class(name=name)
         split = data.get_split()
         train_data, valid_data, test_data = split['train'], split['valid'], split['test']
     elif dataset_name == "IEDB":
+        Epitope, _ = _load_tdc_residue_tasks()
         data_class, name, X = Epitope, 'IEDB_Jespersen', 'Antigen'
         data = data_class(name=name)
         split = data.get_split()
         train_data, valid_data, test_data = split['train'], split['valid'], split['test']
     elif dataset_name == "SAbDab_Liberis":
+        _, Paratope = _load_tdc_residue_tasks()
         data_class, name, X = Paratope, 'SAbDab_Liberis', 'Antibody'
         data = data_class(name=name)
         split = data.get_split()

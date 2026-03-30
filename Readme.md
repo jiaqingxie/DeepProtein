@@ -28,9 +28,17 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 
 ---
 
-### What is DeepProtein?
+### What is DeepProtein 2.0?
 
-**DeepProtein** is a comprehensive deep learning library and benchmark designed to fill these gaps:
+**DeepProtein 2.0** is the torch-first runtime of DeepProtein. It keeps the benchmark and task coverage of the original project while moving the maintained graph path onto `torch-geometric` instead of DGL.
+
+In practice, the current 2.0 line focuses on:
+
+1. **Torch-only core runtime**: the maintained graph workflow now runs through `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`.
+2. **Unified task coverage**: single-protein, pair/PPI, and residue-level tasks stay under one library surface.
+3. **Practical training entry points**: CLI scripts, dataset loaders, and smoke tests are aligned to the v2 runtime.
+
+More broadly, **DeepProtein** remains a comprehensive deep learning library and benchmark designed to fill these gaps:
 
 1. **Comprehensive Benchmarking**: Evaluating CNNs, RNNs, transformers, and GNNs on 7 essential protein learning tasks, such as function prediction and antibody developability.
 2. **User-friendly Interface**: Simplifying execution with one command for all tasks.
@@ -60,7 +68,7 @@ However, current benchmarks often focus on sequential methods like CNNs and tran
 
 ## Installation
 
-We recommend you follow the instructions on how DeepPurpose's dependencies are installed.
+The commands below reflect the recommended **DeepProtein 2.0** environment. The project still shares several dependencies with DeepPurpose, but the maintained graph backend in v2 is `torch-geometric`.
 ```bash
 conda create -n DeepProtein python=3.9
 conda activate DeepProtein
@@ -76,16 +84,18 @@ conda install -c conda-forge pytdc
 
 A version of torch 2.1+ is required to be installed since Jul requires a version of torch >=2.1.0. 
 
-1. If you want to use GPU, then first find a matched torch version, then install duel with cuda version. We give an example of torch 2.3.0 with cuda 11.8:
+1. If you want to use GPU, then first find a matched torch version. We give an example of torch 2.3.0 with cuda 11.8:
     ```bash
    pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu118
-   pip install  dgl -f https://data.dgl.ai/wheels/torch-2.3/cu118/repo.html
+   pip install torch-geometric
    ```
 2. If you are not using a GPU, then follow this:
     ```bash
     pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cpu
-    pip install  dgl -f https://data.dgl.ai/wheels/torch-2.3/repo.html
+    pip install torch-geometric
     ```
+
+DeepProtein 2.0 removes the DGL requirement from the core package. Phases II and III add torch-geometric support for both single-protein and pair/PPI graph encoders, including `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`. Phase V adds optional Laplacian positional encoding for the `PyG_*` graph path through `compute_pos_enc=True`. Legacy `DGL_*` graph encoders are kept as unsupported compatibility stubs.
 
 ## Demos
 
@@ -109,12 +119,12 @@ We give two examples for each case study. One is trained with fixed parameters (
 
 | Argument  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| target_encoding             | 'CNN' / 'Transformer' for sequential learning, or 'DGL_GCN' for 'DGL_AttentiveFP' for structure learning. Current available protein encoding belongs to this full list: ['CNN', 'Transformer', 'CNN_RNN', 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', 'Graphormer', 'prot_t5', 'esm_1b', 'esm_2', 'prot_bert']. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer'] |
+| target_encoding             | DeepProtein 2.0 supports torch-only protein encoders such as 'CNN', 'Transformer', 'CNN_RNN', 'prot_t5', 'esm_1b', 'esm_2', and 'prot_bert', plus torch-geometric graph encoders 'PyG_GCN', 'PyG_GAT', 'PyG_GraphSAGE', 'PyG_GIN', 'PyG_ChebNet', and 'PyG_TAGConv' for both single-protein and pair/PPI tasks. Legacy graph encoders such as 'DGL_GCN', 'DGL_GAT', 'DGL_AttentiveFP', 'DGL_NeuralFP', 'DGL_MPNN', 'PAGTN', and 'Graphormer' are not available in the v2 runtime. For residue level tasks, the protein encoding list is ['Token_CNN', 'Token_CNN_RNN, 'Token_Transformer'] |
 | seed         | For paper: 7 / 42 /100. You could try your own seed.                                                                                                                                                                                                                                                                                                                                                                                                       |
 | wandb_proj     | The name of your wandb project that you wish to save the results into.                                                                                                                                                                                                                                                                                                                                                                                     |
 | lr          | Learning rate. We recommend 1e-4 for non-GNN learning and 1e-5 for GNN learning.                                                                                                                                                                                                                                                                                                                                                                           |
 | epochs         | Number of training epochs. Generally setting 60 - 100 epochs leads to convergence.                                                                                                                                                                                                                                                                                                                                                                         |
-| compute_pos_enc *    | Compute positional encoding for using graph transformers. We dont recommend add this inductive bias into GNN as GNN itself already encoded it. This don't work effectively on large scale graphs with dgl so the implementation is still under test.                                                                                                                                                                                                       |
+| compute_pos_enc *    | Enable Laplacian node positional encoding for `PyG_*` graph encoders in both single-protein and pair/PPI workflows. Keep this flag as `False` for non-graph encoders. The PE width is controlled by `generate_config(..., pyg_pos_enc_dim=8)`.                                                                                                                                     |
 | batch_size | Batch size of 8 - 32 is good for protein sequence learning.                                                                                                                                                                                                                                                                                                                                                                                                |
 
 
@@ -152,7 +162,7 @@ model.model
 
 </details>
 
-If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True.
+If you want to use structure learning methods such as graph neural network, choose a `PyG_*` encoder. You can additionally enable Laplacian positional encoding with `compute_pos_enc=True`.
 
 (b) If you wish to use arguments, this could be trained in one line. All mentioned GNN variants above is available for training.
 
@@ -168,7 +178,7 @@ python train/beta.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --l
   <summary>GNN Case</summary>
 
 ```python 
-python train/beta.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+python train/beta.py --target_encoding PyG_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 ```
 
 </details>
@@ -184,13 +194,13 @@ import DeepProtein.PPI as models
 
 ### Load PPI Affinity dataset
 path = os.getcwd()
-train, val, test = load_pair_dataset("IEDB", path, 'CNN')
+train, val, test = load_pair_dataset("PPI_Affinity", path, 'PyG_GCN')
                             
 ### Load configuration for model
-config = generate_config(target_encoding='CNN',
+config = generate_config(target_encoding='PyG_GCN',
                          cls_hidden_dims=[512],
                          train_epoch=20,
-                         LR=0.0001,
+                         LR=0.00001,
                          batch_size=32,
                          )
 # config['multi'] = False
@@ -198,14 +208,12 @@ torch.manual_seed(42)
 model = models.model_initialize(**config)
 
 ### Train our model
-model.train(train, val, test)
+model.train(train, val, test, compute_pos_enc = True)
 
 ```
 </details>
 
-If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn_ppi() into True.
-
-(b) If you wish to use arguments, this could be trained in one line. For GNN, only DGL_GCN, DGL_GAT and DGL_NeuralFP is available currently.
+Pair/PPI graph methods are now available through torch-geometric. `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv` all share the same encoder tower across the two proteins, and can optionally consume Laplacian positional encoding with `compute_pos_enc=True`.
 
 
 <details>
@@ -220,7 +228,7 @@ python train/ppi_affinity.py --target_encoding CNN --seed 42 --wandb_proj DeepPr
   <summary>GNN Case</summary>
 
 ```python 
-python train/ppi_affinity.py --target_encoding DGL_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+python train/ppi_affinity.py --target_encoding PyG_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 ```
 
 </details>
@@ -260,7 +268,7 @@ model.train(train, val, test, compute_pos_enc = False)
 
 </details>
 
-If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True. Note that SubCellular is multi-class classification problem, therefore you should set config['multi'] to True.
+If you want to use structure learning methods such as graph neural network, choose a `PyG_*` encoder and optionally enable `compute_pos_enc=True`. Note that SubCellular is multi-class classification problem, therefore you should set config['multi'] to True.
 
 (b) If you wish to use arguments, this could be trained in one line. All mentioned GNN variants above is available for training.
 
@@ -276,14 +284,14 @@ python train/subcellular.py --target_encoding CNN --seed 7 --wandb_proj DeepProt
   <summary>GNN Case</summary>
 
 ```python 
-python train/subcellular.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+python train/subcellular.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 ```
 </details>
 
 ### Case Study 1(d): A Framework for Antigen Epitope Prediction
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
@@ -311,7 +319,7 @@ torch.manual_seed(42)
 model = models.model_initialize(**config)
 
 ### Train our model
-model.train(train, val, test, batch_size=32)
+model.train(train, val, test, compute_pos_enc = True)
 
 ```
 
@@ -335,7 +343,7 @@ python train/IEDB.py --target_encoding Token_CNN --seed 7 --wandb_proj DeepProte
 ### Case Study 1(e): A Framework for Antibody Paratope Prediction
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
@@ -388,7 +396,7 @@ python train/SAbDab_Liberis.py --target_encoding Token_CNN --seed 7 --wandb_proj
 ### Case Study 1(f): A Framework for Antibody Developability Prediction (TAP)
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
@@ -399,13 +407,13 @@ from DeepProtein.load_dataset import *
 import DeepProtein.PPI as models
 
 ### Load TAP Dataset
-train, val, test = load_pair_dataset("TAP", None, 'CNN')
+train, val, test = load_pair_dataset("TAP", None, 'PyG_GAT')
 
 ### Load configuration for model
-config = generate_config(target_encoding='CNN',
+config = generate_config(target_encoding='PyG_GAT',
                          cls_hidden_dims=[1024, 1024],
                          train_epoch=20,
-                         LR=0.0001,
+                         LR=0.00001,
                          batch_size=32,
                          )
 config['binary'] = False
@@ -422,9 +430,7 @@ model.train(train, val, test, batch_size=32)
 
 
 
-If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn_ppi() into True.
-
-(b) If you wish to use arguments, this could be trained in one line. For GNN, only DGL_GCN, DGL_GAT and DGL_NeuralFP is available currently.
+Pair/PPI graph methods are also available for TAP-style pair tasks through the same `PyG_*` encoder family, including optional Laplacian positional encoding via `compute_pos_enc=True`.
 
 <details>
   <summary>CNN Case</summary>
@@ -439,7 +445,7 @@ python train/TAP.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein --lr
   <summary>GNN Case</summary>
 
 ```python 
-python train/TAP.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+python train/TAP.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 ```
 
 </details>
@@ -449,7 +455,7 @@ python train/TAP.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein 
 
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
@@ -482,9 +488,9 @@ model.train(train, val, test, batch_size=32)
 
 
 
-If you want to use structure learning methods such as graph neural network, please set the second parameters in the collate_fn() into True.
+If you want to use structure learning methods such as graph neural network, choose a `PyG_*` encoder and optionally enable `compute_pos_enc=True`.
 
-(b) If you wish to use arguments, this could be trained in one line. All mentioned GNN above is available currently.
+(b) If you wish to use arguments, this could be trained in one line. Torch-geometric methods such as `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv` are available currently for both single-protein and pair/PPI tasks.
 
 <details>
   <summary>CNN Case</summary>
@@ -499,15 +505,13 @@ python train/CRISPR.py --target_encoding CNN --seed 7 --wandb_proj DeepProtein -
   <summary>GNN Case</summary>
 
 ```python 
-python train/CRISPR.py --target_encoding DGL_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+python train/CRISPR.py --target_encoding PyG_GraphSAGE --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 ```
 
 </details>
 
 ## Encodings
-Thanks to DeepPurpose and dgllife, we could borrow some of the encodings from DeepPurpose. The newly added encodings are PAGTN, 
-EGT and Graphormer which belong to graph transformer modules that are prevailing methods
-these years for encoding protein graphs.
+Thanks to DeepPurpose and torch-geometric, we could borrow and extend several graph encodings for DeepProtein 2.0. The current PyG migration focuses on typical message-passing methods for protein graph encoding, while the older DGL-specific transformer-style methods remain deferred.
 
 Currently, we support the following encodings:
 
@@ -517,10 +521,12 @@ Currently, we support the following encodings:
 | CNN_RNN           | A GRU/LSTM on top of a CNN on SMILES            |
 | Transformer       | Transformer Encoder on ESPF                     |
 | MPNN              | Message-passing neural network                  |
-| DGL_GCN           | Graph Convolutional Network                     |
-| DGL_NeuralFP      | Neural Fingerprint                              |
-| DGL_AttentiveFP   | Attentive FP, Xiong et al. 2020                 |
-| DGL_GAT           | Graph Attention Network                         |
+| PyG_GCN           | Graph Convolutional Network                     |
+| PyG_GAT           | Graph Attention Network                         |
+| PyG_GraphSAGE     | GraphSAGE                                       |
+| PyG_GIN           | Graph Isomorphism Network                       |
+| PyG_ChebNet       | Chebyshev Spectral Graph Network                |
+| PyG_TAGConv       | Topology Adaptive Graph Convolution             |
 | PAGTN             | Path Augmented Graph Transformer Network        |
 | Graphormer        | Do Transformers Really Perform Bad, Ying et al. |
 | ESM-1             | Evolutionary Scale Modeling version 1           |
