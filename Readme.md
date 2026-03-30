@@ -283,7 +283,7 @@ python train/subcellular.py --target_encoding PyG_GAT --seed 7 --wandb_proj Deep
 ### Case Study 1(d): A Framework for Antigen Epitope Prediction
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
@@ -335,7 +335,7 @@ python train/IEDB.py --target_encoding Token_CNN --seed 7 --wandb_proj DeepProte
 ### Case Study 1(e): A Framework for Antibody Paratope Prediction
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
@@ -388,7 +388,7 @@ python train/SAbDab_Liberis.py --target_encoding Token_CNN --seed 7 --wandb_proj
 ### Case Study 1(f): A Framework for Antibody Developability Prediction (TAP)
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
@@ -447,7 +447,7 @@ python train/TAP.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein 
 
 Make sure that tdc is installed, if not 
 ```bash
-pip install PyTDC
+conda install -c conda-forge pytdc
 ```
 <details>
   <summary>Click here for the code!</summary>
