@@ -20,7 +20,7 @@ GNN Case:
 
 .. code-block:: bash
 
-  $ python train/beta.py --target_encoding PyG_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+  $ python train/beta.py --target_encoding PyG_GCN --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 
 
 
@@ -41,9 +41,9 @@ GNN Case:
 .. code-block:: bash
 
 
-  $ python train/ppi_affinity.py --target_encoding PyG_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+  $ python train/ppi_affinity.py --target_encoding PyG_GCN --seed 42 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 
-Pair/PPI torch-geometric support is now available for `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`.
+Pair/PPI torch-geometric support is now available for `PyG_GCN`, `PyG_GAT`, `PyG_GraphSAGE`, `PyG_GIN`, `PyG_ChebNet`, and `PyG_TAGConv`, including optional Laplacian positional encoding with ``compute_pos_enc=True``.
 
 
 1c. Protein Localization Prediction
@@ -62,7 +62,7 @@ GNN Case:
 
 .. code-block:: bash
 
-  $ python train/subcellular.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+  $ python train/subcellular.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 
 
 
@@ -107,7 +107,7 @@ GNN Case:
 .. code-block:: bash
 
 
-  $ python train/TAP.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100
+  $ python train/TAP.py --target_encoding PyG_GAT --seed 7 --wandb_proj DeepProtein --lr 0.00001 --epochs 100 --compute_pos_enc True
 
 
 

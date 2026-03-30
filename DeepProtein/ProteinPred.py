@@ -108,6 +108,7 @@ class Protein_Prediction:
                 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
                 activation=config['gnn_activation'],
                 predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
             )
         elif target_encoding == 'PyG_GAT':
             self.model_protein = PyG_GAT(
@@ -116,6 +117,7 @@ class Protein_Prediction:
                 activation=config['gnn_activation'],
                 predictor_dim=config['hidden_dim_protein'],
                 heads=config.get('pyg_gat_heads', 4),
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
             )
         elif target_encoding == 'PyG_GraphSAGE':
             self.model_protein = PyG_GraphSAGE(
@@ -123,6 +125,7 @@ class Protein_Prediction:
                 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
                 activation=config['gnn_activation'],
                 predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
             )
         elif target_encoding == 'PyG_GIN':
             self.model_protein = PyG_GIN(
@@ -130,6 +133,7 @@ class Protein_Prediction:
                 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
                 activation=config['gnn_activation'],
                 predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
             )
         elif target_encoding == 'PyG_ChebNet':
             self.model_protein = PyG_ChebNet(
@@ -138,6 +142,7 @@ class Protein_Prediction:
                 activation=config['gnn_activation'],
                 predictor_dim=config['hidden_dim_protein'],
                 cheb_k=config.get('pyg_cheb_k', 3),
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
             )
         elif target_encoding == 'PyG_TAGConv':
             self.model_protein = PyG_TAGConv(
@@ -145,6 +150,7 @@ class Protein_Prediction:
                 hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
                 activation=config['gnn_activation'],
                 predictor_dim=config['hidden_dim_protein'],
+                pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
             )
         elif target_encoding in LEGACY_DGL_TARGET_ENCODINGS:
             raise_if_legacy_graph_encoding(target_encoding, context='Protein_Prediction')
@@ -356,6 +362,11 @@ class Protein_Prediction:
 
 
     def train(self, train, val, test=None, verbose=True, compute_pos_enc=False):
+        self.config['compute_pos_enc'] = compute_pos_enc
+        if compute_pos_enc and self.target_encoding not in PYG_TARGET_ENCODINGS:
+            raise NotImplementedError(
+                "`compute_pos_enc=True` is currently supported only for `PyG_*` protein encoders."
+            )
 
         if len(train.Label.unique()) == 2:
             self.binary = True
@@ -430,13 +441,6 @@ class Protein_Prediction:
             testing_generator = data.DataLoader(
                 data_process_loader_Protein_Prediction(test.index.values, test.Label.values, test, **self.config),
                 **params_test)
-
-
-        if compute_pos_enc:
-            raise NotImplementedError(
-                "Graph positional encodings are not available in the current "
-                "torch_geometric runtime yet. Please keep `compute_pos_enc=False`."
-            )
 
 
         # early stopping

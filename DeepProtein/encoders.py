@@ -590,13 +590,14 @@ def _normalize_graph_activations(activation, num_layers):
 
 
 class _PyGGraphEncoderBase(nn.Module):
-    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):
+    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, pos_enc_dim=0):
         super().__init__()
         from torch_geometric.nn import global_max_pool, global_mean_pool
 
         self.hidden_feats = hidden_feats or [64, 64, 64]
         self.activations = _normalize_graph_activations(activation or F.relu, len(self.hidden_feats))
         self.convs = nn.ModuleList()
+        self.pos_encoder = nn.Linear(pos_enc_dim, in_feats) if pos_enc_dim > 0 else None
         self.global_mean_pool = global_mean_pool
         self.global_max_pool = global_max_pool
 
@@ -616,6 +617,9 @@ class _PyGGraphEncoderBase(nn.Module):
     def forward(self, bg):
         bg = bg.to(device)
         x = bg.x
+        pe = getattr(bg, 'pe', None)
+        if self.pos_encoder is not None and pe is not None:
+            x = x + self.pos_encoder(pe.float())
         edge_index = bg.edge_index
         batch = getattr(bg, 'batch', None)
         if batch is None:
@@ -641,9 +645,15 @@ class PyG_GCN(_PyGGraphEncoderBase):
 
 
 class PyG_GAT(_PyGGraphEncoderBase):
-    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, heads=4):
+    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, heads=4, pos_enc_dim=0):
         self.heads = heads
-        super().__init__(in_feats=in_feats, hidden_feats=hidden_feats, activation=activation, predictor_dim=predictor_dim)
+        super().__init__(
+            in_feats=in_feats,
+            hidden_feats=hidden_feats,
+            activation=activation,
+            predictor_dim=predictor_dim,
+            pos_enc_dim=pos_enc_dim,
+        )
 
     def _build_conv(self, in_feats, out_feats):
         from torch_geometric.nn import GATConv
@@ -671,9 +681,15 @@ class PyG_GIN(_PyGGraphEncoderBase):
 
 
 class PyG_ChebNet(_PyGGraphEncoderBase):
-    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, cheb_k=3):
+    def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None, cheb_k=3, pos_enc_dim=0):
         self.cheb_k = cheb_k
-        super().__init__(in_feats=in_feats, hidden_feats=hidden_feats, activation=activation, predictor_dim=predictor_dim)
+        super().__init__(
+            in_feats=in_feats,
+            hidden_feats=hidden_feats,
+            activation=activation,
+            predictor_dim=predictor_dim,
+            pos_enc_dim=pos_enc_dim,
+        )
 
     def _build_conv(self, in_feats, out_feats):
         from torch_geometric.nn import ChebConv

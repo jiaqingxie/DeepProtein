@@ -125,6 +125,7 @@ class PPI_Model:
 				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
 				activation=config['gnn_activation'],
 				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
 			)
 		elif target_encoding == 'PyG_GAT':
 			self.model_protein = PyG_GAT(
@@ -133,6 +134,7 @@ class PPI_Model:
 				activation=config['gnn_activation'],
 				predictor_dim=config['hidden_dim_protein'],
 				heads=config.get('pyg_gat_heads', 4),
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
 			)
 		elif target_encoding == 'PyG_GraphSAGE':
 			self.model_protein = PyG_GraphSAGE(
@@ -140,6 +142,7 @@ class PPI_Model:
 				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
 				activation=config['gnn_activation'],
 				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
 			)
 		elif target_encoding == 'PyG_GIN':
 			self.model_protein = PyG_GIN(
@@ -147,6 +150,7 @@ class PPI_Model:
 				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
 				activation=config['gnn_activation'],
 				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
 			)
 		elif target_encoding == 'PyG_ChebNet':
 			self.model_protein = PyG_ChebNet(
@@ -155,6 +159,7 @@ class PPI_Model:
 				activation=config['gnn_activation'],
 				predictor_dim=config['hidden_dim_protein'],
 				cheb_k=config.get('pyg_cheb_k', 3),
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
 			)
 		elif target_encoding == 'PyG_TAGConv':
 			self.model_protein = PyG_TAGConv(
@@ -162,6 +167,7 @@ class PPI_Model:
 				hidden_feats=[config['gnn_hid_dim_drug']] * config['gnn_num_layers'],
 				activation=config['gnn_activation'],
 				predictor_dim=config['hidden_dim_protein'],
+				pos_enc_dim=config.get('pyg_pos_enc_dim', 0),
 			)
 		elif target_encoding in LEGACY_DGL_TARGET_ENCODINGS:
 			raise_if_legacy_graph_encoding(target_encoding, context='PPI_Model')
@@ -316,7 +322,12 @@ class PPI_Model:
 				return y_pred
 			return mean_absolute_error(y_label, y_pred), mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
-	def train(self, train, val, test = None, verbose = True):
+	def train(self, train, val, test = None, verbose = True, compute_pos_enc = False):
+		self.config['compute_pos_enc'] = compute_pos_enc
+		if compute_pos_enc and self.target_encoding not in PYG_TARGET_ENCODINGS:
+			raise NotImplementedError(
+				"`compute_pos_enc=True` is currently supported only for `PyG_*` pair/PPI encoders."
+			)
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 			self.config['binary'] = True

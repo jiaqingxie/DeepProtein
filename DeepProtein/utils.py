@@ -148,6 +148,38 @@ def smiles_to_pyg_data(smiles):
     return mol_to_pyg_data(mol)
 
 
+def add_pyg_positional_encoding(graph, pos_enc_dim, method="Laplacian"):
+    if pos_enc_dim <= 0:
+        return graph
+
+    if method != "Laplacian":
+        raise NotImplementedError(
+            f"PyG positional encoding method '{method}' is not implemented yet."
+        )
+
+    num_nodes = int(graph.num_nodes)
+    pe = torch.zeros((num_nodes, pos_enc_dim), dtype=torch.float32)
+    effective_dim = min(pos_enc_dim, max(num_nodes - 1, 0))
+
+    if effective_dim > 0:
+        from torch_geometric.transforms import AddLaplacianEigenvectorPE
+
+        try:
+            transform = AddLaplacianEigenvectorPE(k=effective_dim, attr_name='pe')
+            graph = transform(graph)
+            raw_pe = getattr(graph, 'pe', None)
+            if raw_pe is not None:
+                raw_pe = raw_pe.float()
+                if raw_pe.dim() == 1:
+                    raw_pe = raw_pe.unsqueeze(1)
+                pe[:, :raw_pe.shape[1]] = raw_pe[:, :pos_enc_dim]
+        except Exception:
+            pass
+
+    graph.pe = pe
+    return graph
+
+
 def pyg_protein_collate_func(batch):
     from torch_geometric.data import Batch
 
@@ -881,6 +913,9 @@ class data_process_PPI_loader(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        self.compute_pos_enc = bool(self.config.get('compute_pos_enc', False))
+        self.pos_enc_dim = int(self.config.get('pyg_pos_enc_dim', 0))
+        self.pos_enc_method = self.config.get('pyg_pos_enc_method', 'Laplacian')
         raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_PPI_loader')
 
         if self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
@@ -898,12 +933,16 @@ class data_process_PPI_loader(data.Dataset):
             v_d = protein_2_embed(v_d)
         elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
             v_d = self.fc(v_d)
+            if self.compute_pos_enc:
+                v_d = add_pyg_positional_encoding(v_d, self.pos_enc_dim, self.pos_enc_method)
 
         v_p = self.df.iloc[index]['target_encoding_2']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
         elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
             v_p = self.fc(v_p)
+            if self.compute_pos_enc:
+                v_p = add_pyg_positional_encoding(v_p, self.pos_enc_dim, self.pos_enc_method)
         y = self.labels[index]
         return v_d, v_p, y
 
@@ -942,6 +981,9 @@ class data_process_loader_Protein_Prediction(data.Dataset):
         self.list_IDs = list_IDs
         self.df = df
         self.config = config
+        self.compute_pos_enc = bool(self.config.get('compute_pos_enc', False))
+        self.pos_enc_dim = int(self.config.get('pyg_pos_enc_dim', 0))
+        self.pos_enc_method = self.config.get('pyg_pos_enc_method', 'Laplacian')
         raise_if_legacy_graph_encoding(self.config.get('target_encoding'), context='data_process_loader_Protein_Prediction')
 
         if self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
@@ -962,6 +1004,8 @@ class data_process_loader_Protein_Prediction(data.Dataset):
             v_p = protein_2_embed(v_p)
         elif self.config['target_encoding'] in PYG_TARGET_ENCODINGS:
             v_p = self.fc(v_p)
+            if self.compute_pos_enc:
+                v_p = add_pyg_positional_encoding(v_p, self.pos_enc_dim, self.pos_enc_method)
 
         y = self.labels[index]
 
@@ -1143,6 +1187,8 @@ def generate_config(drug_encoding=None, target_encoding=None,
                     gnn_activation=F.relu,
                     pyg_gat_heads=4,
                     pyg_cheb_k=3,
+                    pyg_pos_enc_dim=8,
+                    pyg_pos_enc_method='Laplacian',
                     neuralfp_max_degree=10,
                     neuralfp_predictor_hid_dim=128,
                     neuralfp_predictor_activation=torch.tanh,
@@ -1164,7 +1210,10 @@ def generate_config(drug_encoding=None, target_encoding=None,
                    'binary': False,
                    'num_workers': num_workers,
                    'cuda_id': cuda_id,
-                   'use_spearmanr': use_spearmanr
+                   'use_spearmanr': use_spearmanr,
+                   'compute_pos_enc': False,
+                   'pyg_pos_enc_dim': pyg_pos_enc_dim,
+                   'pyg_pos_enc_method': pyg_pos_enc_method,
                    }
     if not os.path.exists(base_config['result_folder']):
         os.makedirs(base_config['result_folder'])
@@ -1303,6 +1352,8 @@ def generate_config(drug_encoding=None, target_encoding=None,
         base_config['hidden_dim_protein'] = hidden_dim_protein
         base_config['pyg_gat_heads'] = pyg_gat_heads
         base_config['pyg_cheb_k'] = pyg_cheb_k
+        base_config['pyg_pos_enc_dim'] = pyg_pos_enc_dim
+        base_config['pyg_pos_enc_method'] = pyg_pos_enc_method
     elif target_encoding == 'DGL_GAT':
         base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
         base_config['gnn_num_layers'] = gnn_num_layers
@@ -1890,11 +1941,31 @@ class GraphDataset(Dataset):
 
 # compute positional encodings for graph transformers
 def compute_pos(generator, params, method="Laplacian"):
-    raise NotImplementedError(
-        "Graph positional encodings are still not available in the DeepProtein "
-        "2.0 torch_geometric runtime. Please keep `compute_pos_enc=False` "
-        "for both single-protein and pair/PPI PyG workflows."
-    )
+    pos_enc_dim = int(params.get('pyg_pos_enc_dim', 0))
+    if pos_enc_dim <= 0:
+        return generator
+
+    if hasattr(generator, 'x') and hasattr(generator, 'edge_index'):
+        return add_pyg_positional_encoding(generator, pos_enc_dim, method)
+
+    if hasattr(generator, 'dataset') and hasattr(generator.dataset, 'graphs'):
+        generator.dataset.graphs = [
+            add_pyg_positional_encoding(graph, pos_enc_dim, method)
+            for graph in generator.dataset.graphs
+        ]
+        return generator
+
+    if hasattr(generator, 'graphs'):
+        generator.graphs = [
+            add_pyg_positional_encoding(graph, pos_enc_dim, method)
+            for graph in generator.graphs
+        ]
+        return generator
+
+    if isinstance(generator, (list, tuple)):
+        return [add_pyg_positional_encoding(graph, pos_enc_dim, method) for graph in generator]
+
+    raise TypeError("Unsupported graph container for compute_pos in the PyG runtime.")
 
 def get_hf_model_embedding(data, tokenizer, embedding_model, target_encoding):
     ans = []

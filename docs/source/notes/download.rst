@@ -46,7 +46,7 @@ First time usage: setup conda environment
    $ pip install -r requirements.txt
    $ conda deactivate ### exit
 
-DeepProtein 2.0 removes DGL from the core installation path. Phases II and III add torch-geometric support for both single-protein and pair/PPI graph encoders through the `PyG_*` family, while legacy `DGL_*`, `PAGTN`, `EGT`, and `Graphormer` paths remain unsupported.
+DeepProtein 2.0 removes DGL from the core installation path. Phases II and III add torch-geometric support for both single-protein and pair/PPI graph encoders through the `PyG_*` family, while legacy `DGL_*`, `PAGTN`, `EGT`, and `Graphormer` paths remain unsupported. Phase V further enables optional Laplacian positional encoding on the `PyG_*` path via ``compute_pos_enc=True``.
 
 
 Another Choice is to use python virtual env where it have saved plenty of space on package management.
