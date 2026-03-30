@@ -1,4 +1,4 @@
-<p align="center"><img src="figs/deeppurpose_pp_logo.png" alt="DeepProtein Logo" width="400px" /></p>
+<p align="center"><img src="docs/source/_static/deepprotein_logo.png" alt="PsiProtein Logo" width="400px" /></p>
 
 ---
 
